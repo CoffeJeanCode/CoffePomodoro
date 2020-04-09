@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Pomodoro's Timer</title>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="src/css/styles.css" />
+
+    <!-- CDN Font-Awesome -->
+    <script
+      src="https://kit.fontawesome.com/289476127b.js"
+      crossorigin="anonymous"
+    ></script>
+
+    <!-- CDN Bootswatch -->
+    <link
+      rel="stylesheet"
+      href="https://bootswatch.com/4/lux/bootstrap.min.css"
+    />
+  </head>
+
+  <body>
+    <div id="app">
+      <div class="nav">
+        <button class="btn btn-primary btn_toggle">
+          <i class="fas fa-sliders-h"></i>
+        </button>
+        <h1>Pomodoro's Timer</h1>
+        <div class="sidebar">
+          <header class="">
+            <h5>
+              Settings
+            </h5>
+            <button class="btn-danger btn_close">
+              <i class="fas fa-times"></i>
+            </button>
+          </header>
+          <ul class="list-group">
+            <li class="list-group-item">
+              <h4>Alarm</h4>
+              <div class="form-group">
+                <select class="custom-select alarm">
+                  <option value="bubbles"> Bubble <span>(Defult)</span></option>
+                  <option value="ufo"> Ufo </option>
+                  <option value="moon"> Moon </option>
+                </select>
+              </div>
+            </li>
+            <li class="list-group-item">Comming Soon...</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="timer">
+        <div class="timer_controls">
+          <button data-time="1500" class="timer_button btn btn-danger">
+            Work
+          </button>
+          <button data-time="300" class="timer_button btn btn-info">
+            Short Break
+          </button>
+          <button data-time="600" class="timer_button btn btn-success">
+            Long Break
+          </button>
+          <button data-time="5" class="timer_button btn btn-warning">
+            Loop
+          </button>
+        </div>
+        <div class="display">
+          <h2 class="display_time_left h1">00:00</h2>
+          <p class="display_end_time"></p>
+          <audio class="sound" src="./src/sounds/bubbles.mp3"></audio>
+        </div>
+      </div>
+
+      <div class="todo_list">
+        <div class="row">
+          <div class="col-md-4 offset-md-4">
+            <div class="wrapper card">
+              <h2 class="card-header">
+                To-Do List
+              </h2>
+              <div class="card-body">
+                <ul class="to_do_list list-group m-2"></ul>
+                <form class="add_task">
+                  <div class="form-group">
+                    <input
+                      class="form-control"
+                      type="text"
+                      name="task"
+                      placaholder="Put your task"
+                      required
+                    />
+                  </div>
+                  <div class="form-group">
+                    <input
+                      type="submit"
+                      class="btn btn-info btn-block"
+                      value="+ Add Task"
+                    />
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="alert alert-dismissible alert-warning m-3 w-50 info_deleted"
+        >
+          <i class="fas fa-info-circle d-flex justify-content-center"></i>
+          <p class="mt-3 text-center h5">
+            When you'll check a task, its'll delete
+          </p>
+        </div>
+      </div>
+    </div>
+    <!-- sweetalert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+    <script src="./src/js/index.js"></script>
+  </body>
+</html>
