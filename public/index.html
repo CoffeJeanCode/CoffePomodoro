@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Pomodoro's Timer</title>
+    <meta charset="UTF-8" />
+
+    <script
+      src="https://kit-pro.fontawesome.com/releases/latest/js/pro.min.js"
+      data-fetch-svg-from="https://kit-pro.fontawesome.com/releases/latest/svgs"
+      data-auto-a11y="true"
+      data-auto-fetch-svg
+      defer
+    ></script>
+  </head>
+  <body>
+    <main id="app">
+      <audio id="sound" src="/sounds/bubbles.mp3"></audio>
+      <header class="header">
+        <button class="btn">
+          <i class="far fa-ellipsis-v"></i>
+        </button>
+        <h1>Pomodoro's Timer</h1>
+      </header>
+      <sidebar class="sidebar">
+        <h5>Settings</h5>
+        <button class="btn-danger btn_close">
+          <i class="far fa-times"></i>
+        </button>
+        <ul class="list-group">
+          <li class="list-group-item">
+            <h4>Alarm</h4>
+            <div class="form-group">
+              <select class="custom-select alarm">
+                <option value="bubbles">Bubble <span>(Defult)</span></option>
+                <option value="ufo">Ufo</option>
+                <option value="moon">Moon</option>
+              </select>
+            </div>
+          </li>
+          <li class="list-group-item">Comming Soon...</li>
+        </ul>
+      </sidebar>
+
+      <section class="timer">
+        <div class="timer_controls">
+          <button data-time="1500" id="timer-button" class="btn btn-danger">
+            Work
+          </button>
+          <button data-time="300" id="timer-button" class="btn btn-info">
+            Short Break
+          </button>
+          <button data-time="600" id="timer-button" class="btn btn-success">
+            Long Break
+          </button>
+          <button data-time="5" id="timer-button" class="btn btn-warning">
+            Loop
+          </button>
+        </div>
+        <div class="display">
+          <h2 class="display_time_left">00:00</h2>
+          <p class="display_end_time"></p>
+        </div>
+      </section>
+
+      <div class="todo-list">
+        <h2 class="todo-list__title">To-Do List</h2>
+        <div class="todos-list">
+          <form class="todos__form" id="todo-form">
+            <div class="form-group">
+              <input
+                class="form-control"
+                type="text"
+                name="task"
+                placaholder="Put your task"
+                required
+              />
+              <div class="form-group">
+                <input
+                  type="submit"
+                  class="btn btn-info btn-block"
+                  value="+ Add Task"
+                />
+              </div>
+            </div>
+          </form>
+          <ul class="to-do__list" id="todo-list"></ul>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>
