@@ -1,14 +1,16 @@
-export const suscribeEvent = (element, typeEvent, event) => {
+export const suscribeEvent = (typeEvent, event) => (element) => {
   const observable = {
-    suscribed: false,
     element,
+    suscribed: false,
     suscribe: () => {
       observable.suscribed = true;
-      element && element.addEventListener(typeEvent, event);
+      element &&
+        element.addEventListener(typeEvent, (evt) => event(evt, element));
     },
     unsuscribe: () => {
       observable.suscribed = false;
-      element && element.removeEventListener(typeEvent, event);
+      element &&
+        element.removeEventListener(typeEvent, (evt) => event(evt, element));
     },
   };
 
@@ -16,5 +18,6 @@ export const suscribeEvent = (element, typeEvent, event) => {
     observable.unsuscribe();
   });
 
+  observable.suscribe();
   return observable;
 };

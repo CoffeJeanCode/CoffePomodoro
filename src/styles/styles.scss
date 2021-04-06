@@ -14,6 +14,7 @@ $trans: all 0.2s ease-out;
   padding: 0;
   box-sizing: border-box;
 }
+
 body {
   background-color: #fafafa;
   font-family: "Varela Round", sans-serif;
@@ -22,7 +23,7 @@ body {
 #app {
   height: 100vh;
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
   text-align: center;
   flex-flow: column wrap;
 }
@@ -30,6 +31,7 @@ body {
 .header {
   display: flex;
   justify-content: center;
+  margin: 1rem 0;
   h1 {
     text-align: center;
   }
@@ -101,6 +103,15 @@ body {
   }
 }
 
+.display {
+  min-height: 8rem;
+  margin: 2rem 0;
+}
+
 .display_time_left {
   font-size: 4rem;
+}
+
+.ilustration {
+  margin: 1rem 0;
 }

@@ -1,17 +1,38 @@
-import "./settings";
+import { suscribeEvent } from "./utils/suscribeEvent";
 import soundAlarm from "./sounds/bubbles.mp3";
 import "./styles/styles.scss";
-import { suscribeEvent } from "./utils/suscribeEvent";
+import { svgPaths } from "./utils/ilutrationsPaths";
 
 const app = () => {
   let countDown;
 
-  const timerDisplay = document.getElementById("timer-display");
   const sound = document.getElementById("sound");
   const endTime = document.getElementById("timer-endtime");
+  const timerDisplay = document.getElementById("timer-display");
   const buttons = document.querySelectorAll("#timer-button");
+  const ilustration = document.getElementById("ilustration");
 
-  function timer(seconds) {
+  const displayEndTime = (timestamp) => {
+    const end = new Date(timestamp);
+    const hour = end.getHours();
+    const adjuestedHour = hour > 12 ? hour - 12 : hour;
+    const minutes = String(end.getMinutes()).padStart(2, "0");
+
+    endTime.textContent = `Be Back at ${adjuestedHour}:${minutes}`;
+  };
+
+  const displayTimeLeft = (seconds) => {
+    const minutes = Math.floor(seconds / 60);
+    const remaiderSeconds = seconds % 60;
+    const adjuestedSeconds = remaiderSeconds < 10 ? "0" : "";
+    const display = `${minutes}:${adjuestedSeconds}${remaiderSeconds}`;
+
+    document.title = `${display} | Pomodoro's Timer`;
+
+    timerDisplay.textContent = display;
+  };
+
+  const timer = (seconds) => {
     clearInterval(countDown);
 
     const now = Date.now();
@@ -32,39 +53,18 @@ const app = () => {
 
       displayTimeLeft(secondsLeft);
     }, 1000);
-  }
+  };
 
-  function displayTimeLeft(seconds) {
-    const minutes = Math.floor(seconds / 60);
-    const remaiderSeconds = seconds % 60;
-    const adjuestedSeconds = remaiderSeconds < 10 ? "0" : "";
-    const display = `${minutes}:${adjuestedSeconds}${remaiderSeconds}`;
+  buttons.forEach(
+    suscribeEvent("click", (_, button) => {
+      const { time, responsability } = button.dataset;
+      const seconds = parseInt(time);
 
-    document.title = `${display} | Pomodoro's Timer`;
+      ilustration.innerHTML = svgPaths[responsability];
 
-    timerDisplay.textContent = display;
-  }
-
-  function displayEndTime(timestamp) {
-    const end = new Date(timestamp);
-    const hour = end.getHours();
-    const adjuestedHour = hour > 12 ? hour - 12 : hour;
-    const minutes = `0${end.getMinutes()}`.slice(-2);
-
-    endTime.textContent = `Be Back at ${adjuestedHour}:${minutes}`;
-  }
-
-  buttons.forEach((button) => {
-    const buttonEvent = suscribeEvent(button, "click", () => {
-      if (button !== buttonEvent.element) {
-        button.setAttribute("disabled", true);
-      }
-      const seconds = parseInt(button.dataset.time);
       timer(seconds);
-    });
-
-    buttonEvent.suscribe();
-  });
+    })
+  );
 };
 
-app();
+document.addEventListener("DOMContentLoaded", app);

@@ -28,7 +28,7 @@
         <button class="btn_open" disabled>
           <i class="fas fa-cog"></i>
         </button>
-        <h1>CoffeBlog</h1>
+        <h1>Pomodoro</h1>
       </header>
       <sidebar class="sidebar" id="sidebar">
         <h4>Setting</h4>
@@ -52,22 +52,43 @@
 
       <section class="timer">
         <div class="timer__controls">
-          <button data-time="1500" id="timer-button" class="btn btn__controls">
+          <button
+            data-responsability="focus"
+            data-time="1500"
+            id="timer-button"
+            class="btn btn__controls"
+          >
             Work
           </button>
-          <button data-time="300" id="timer-button" class="btn btn__controls">
+          <button
+            data-responsability="shortBreak"
+            data-time="300"
+            id="timer-button"
+            class="btn btn__controls"
+          >
             Short Break
           </button>
-          <button data-time="600" id="timer-button" class="btn btn__controls">
+          <button
+            data-responsability="longBreak"
+            data-time="600"
+            id="timer-button"
+            class="btn btn__controls"
+          >
             Long Break
-          </button>
-          <button data-time="1" id="timer-button" class="btn btn__controls">
-            Loop
           </button>
         </div>
         <div class="display">
           <h2 class="display_time_left" id="timer-display">00:00</h2>
           <p class="display_end_time" id="timer-endtime"></p>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="236"
+            height="206"
+            fill="none"
+            viewBox="0 0 236 206"
+            class="ilustration"
+            id="ilustration"
+          ></svg>
         </div>
       </section>
     </main>
