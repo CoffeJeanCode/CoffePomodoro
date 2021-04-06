@@ -3,11 +3,11 @@
   &:hover,
   &:focus {
     background: darken($color, 10);
-    box-shadow: 0 0 1px 2px rgba($color, 0.5);
+    box-shadow: 0 0 1px 4px rgba($color, 0.5);
   }
 }
 
-$trans: all 0.2s ease-out;
+$transition: all 0.2s ease-out;
 
 * {
   margin: 0;
@@ -19,7 +19,9 @@ body {
   background-color: #fafafa;
   font-family: "Varela Round", sans-serif;
 }
-
+::selection {
+  background: transparentize(#ff6363, 0.5);
+}
 #app {
   height: 100vh;
   display: flex;
@@ -67,7 +69,7 @@ body {
 .btn {
   border: none;
   outline: none;
-  transition: $trans;
+  transition: $transition;
 
   &__close {
     width: 1.2rem;
@@ -83,10 +85,11 @@ body {
   &__controls {
     height: 100%;
     padding: 1rem 2rem;
-    font-size: 1.3rem;
-    color: #fff;
     flex: 1 1 100px;
     flex-flow: wrap;
+    color: #fff;
+    text-transform: uppercase;
+    font-size: 1.5rem;
     cursor: pointer;
     &:nth-child(1) {
       @include buttonColor(#264653);
@@ -96,9 +99,6 @@ body {
     }
     &:nth-child(3) {
       @include buttonColor(#e9c46a);
-    }
-    &:nth-child(4) {
-      @include buttonColor(#f4a261);
     }
   }
 }
