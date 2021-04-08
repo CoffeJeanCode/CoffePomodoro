@@ -69,6 +69,7 @@ const app = () => {
     suscribeEvent("click", (_, button) => {
       const { time, responsability } = button.dataset;
       const seconds = parseInt(time);
+
       render(ilustration, "innerHTML")`${svgPaths[responsability]}`;
       timer(seconds);
     })
