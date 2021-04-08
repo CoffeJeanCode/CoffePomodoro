@@ -16,10 +16,7 @@
       property="og:description"
       content="Are your distracted while coding? with the Pomodoro's technique and enough effort you could focus in your Work"
     />
-    <meta
-      property="og:image"
-      content="https://coffepomodoro.netlify.app/preview.png"
-    />
+    <meta property="og:image" content="/preview.png" />
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image" />
@@ -29,10 +26,7 @@
       property="twitter:description"
       content="Are your distracted while coding? with the Pomodoro's technique and enough effort you could focus in your Work"
     />
-    <meta
-      property="twitter:image"
-      content="https://coffepomodoro.netlify.app/preview.png"
-    />
+    <meta property="twitter:image" content="/preview.png" />
     <meta charset="UTF-8" />
     <link
       href="https://kit-pro.fontawesome.com/releases/latest/js/pro.min.js"
@@ -54,12 +48,7 @@
         "@context": "https://schema.org/",
         "@type": "WebSite",
         "name": "CoffePomodoro",
-        "url": "https://coffepomodoro.netlify.app/",
-        "potentialAction": {
-          "@type": "SearchAction",
-          "target": "https://coffepomodoro.netlify.app/{search_term_string}",
-          "query-input": "required name=search_term_string"
-        }
+        "url": "https://coffepomodoro.netlify.app/"
       }
     </script>
     <script
@@ -74,12 +63,12 @@
     <main id="app">
       <audio id="sound"></audio>
       <header class="header">
-        <button class="btn_open" disabled>
+        <button class="btn setting" disabled>
           <i class="fas fa-cog"></i>
         </button>
         <h1>Pomodoro</h1>
       </header>
-      <sidebar class="sidebar" id="sidebar">
+      <sidebar class="settings-sidebar" id="sidebar">
         <h4>Setting</h4>
         <button class="btn btn__close">
           <i class="far fa-times"></i>
@@ -125,6 +114,14 @@
           >
             Long Break
           </button>
+          <button
+            data-responsability="longBreak"
+            data-time="1"
+            id="timer-button"
+            class="btn btn__controls"
+          >
+            Long Break
+          </button>
         </div>
         <div class="display">
           <h2 class="display_time_left" id="timer-display">00:00</h2>
@@ -133,13 +130,19 @@
             xmlns="http://www.w3.org/2000/svg"
             width="236"
             height="206"
-            fill="none"
             viewBox="0 0 236 206"
             class="ilustration"
             id="ilustration"
           ></svg>
         </div>
       </section>
+      <sidebar class="sidebar__todo__list">
+        <form id="todo-form" autocomplete="off">
+          <input type="text" id="todo-input" />
+          <button>Add Todo</button>
+        </form>
+        <ul class="todo__list" id="todo-list"></ul>
+      </sidebar>
     </main>
   </body>
 </html>

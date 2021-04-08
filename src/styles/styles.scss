@@ -18,6 +18,7 @@ $transition: all 0.2s ease-out;
 body {
   background-color: #fafafa;
   font-family: "Varela Round", sans-serif;
+  overflow: hidden;
 }
 ::selection {
   background: transparentize(#ff6363, 0.5);
@@ -44,7 +45,7 @@ body {
   }
 }
 
-.sidebar {
+.settings-sidebar {
   text-align: center;
   width: 15rem;
   position: absolute;
@@ -114,4 +115,26 @@ body {
 
 .ilustration {
   margin: 1rem 0;
+}
+
+.sidebar__todo__list {
+  width: 15rem;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  padding: 1rem;
+  background-color: #ff6363;
+  transform: translateX(100%);
+}
+
+.todo__list {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  max-width: 5rem;
+  margin: auto;
+  div {
+    width: max-content;
+  }
 }

@@ -8,24 +8,24 @@ new Sortable(tasksList, {
   group: items,
   animation: 150,
   draggable: ".item",
-  ghostClass: "ghost"
+  ghostClass: "ghost",
 });
 
-async function addItem(e) {
+function addItem(e) {
   e.preventDefault();
 
   const text = this.querySelector("[name=task]").value;
 
   const item = {
     text: text,
-    done: false
+    done: false,
   };
 
   items.push(item);
 
-  await populateList(items, tasksList);
+  populateList(items, tasksList);
 
-  await localStorage.setItem("items", JSON.stringify(items));
+  localStorage.setItem("items", JSON.stringify(items));
 
   this.reset();
 }
