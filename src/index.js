@@ -17,9 +17,8 @@ const displayTimeLeft = (seconds) => {
   const minutes = Math.floor(seconds / 60);
   const remaiderSeconds = seconds % 60;
   const adjuestedSeconds = remaiderSeconds < 10 ? "0" : "";
-  const display = `${minutes}:${adjuestedSeconds}${remaiderSeconds}`;
 
-  return display;
+  return `${minutes}:${adjuestedSeconds}${remaiderSeconds}`;
 };
 
 const app = () => {
@@ -31,7 +30,7 @@ const app = () => {
   const endTimeDisplay = document.getElementById("timer-endtime");
   const timerDisplay = document.getElementById("timer-display");
   const buttons = document.querySelectorAll("#timer-button");
-  const ilustration = document.getElementById("ilustration");
+  const ilustrationContainer = document.getElementById("ilustration");
 
   const timer = (seconds) => {
     clearInterval(state.getState().countDown);
@@ -67,10 +66,10 @@ const app = () => {
 
   buttons.forEach(
     suscribeEvent("click", (_, button) => {
-      const { time, responsability } = button.dataset;
+      const { time, ilustration } = button.dataset;
       const seconds = parseInt(time);
 
-      render(ilustration, "innerHTML")`${svgPaths[responsability]}`;
+      render(ilustrationContainer, "innerHTML")`${svgPaths[ilustration]}`;
       timer(seconds);
     })
   );
