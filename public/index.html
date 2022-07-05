@@ -63,9 +63,9 @@
     <main id="app">
       <audio id="sound"></audio>
       <header class="header">
-        <button class="btn setting" disabled>
+        <!-- <button class="btn setting">
           <i class="fas fa-cog"></i>
-        </button>
+        </button> -->
         <h1>Pomodoro</h1>
       </header>
       <sidebar class="settings-sidebar" id="sidebar">
@@ -84,11 +84,13 @@
               </select>
             </div>
           </li>
-          <li class="list-group-item">Comming Soon...</li>
         </ul>
       </sidebar>
 
       <section class="timer">
+        <button class="timer__status" id="timer-status">
+          <i class="fas fa-play"></i>
+        </button>
         <div class="timer__controls">
           <button
             data-ilustration="focus"

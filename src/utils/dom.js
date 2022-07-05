@@ -5,10 +5,10 @@ export const queryDocument = curry((document, selector) => ({
   selectAll: document.querySelectorAll(selector) || always([])(),
 }));
 
-export const suscribeEvent = curry((event, element, callback) => {
-  element.addEventListener(event, callback);
-  // element.removeEventListener(event, callback),
-});
+export const suscribeEvent = curry((event, element, callback) => ({
+  add: () => element.addEventListener(event, callback),
+  remove: () => element.removeEventListener(event, callback),
+}));
 
 export const modifierElement = curry((element, modifications) => {
   modifications(element);

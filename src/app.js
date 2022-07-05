@@ -1,6 +1,8 @@
-import { F, forEach } from "ramda";
+import { F, forEach, isNil, T } from "ramda";
+import { clickEvent, getDOMElement } from "./helpers";
 import soundAlarm from "./sounds/bubbles.mp3";
-import { modifierElement, queryDocument, suscribeEvent } from "./utils/dom";
+import { modifierElement } from "./utils/dom";
+import { FN } from "./utils/fn";
 import { svgPaths } from "./utils/ilutrationsPaths";
 import { makeState } from "./utils/makeState";
 import { render } from "./utils/render";
@@ -11,18 +13,17 @@ import {
   segsToMillis,
 } from "./utils/time";
 
-const getDOMElement = queryDocument(document);
-const clickEvent = suscribeEvent("click");
-
 const state = makeState({
   countDown: null,
   isPlaying: F(),
+  session: 0,
 });
 
 export const App = () => ({
   run: () => {
     const endTimeDisplay = getDOMElement("#timer-endtime").select;
     const timerDisplay = getDOMElement("#timer-display").select;
+    const statusButton = modifierElement(getDOMElement("#timer-status").select);
     const buttons = getDOMElement("#timer-button").selectAll;
     const sound = modifierElement(getDOMElement("#sound").select);
     const ilustrationContainer = getDOMElement(".ilustration").select;
@@ -39,26 +40,41 @@ export const App = () => ({
 
       state.setState({
         countDown: setInterval(() => {
-          const secondsLeft = millisToSegs(endTime - Date.now());
-          if (secondsLeft < 0) {
-            sound((s) => {
-              s.volume = 0.5;
-              s.setAttribute("src", soundAlarm);
-              s.play();
-            });
+          if (state.getState().isPlaying) {
+            const secondsLeft = millisToSegs(endTime - Date.now());
+            if (secondsLeft < 0) {
+              sound((s) => {
+                s.volume = 0.5;
+                s.setAttribute("src", soundAlarm);
+                s.play();
+              });
 
-            clearInterval(state.getState().countDown);
-            return;
+              clearInterval(state.getState().countDown);
+              return;
+            }
+
+            const countDown = getCountdown(secondsLeft);
+
+            render(document, "title")`${countDown} | Pomodoro's Timer`;
+            render(timerDisplay)`${countDown}`;
           }
-
-          const countDown = getCountdown(secondsLeft);
-
-          render(document, "title")`${countDown} | Pomodoro's Timer`;
-          render(timerDisplay)`${countDown}`;
         }, 1000),
-        isPlaying: true
+        isPlaying: T(),
       });
     };
+
+    clickEvent(statusButton(FN), () => {
+      const { isPlaying, countDown } = state.getState();
+
+      if (isNil(countDown)) return;
+
+      state.setState({
+        isPlaying: isPlaying ? F() : T(),
+      });
+      render(statusButton(FN), "innerHTML")`
+          <i class="fas ${isPlaying ? "fa-play" : "fa-pause"}"></i>
+       `;
+    }).add();
 
     forEach((button) => {
       clickEvent(button, () => {
@@ -67,7 +83,7 @@ export const App = () => ({
 
         render(ilustrationContainer, "innerHTML")`${svgPaths[ilustration]}`;
         timer(seconds);
-      });
+      }).add();
     }, buttons);
   },
 });
