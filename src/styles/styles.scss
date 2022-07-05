@@ -7,7 +7,7 @@
   }
 }
 
-$transition: all 0.2s ease-out;
+$transition: all 0.2s cubic-bezier(0.46, 0.04, 0.16, 1.03);
 
 * {
   margin: 0;
@@ -39,10 +39,15 @@ body {
   h1 {
     text-align: center;
   }
-  .btn_open {
+  .setting {
     position: absolute;
     top: 1rem;
-    left: 1rem;
+    right: 1rem;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    font-size: 1rem;
+     @include buttonColor(#eee);
   }
 }
 

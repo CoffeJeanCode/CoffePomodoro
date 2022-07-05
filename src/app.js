@@ -1,9 +1,10 @@
 import { F, forEach, isNil, T } from "ramda";
+import { alarms } from "./alarms";
 import { clickEvent, getDOMElement } from "./helpers";
-import soundAlarm from "./sounds/bubbles.mp3";
+import { Settings } from "./settings";
 import { modifierElement } from "./utils/dom";
 import { FN } from "./utils/fn";
-import { svgPaths } from "./utils/ilutrationsPaths";
+import { svgPaths } from "./ilutrationsPaths";
 import { makeState } from "./utils/makeState";
 import { render } from "./utils/render";
 import {
@@ -17,16 +18,22 @@ const state = makeState({
   countDown: null,
   isPlaying: F(),
   session: 0,
+  alarm: alarms.bubbles,
 });
 
 export const App = () => ({
   run: () => {
-    const endTimeDisplay = getDOMElement("#timer-endtime").select;
-    const timerDisplay = getDOMElement("#timer-display").select;
-    const statusButton = modifierElement(getDOMElement("#timer-status").select);
-    const buttons = getDOMElement("#timer-button").selectAll;
-    const sound = modifierElement(getDOMElement("#sound").select);
-    const ilustrationContainer = getDOMElement(".ilustration").select;
+    const settings = Settings(state);
+    settings.init();
+
+    const {
+      endTimeDisplay,
+      timerDisplay,
+      statusButton,
+      buttons,
+      sound,
+      ilustrationContainer,
+    } = App().DOM();
 
     const timer = (seconds) => {
       clearInterval(state.getState().countDown);
@@ -45,7 +52,7 @@ export const App = () => ({
             if (secondsLeft < 0) {
               sound((s) => {
                 s.volume = 0.5;
-                s.setAttribute("src", soundAlarm);
+                s.setAttribute("src", state.getState().alarm);
                 s.play();
               });
 
@@ -55,7 +62,7 @@ export const App = () => ({
 
             const countDown = getCountdown(secondsLeft);
 
-            render(document, "title")`${countDown} | Pomodoro's Timer`;
+            render(document, "title")`${countDown} | CoffePomodoro`;
             render(timerDisplay)`${countDown}`;
           }
         }, 1000),
@@ -86,4 +93,12 @@ export const App = () => ({
       }).add();
     }, buttons);
   },
+  DOM: () => ({
+    endTimeDisplay: getDOMElement("#timer-endtime").select,
+    timerDisplay: getDOMElement("#timer-display").select,
+    statusButton: modifierElement(getDOMElement("#timer-status").select),
+    buttons: getDOMElement("#timer-button").selectAll,
+    sound: modifierElement(getDOMElement("#sound").select),
+    ilustrationContainer: getDOMElement(".ilustration").select,
+  }),
 });

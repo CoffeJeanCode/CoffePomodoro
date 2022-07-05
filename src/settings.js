@@ -1,20 +1,34 @@
-import { suscribeEvent } from "./utils/suscribeEvent";
+import { alarms } from "./alarms";
+import { changeEvent, clickEvent, getDOMElement } from "./helpers";
 
-const btnToggle = document.querySelector(".btn_open");
-const btnClose = document.querySelector(".btn_close");
-const sidebar = document.getElementById("sidebar");
-const alarm = document.querySelector(".alarm");
+export const Settings = (state) => ({
+  init: () => {
+    const { sidebar, btnToggle, btnClose, alarm } = Settings(state).DOM();
+    const btnToggleClickEvent = clickEvent(btnToggle, () => {
+      sidebar.classList.toggle("active");
+    });
+    const btnCloseClickEvent = clickEvent(btnClose, () => {
+      sidebar.classList.remove("active");
+    });
 
-const btnEvent = suscribeEvent(btnToggle, "click", toggleSideBar);
-btnEvent.suscribe();
+    const alarmSelectEvent = changeEvent(alarm, (evt) => {
+      localStorage.setItem("alarm", evt.target.value);
 
-function toggleSideBar() {
-  sidebar.classList.toggle("active");
-}
+      const value = localStorage.getItem("alarm") || evt.target.value;
 
-export function selectAlarm() {
-  const value = alarm.value;
-  localStorage.setItem("alarm", value);
-  console.log(localStorage.getItem("alarm"));
-  return localStorage.getItem("alarm") || value;
-}
+      state.setState({
+        alarm: alarms[value],
+      });
+    });
+
+    alarmSelectEvent.add();
+    btnToggleClickEvent.add();
+    btnCloseClickEvent.add();
+  },
+  DOM: () => ({
+    sidebar: getDOMElement("#sidebar").select,
+    btnToggle: getDOMElement(".setting").select,
+    btnClose: getDOMElement(".btn__close").select,
+    alarm: getDOMElement(".alarm").select,
+  }),
+});
