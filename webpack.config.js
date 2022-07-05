@@ -36,9 +36,6 @@ module.exports = {
       hash: true,
     }),
   ],
-  optimization: {
-    runtimeChunk: "single",
-  },
   devServer: {
     port: 3000,
   },
