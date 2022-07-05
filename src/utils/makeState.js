@@ -2,7 +2,7 @@ export const makeState = (initialState) => {
   const state = initialState;
   let updater = () => {};
 
-  const getState = () => JSON.parse(JSON.stringify(state));
+  const getState = () => Object.assign({}, state);
   const setState = (newState) => {
     for (const key in newState) {
       if (key in state) {
@@ -11,6 +11,7 @@ export const makeState = (initialState) => {
     }
     updater(getState());
   };
+
   const suscribe = (listener) => {
     updater = listener;
   };
