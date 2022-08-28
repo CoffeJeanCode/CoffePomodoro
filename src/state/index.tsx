@@ -1,0 +1,51 @@
+import { prop } from "ramda";
+import { atom, selector } from "recoil";
+import { minutesToSeconds } from "../utils/time.util";
+import { LONG_BREAK, SHORT_BREAK, WORK } from "./constants";
+import { recoilPersist } from "recoil-persist";
+
+const { persistAtom } = recoilPersist();
+
+export const timersConfig = atom({
+  key: "timers",
+  default: {
+    [WORK]: minutesToSeconds(25),
+    [SHORT_BREAK]: minutesToSeconds(5),
+    [LONG_BREAK]: minutesToSeconds(10),
+  },
+  effects: [persistAtom],
+  // default: {
+  //   [WORK]: 5,
+  //   [SHORT_BREAK]: 2,
+  //   [LONG_BREAK]: 10,
+  // },
+});
+
+export const currentTimer = atom({
+  key: "timer",
+  default: 0,
+});
+
+export const currentMode = atom({
+  key: "currentMode",
+  default: WORK,
+  effects: [persistAtom],
+});
+
+export const currentSession = atom({
+  key: "session",
+  default: 0,
+});
+
+export const modeSelector = selector({
+  key: "mode",
+  get: ({ get }) => get(currentMode),
+  set: ({ set, get }, mode) => {
+    const newMode = String(mode);
+    const timers = get(timersConfig);
+    const timer = Number(prop(newMode)(timers));
+
+    set(currentMode, newMode);
+    set(currentTimer, timer);
+  },
+});

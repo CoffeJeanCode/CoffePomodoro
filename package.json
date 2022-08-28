@@ -1,33 +1,32 @@
 {
-  "name": "vanilla",
-  "version": "1.0.0",
-  "description": "JavaScript example starter project",
-  "main": "index.html",
+  "name": "coffepomodoro",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
   "scripts": {
-    "dev": "run-p serve watch",
-    "serve": "servor dist index.html 3000 --reload",
-    "watch": "webpack --watch",
-    "build": "webpack"
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
   },
   "dependencies": {
+    "@chakra-ui/react": "^2.2.9",
+    "@emotion/react": "^11.10.0",
+    "@emotion/styled": "^11.10.0",
+    "framer-motion": "^7.2.1",
     "ramda": "^0.28.0",
-    "sortablejs": "1.10.2"
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-icons": "^4.4.0",
+    "recoil": "^0.7.5",
+    "recoil-persist": "^4.2.0",
+    "use-sound": "^4.0.1"
   },
   "devDependencies": {
-    "css-loader": "^5.0.1",
-    "file-loader": "^6.2.0",
-    "html-webpack-plugin": "^4.5.1",
-    "mini-css-extract-plugin": "^1.3.4",
-    "node-sass": "^7.0.1",
-    "npm-run-all": "^4.1.5",
-    "sass": "^1.53.0",
-    "sass-loader": "^10.1.1",
-    "servor": "^4.0.2",
-    "style-loader": "^2.0.0",
-    "webpack": "^5.18.0",
-    "webpack-cli": "^4.4.0"
-  },
-  "keywords": [
-    "javascript"
-  ]
+    "@types/ramda": "^0.28.15",
+    "@types/react": "^18.0.17",
+    "@types/react-dom": "^18.0.6",
+    "@vitejs/plugin-react": "^2.0.1",
+    "typescript": "^4.6.4",
+    "vite": "^3.0.7"
+  }
 }
