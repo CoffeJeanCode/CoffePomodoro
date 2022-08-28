@@ -9,9 +9,8 @@ import {
   Icon,
 } from "@chakra-ui/react";
 import { and, cond, equals, not, toUpper } from "ramda";
-import { useEffect, useMemo, useState } from "react";
-import { BsSkipEndFill } from "react-icons/bs";
-import { FaPause, FaPlay, FaStop } from "react-icons/fa";
+import { useEffect, useState } from "react";
+import { FaPause, FaPlay, FaStepForward, FaStop } from "react-icons/fa";
 import { useRecoilState, useResetRecoilState } from "recoil";
 import useSound from "use-sound";
 import notification from "../../assets/Interface.mp3";
@@ -40,9 +39,8 @@ const Timer = () => {
   const [steps, setSteps] = useState(0);
   const resetCurrentTimer = useResetRecoilState(currentTimer);
   const keys = cond([
-    [equals("Enter"), () => handleToggleTimer()],
-    [equals("Escape"), () => handleStopTimer()],
-    [equals("n"), () => handleNextTimer()],
+    [equals("S"), () => handleToggleTimer()],
+    [equals("P"), () => handleStopTimer()],
   ]);
 
   useEffect(() => {
@@ -62,12 +60,14 @@ const Timer = () => {
   useEffect(() => {
     setMode(WORK);
     const whenKeyDown = (evt: KeyboardEvent) => {
-      keys(evt.key);
+      if (evt.shiftKey) {
+        keys(evt.key);
+      }
     };
 
-    document.addEventListener("keydown", whenKeyDown);
+    document.addEventListener("keyup", whenKeyDown);
     return () => {
-      document.removeEventListener("keydown", whenKeyDown);
+      document.removeEventListener("keyup", whenKeyDown);
     };
   }, []);
 
@@ -119,24 +119,21 @@ const Timer = () => {
           <Heading as="h3" size="4xl" color="white" sx={{ userSelect: "none" }}>
             {getTime(timer)}
           </Heading>
-
-          <Heading as="h5" size="md" color="white">
-            Session #{session} {steps}
-          </Heading>
+          <Heading as="h5" size="md" color="white"></Heading>
+          Session #{session}
           <ButtonGroup marginY="3.5">
             {not(isPlaying) ? (
               <>
                 <Button
                   leftIcon={<Icon as={FaPlay} />}
-                  title="Play <Enter>"
+                  title="Play <Shift + S>"
                   onClick={handleToggleTimer}
                 >
                   Play
                 </Button>
                 {timer && (
                   <Button
-                    leftIcon={<Icon as={BsSkipEndFill} />}
-                    title="Next <N>"
+                    leftIcon={<Icon as={FaStepForward} />}
                     onClick={handleNextTimer}
                   >
                     Skip
@@ -147,14 +144,14 @@ const Timer = () => {
               <>
                 <Button
                   leftIcon={<Icon as={FaPause} />}
-                  title="Pause <Enter>"
+                  title="Pause <Shift + S>"
                   onClick={handleToggleTimer}
                 >
                   Pause
                 </Button>
                 <Button
                   leftIcon={<Icon as={FaStop} />}
-                  title="Stop <Escape>"
+                  title="Stop <Shift + P>"
                   onClick={handleStopTimer}
                 >
                   Stop

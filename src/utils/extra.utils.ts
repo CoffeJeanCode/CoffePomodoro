@@ -6,3 +6,5 @@ export const getModeText = cond([
   [equals(SHORT_BREAK), always("Short Break")],
   [equals(LONG_BREAK), always("Long Break")],
 ]);
+
+export const createId = () => Math.random().toString(16).slice(2);

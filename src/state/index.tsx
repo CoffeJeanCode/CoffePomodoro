@@ -3,6 +3,7 @@ import { atom, selector } from "recoil";
 import { minutesToSeconds } from "../utils/time.util";
 import { LONG_BREAK, SHORT_BREAK, WORK } from "./constants";
 import { recoilPersist } from "recoil-persist";
+import { Task } from "../types/tasks.types";
 
 const { persistAtom } = recoilPersist();
 
@@ -14,11 +15,6 @@ export const timersConfig = atom({
     [LONG_BREAK]: minutesToSeconds(10),
   },
   effects: [persistAtom],
-  // default: {
-  //   [WORK]: 5,
-  //   [SHORT_BREAK]: 2,
-  //   [LONG_BREAK]: 10,
-  // },
 });
 
 export const currentTimer = atom({
@@ -35,6 +31,11 @@ export const currentMode = atom({
 export const currentSession = atom({
   key: "session",
   default: 0,
+});
+export const tasksList = atom<Task[]>({
+  key: "tasks",
+  default: [],
+  effects: [persistAtom],
 });
 
 export const modeSelector = selector({
