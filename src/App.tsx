@@ -6,6 +6,7 @@ import {
   Heading,
 } from "@chakra-ui/react";
 import { RecoilRoot } from "recoil";
+import Helps from "./components/Helps";
 import Settings from "./components/Settings";
 import Tasks from "./components/Tasks";
 import Timer from "./components/Timer";
@@ -21,13 +22,10 @@ function App() {
             justifyContent="space-evenly"
           >
             <Box width="xl">
-              <Center
-                alignContent={"space-around"}
-                justifyContent={"space-beetween"}
-                width="full"
-              >
+              <Center justifyContent="space-evenly" width="full">
                 <Heading as="h1">Coffe Pomodoro</Heading>
                 <Settings />
+                <Helps />
               </Center>
             </Box>
             <Timer />

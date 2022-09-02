@@ -29,7 +29,7 @@ import { SliderSettings } from "./SliderSettings";
 
 const Settings = () => {
   const { isOpen, onOpen, onClose } = useDisclosure({
-    id: "drawer",
+    id: "settings",
   });
   const { toggleColorMode } = useColorMode();
 
