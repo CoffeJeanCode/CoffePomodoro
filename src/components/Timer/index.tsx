@@ -7,6 +7,8 @@ import {
   Container,
   Heading,
   Icon,
+  Text,
+  useEventListener,
 } from "@chakra-ui/react";
 import { and, cond, equals, not, toUpper } from "ramda";
 import { useEffect, useState } from "react";
@@ -39,9 +41,19 @@ const Timer = () => {
   const [steps, setSteps] = useState(0);
   const resetCurrentTimer = useResetRecoilState(currentTimer);
   const keys = cond([
-    [equals("S"), () => handleToggleTimer()],
-    [equals("P"), () => handleStopTimer()],
+    [equals(" "), () => handleToggleTimer()],
+    [equals("p"), () => handleStopTimer()],
+    [equals("n"), () => handleNextTimer()],
   ]);
+
+  useEventListener("keyup", (evt: KeyboardEvent) => {
+    if (evt.target !== document.body) return;
+    keys(evt.key);
+  });
+
+  useEffect(() => {
+    document.title = `${getTime(timer)} | ${getModeText(mode)}`;
+  }, [mode, timer]);
 
   useEffect(() => {
     if (and(isPlaying, timer > 0)) {
@@ -59,16 +71,6 @@ const Timer = () => {
 
   useEffect(() => {
     setMode(WORK);
-    const whenKeyDown = (evt: KeyboardEvent) => {
-      if (evt.shiftKey) {
-        keys(evt.key);
-      }
-    };
-
-    document.addEventListener("keyup", whenKeyDown);
-    return () => {
-      document.removeEventListener("keyup", whenKeyDown);
-    };
   }, []);
 
   const handleNextTimer = () => {
@@ -76,9 +78,7 @@ const Timer = () => {
     handleSwitchMode();
     setIsPlaying(false);
     setSteps(steps < 8 ? steps + 1 : 1);
-    if (steps % 2 === 0) {
-      setSession(session + 1);
-    }
+    if (steps % 2 === 0) setSession(session + 1);
   };
 
   const resetTimer = () => {
@@ -87,11 +87,7 @@ const Timer = () => {
   };
 
   const handleSwitchMode = () => {
-    if (steps >= 8) {
-      setMode(LONG_BREAK);
-    } else {
-      setMode(mode === WORK ? SHORT_BREAK : WORK);
-    }
+    setMode(steps >= 8 ? LONG_BREAK : mode === WORK ? SHORT_BREAK : WORK);
   };
 
   const handleToggleTimer = () => {
@@ -116,17 +112,18 @@ const Timer = () => {
           {toUpper(getModeText(mode))}
         </Badge>
         <Center flexDirection={"column"}>
-          <Heading as="h3" size="4xl" color="white" sx={{ userSelect: "none" }}>
+          <Heading as="h3" size="4xl" color="white" userSelect="none">
             {getTime(timer)}
           </Heading>
-          <Heading as="h5" size="md" color="white"></Heading>
-          Session #{session}
+          <Text marginTop="2" userSelect="none">
+            Session #{session}
+          </Text>
           <ButtonGroup marginY="3.5">
             {not(isPlaying) ? (
               <>
                 <Button
                   leftIcon={<Icon as={FaPlay} />}
-                  title="Play <Shift + S>"
+                  title="Play <Space>"
                   onClick={handleToggleTimer}
                 >
                   Play
@@ -144,14 +141,14 @@ const Timer = () => {
               <>
                 <Button
                   leftIcon={<Icon as={FaPause} />}
-                  title="Pause <Shift + S>"
+                  title="Pause <Space>"
                   onClick={handleToggleTimer}
                 >
                   Pause
                 </Button>
                 <Button
                   leftIcon={<Icon as={FaStop} />}
-                  title="Stop <Shift + P>"
+                  title="Stop <P>"
                   onClick={handleStopTimer}
                 >
                   Stop
@@ -160,8 +157,9 @@ const Timer = () => {
             )}
           </ButtonGroup>
           {isPlaying && (
-            <Heading as="h5" size="sm" color="white">
-              Finish at {getEndTime(Date.now() + secondsToMilliseconds(timer))}
+            <Heading as="h5" size="sm" color="white" userSelect="none">
+              Next timer finish at{" "}
+              {getEndTime(Date.now() + secondsToMilliseconds(timer))}
             </Heading>
           )}
         </Center>
