@@ -8,6 +8,7 @@ import {
   Heading,
   Icon,
   Text,
+  useColorMode,
   useEventListener,
 } from "@chakra-ui/react";
 import { cond, equals, not, toUpper } from "ramda";
@@ -127,18 +128,28 @@ export const TimerWidget = () => {
     timer,
     isPlaying,
     session,
+    mode,
   } = useTimer();
+  const { setColorMode, colorMode } = useColorMode();
+
+  useEffect(() => {
+    const lastColorMode = colorMode;
+    setColorMode("dark");
+    return () => setColorMode(lastColorMode);
+  }, []);
+
   return (
-    <Box bg="red.600" width="100vw" height="100vh">
+    <Box bg={mode === WORK ? "red.600" : "green.600"}>
       <Center height="100vh" flexDirection="column">
-        <Heading as="h2" fontSize="10rem">
+        <Heading as="h2" fontSize="8xl">
           {getTime(timer)}
         </Heading>
-        <Text fontSize="2rem">session #{session}</Text>
+        <Text fontSize="lg">session #{session}</Text>
         <ButtonGroup marginY="3.5">
           {not(isPlaying) ? (
             <>
               <Button
+                size="sm"
                 leftIcon={<Icon as={FaPlay} />}
                 title="Play <Space>"
                 onClick={handleToggleTimer}
@@ -147,6 +158,7 @@ export const TimerWidget = () => {
               </Button>
               {timer && (
                 <Button
+                  size="sm"
                   leftIcon={<Icon as={FaStepForward} />}
                   onClick={handleNextTimer}
                 >
@@ -157,6 +169,7 @@ export const TimerWidget = () => {
           ) : (
             <>
               <Button
+                size="sm"
                 leftIcon={<Icon as={FaPause} />}
                 title="Pause <Space>"
                 onClick={handleToggleTimer}
@@ -164,6 +177,7 @@ export const TimerWidget = () => {
                 Pause
               </Button>
               <Button
+                size="sm"
                 leftIcon={<Icon as={FaStop} />}
                 title="Stop <P>"
                 onClick={handleStopTimer}
