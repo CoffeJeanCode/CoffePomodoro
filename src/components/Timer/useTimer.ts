@@ -1,8 +1,8 @@
+import { useInterval } from "@chakra-ui/react";
 import { and } from "ramda";
 import { useState, useEffect } from "react";
 import { useRecoilState, useResetRecoilState } from "recoil";
 import useSound from "use-sound";
-import notification from "../../assets/Interface.mp3";
 import {
   currentSession,
   currentTimer,
@@ -13,7 +13,8 @@ import { LONG_BREAK, SHORT_BREAK, WORK } from "../../state/constants";
 import { getEndTime, secondsToMilliseconds } from "../../utils/time.util";
 
 export const useTimer = () => {
-  const [playNotification] = useSound(notification, {
+  const [config] = useRecoilState(timersConfig);
+  const [playNotification] = useSound(config.alarms.current, {
     volume: 0.5,
   });
   const [isPlaying, setIsPlaying] = useState(false);
@@ -39,7 +40,6 @@ export const useTimer = () => {
 
     return () => clearInterval(interval);
   }, [timer, isPlaying, timersConfig]);
-
   useEffect(() => {
     setMode(WORK);
   }, []);
@@ -48,8 +48,8 @@ export const useTimer = () => {
     resetTimer();
     handleSwitchMode();
     setIsPlaying(false);
-    setSteps(steps < 8 ? steps + 1 : 1);
     if (steps % 2 === 0) setSession(session + 1);
+    setSteps(steps < 8 ? steps + 1 : 1);
   };
 
   const resetTimer = () => {
@@ -58,7 +58,7 @@ export const useTimer = () => {
   };
 
   const handleSwitchMode = () => {
-    setMode(steps >= 8 ? LONG_BREAK : mode === WORK ? SHORT_BREAK : WORK);
+    setMode(steps === 7 ? LONG_BREAK : mode === WORK ? SHORT_BREAK : WORK);
   };
 
   const handleToggleTimer = () => {

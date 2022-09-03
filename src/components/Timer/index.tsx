@@ -14,7 +14,7 @@ import {
 import { cond, equals, not, toUpper } from "ramda";
 import { useEffect } from "react";
 import { FaPause, FaPlay, FaStepForward, FaStop } from "react-icons/fa";
-import { WORK } from "../../state/constants";
+import { LONG_BREAK, SHORT_BREAK, WORK } from "../../state/constants";
 import { getModeText } from "../../utils/extra.utils";
 import {
   getEndTime,
@@ -80,14 +80,12 @@ const Timer = () => {
                 >
                   Play
                 </Button>
-                {timer && (
-                  <Button
-                    leftIcon={<Icon as={FaStepForward} />}
-                    onClick={handleNextTimer}
-                  >
-                    Skip
-                  </Button>
-                )}
+                <Button
+                  leftIcon={<Icon as={FaStepForward} />}
+                  onClick={handleNextTimer}
+                >
+                  Skip
+                </Button>
               </>
             ) : (
               <>
@@ -98,13 +96,22 @@ const Timer = () => {
                 >
                   Pause
                 </Button>
-                <Button
-                  leftIcon={<Icon as={FaStop} />}
-                  title="Stop <P>"
-                  onClick={handleStopTimer}
-                >
-                  Stop
-                </Button>
+                {mode === SHORT_BREAK || mode === LONG_BREAK ? (
+                  <Button
+                    leftIcon={<Icon as={FaStepForward} />}
+                    onClick={handleNextTimer}
+                  >
+                    Skip
+                  </Button>
+                ) : (
+                  <Button
+                    leftIcon={<Icon as={FaStop} />}
+                    title="Stop <P>"
+                    onClick={handleStopTimer}
+                  >
+                    Stop
+                  </Button>
+                )}
               </>
             )}
           </ButtonGroup>
