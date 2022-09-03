@@ -27,6 +27,7 @@ const Timer = () => {
     handleNextTimer,
     handleStopTimer,
     handleToggleTimer,
+    getFinishTime,
     isPlaying,
     mode,
     steps,
@@ -108,8 +109,7 @@ const Timer = () => {
           </ButtonGroup>
           {isPlaying && (
             <Heading as="h5" size="sm" color="white" userSelect="none">
-              Next timer finish at{" "}
-              {getEndTime(Date.now() + secondsToMilliseconds(timer))}
+              Next timer finish at {getFinishTime()}
             </Heading>
           )}
         </Center>
@@ -123,6 +123,7 @@ export const TimerWidget = () => {
     handleNextTimer,
     handleToggleTimer,
     handleStopTimer,
+    getFinishTime,
     timer,
     isPlaying,
     session,
@@ -174,8 +175,7 @@ export const TimerWidget = () => {
         </ButtonGroup>
         {isPlaying && (
           <Heading as="h5" size="sm" color="white" userSelect="none">
-            Next timer finish at{" "}
-            {getEndTime(Date.now() + secondsToMilliseconds(timer))}
+            Next timer finish at {getFinishTime()}
           </Heading>
         )}
       </Center>

@@ -10,6 +10,7 @@ import {
   timersConfig,
 } from "../../state";
 import { LONG_BREAK, SHORT_BREAK, WORK } from "../../state/constants";
+import { getEndTime, secondsToMilliseconds } from "../../utils/time.util";
 
 export const useTimer = () => {
   const [playNotification] = useSound(notification, {
@@ -69,11 +70,17 @@ export const useTimer = () => {
     resetTimer();
   };
 
+  const getFinishTime = () => {
+    const now = Date.now();
+    return getEndTime(now + secondsToMilliseconds(timer));
+  };
+
   return {
     handleNextTimer,
     handleStopTimer,
     handleSwitchMode,
     handleToggleTimer,
+    getFinishTime,
     isPlaying,
     mode,
     steps,

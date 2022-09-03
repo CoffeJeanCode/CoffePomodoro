@@ -1,7 +1,6 @@
 import { Box, ButtonGroup, Center, Container, Heading } from "@chakra-ui/react";
 import Helps from "../../components/Helps";
 import Settings from "../../components/Settings";
-import Stats from "../../components/Stats";
 import Tasks from "../../components/Tasks";
 import Timer from "../../components/Timer";
 
@@ -21,7 +20,6 @@ const Home = () => {
             <ButtonGroup>
               <Settings />
               <Helps />
-              <Stats />
             </ButtonGroup>
           </Center>
         </Box>
