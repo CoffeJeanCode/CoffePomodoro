@@ -48,7 +48,7 @@ export const TaskItem: FC<TaskItemProps> = memo(({ task }) => {
         <Button
           leftIcon={<Icon as={FaTrash} />}
           justifySelf="end"
-          size="sm"
+          size="xs"
           onClick={handleRemoveTask}
         >
           Delete
