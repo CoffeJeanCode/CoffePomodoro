@@ -19,7 +19,8 @@
     "react-icons": "^4.4.0",
     "recoil": "^0.7.5",
     "recoil-persist": "^4.2.0",
-    "use-sound": "^4.0.1"
+    "use-sound": "^4.0.1",
+    "wouter": "^2.8.0-alpha.2"
   },
   "devDependencies": {
     "@types/ramda": "^0.28.15",
