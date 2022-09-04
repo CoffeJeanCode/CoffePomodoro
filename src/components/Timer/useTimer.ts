@@ -1,5 +1,5 @@
 import { useInterval } from "@chakra-ui/react";
-import { and } from "ramda";
+import { and, head, last } from "ramda";
 import { useState, useEffect } from "react";
 import { useRecoilState, useResetRecoilState } from "recoil";
 import useSound from "use-sound";
@@ -14,7 +14,7 @@ import { getEndTime, secondsToMilliseconds } from "../../utils/time.util";
 
 export const useTimer = () => {
   const [config] = useRecoilState(timersConfig);
-  const [playNotification] = useSound(config.alarms.current, {
+  const [playNotification] = useSound(last(config.alarms), {
     volume: 0.5,
   });
   const [isPlaying, setIsPlaying] = useState(false);

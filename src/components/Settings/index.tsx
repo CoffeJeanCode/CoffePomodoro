@@ -13,6 +13,7 @@ import {
   Heading,
   Icon,
   InputGroup,
+  Select,
   SliderFilledTrack,
   SliderMark,
   SliderTrack,
@@ -33,7 +34,11 @@ const Settings = () => {
   });
   const { toggleColorMode } = useColorMode();
 
-  const [timers, setTimers] = useRecoilState(timersConfig);
+  const [config, setConfig] = useRecoilState(timersConfig);
+
+  const handleAlarm = (evt: any) => {
+    console.log(evt.target.value);
+  };
 
   return (
     <>
@@ -61,11 +66,14 @@ const Settings = () => {
                     title="Work Timer"
                     min={10}
                     max={60}
-                    defaultValue={secondsToMinutes(timers[WORK])}
+                    defaultValue={secondsToMinutes(config.timers[WORK])}
                     onChange={(value) =>
-                      setTimers({
-                        ...timers,
-                        [WORK]: minutesToSeconds(value),
+                      setConfig({
+                        ...config,
+                        timers: {
+                          ...config.timers,
+                          [WORK]: value,
+                        },
                       })
                     }
                   >
@@ -86,11 +94,14 @@ const Settings = () => {
                     title="Short Break Timer"
                     min={3}
                     max={10}
-                    defaultValue={secondsToMinutes(timers[SHORT_BREAK])}
+                    defaultValue={secondsToMinutes(config.timers[SHORT_BREAK])}
                     onChange={(value) =>
-                      setTimers({
-                        ...timers,
-                        [SHORT_BREAK]: minutesToSeconds(value),
+                      setConfig({
+                        ...config,
+                        timers: {
+                          ...config.timers,
+                          [SHORT_BREAK]: minutesToSeconds(value),
+                        },
                       })
                     }
                   >
@@ -111,11 +122,14 @@ const Settings = () => {
                     title="Long Break Timer"
                     min={5}
                     max={20}
-                    defaultValue={secondsToMinutes(timers[LONG_BREAK])}
+                    defaultValue={secondsToMinutes(config.timers[LONG_BREAK])}
                     onChange={(value) =>
-                      setTimers({
-                        ...timers,
-                        [LONG_BREAK]: minutesToSeconds(value),
+                      setConfig({
+                        ...config,
+                        timers: {
+                          ...config.timers,
+                          [LONG_BREAK]: minutesToSeconds(value),
+                        },
                       })
                     }
                   >
@@ -133,6 +147,18 @@ const Settings = () => {
                     </SliderTrack>
                   </SliderSettings>
                 </InputGroup>
+              </Box>
+              <Heading as="h3" size="lg">
+                Alarm
+              </Heading>
+              <Box>
+                <Select onChange={handleAlarm} disabled>
+                  {config.alarms.map((alarm: string, index: number) => (
+                    <option key={index} value={alarm}>
+                      Alarm {index + 1}
+                    </option>
+                  ))}
+                </Select>
               </Box>
             </Container>
           </DrawerBody>

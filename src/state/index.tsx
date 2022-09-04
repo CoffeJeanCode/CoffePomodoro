@@ -13,7 +13,6 @@ export const timersConfig = atom({
   key: "timerConfig",
   default: {
     alarms: {
-      current: [ALARM1],
       [ALARM1]: Interface,
       [ALARM2]: Micellaneus,
     },
