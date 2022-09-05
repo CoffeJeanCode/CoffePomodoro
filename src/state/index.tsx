@@ -1,11 +1,11 @@
-import { prop } from "ramda";
+import { identity, prop } from "ramda";
 import { atom, selector } from "recoil";
 import { minutesToSeconds } from "../utils/time.util";
 import { ALARM1, ALARM2, LONG_BREAK, SHORT_BREAK, WORK } from "./constants";
 import { recoilPersist } from "recoil-persist";
 import { Task } from "../types/tasks.types";
-import Interface from "../assets/Interface.mp3";
-import Micellaneus from "../assets/Miscellaneus.mp3";
+const Interface = import("../assets/Interface.mp3").then(identity);
+const Micellaneus = import("../assets/Miscellaneus.mp3").then(identity);
 
 const { persistAtom } = recoilPersist();
 
