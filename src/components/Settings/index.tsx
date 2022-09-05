@@ -13,7 +13,6 @@ import {
   Heading,
   Icon,
   InputGroup,
-  Select,
   SliderFilledTrack,
   SliderMark,
   SliderTrack,
@@ -72,7 +71,7 @@ const Settings = () => {
                         ...config,
                         timers: {
                           ...config.timers,
-                          [WORK]: value,
+                          [WORK]: secondsToMinutes(value),
                         },
                       })
                     }
@@ -148,7 +147,7 @@ const Settings = () => {
                   </SliderSettings>
                 </InputGroup>
               </Box>
-              <Heading as="h3" size="lg">
+              {/* <Heading as="h3" size="lg">
                 Alarm
               </Heading>
               <Box>
@@ -159,7 +158,7 @@ const Settings = () => {
                     </option>
                   ))}
                 </Select>
-              </Box>
+              </Box> */}
             </Container>
           </DrawerBody>
 
