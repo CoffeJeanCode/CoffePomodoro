@@ -1,6 +1,5 @@
-import { useDocumentTitle } from "@mantine/hooks";
-import { and, head, last } from "ramda";
-import { useState, useEffect } from "react";
+import { and } from "ramda";
+import { useEffect, useState } from "react";
 import { useRecoilState, useResetRecoilState } from "recoil";
 import useSound from "use-sound";
 import {
@@ -14,7 +13,7 @@ import { getEndTime, secondsToMilliseconds } from "../../utils/time.util";
 
 export const useTimer = () => {
   const [config] = useRecoilState(timersConfig);
-  const [playNotification] = useSound(config.alarms.alarm1, {
+  const [playNotification] = useSound(config.alarms.alarm2, {
     volume: 0.5,
   });
   const [isPlaying, setIsPlaying] = useState(false);
@@ -29,7 +28,7 @@ export const useTimer = () => {
     if (and(isPlaying, timer > 0)) {
       interval = setInterval(() => {
         clearInterval(interval);
-        setTimer((time) => time - 1);
+        setTimer((time: number) => time - 1);
       }, 1000);
 
       return () => clearInterval(interval);
@@ -58,9 +57,8 @@ export const useTimer = () => {
     setMode(WORK);
   };
 
-  const handleSwitchMode = () => {
+  const handleSwitchMode = () =>
     setMode(steps === 7 ? LONG_BREAK : mode === WORK ? SHORT_BREAK : WORK);
-  };
 
   const handleToggleTimer = () => setIsPlaying((isPlay) => !isPlay);
 

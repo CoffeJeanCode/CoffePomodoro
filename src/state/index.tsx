@@ -28,6 +28,7 @@ export const timersConfig = atom({
 export const currentTimer = atom({
   key: "currentTimer",
   default: 0,
+  effects: [persistAtom],
 });
 
 export const currentMode = atom({
@@ -38,7 +39,7 @@ export const currentMode = atom({
 
 export const currentSession = atom({
   key: "currentSession",
-  default: 0,
+  default: 1,
 });
 
 export const tasksList = atom<Task[]>({
