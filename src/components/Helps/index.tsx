@@ -1,52 +1,29 @@
-import {
-  Button,
-  Container,
-  Drawer,
-  DrawerBody,
-  DrawerContent,
-  DrawerHeader,
-  DrawerOverlay,
-  Heading,
-  Icon,
-  List,
-  ListIcon,
-  ListItem,
-  useDisclosure,
-} from "@chakra-ui/react";
+import { Button, Container, Drawer, List, Title } from "@mantine/core";
+import { useState } from "react";
 import { FaLightbulb, FaMugHot } from "react-icons/fa";
 import { helps } from "./helps.data";
 
 const Helps = () => {
-  const { isOpen, onOpen, onClose } = useDisclosure({
-    id: "helps",
-  });
+  const [isOpen, setIsOpen] = useState(false);
   return (
     <>
-      <Button leftIcon={<Icon as={FaLightbulb} />} onClick={onOpen}>
+      <Button leftIcon={<FaLightbulb />} onClick={() => setIsOpen(true)}>
         Helps
       </Button>
-      <Drawer isOpen={isOpen} placement="right" onClose={onClose}>
-        <DrawerOverlay />
-        <DrawerContent>
-          <DrawerHeader>
-            <Heading>Helps</Heading>
-          </DrawerHeader>
-          <DrawerBody>
-            <Container>
-              <Heading as="h3" size="lg">
-                Breaks Ideas
-              </Heading>
-              <List spacing="3" marginY="3">
-                {helps.breaks.map((breakTips) => (
-                  <ListItem key={breakTips}>
-                    <ListIcon as={FaMugHot} />
-                    {breakTips}
-                  </ListItem>
-                ))}
-              </List>
-            </Container>
-          </DrawerBody>
-        </DrawerContent>
+      <Drawer opened={isOpen} position="right" onClose={() => setIsOpen(false)}>
+        <Container>
+          <Title>Helps</Title>
+          <Title order={3} size="lg">
+            Breaks Ideas
+          </Title>
+          <List spacing={10} my={3}>
+            {helps.breaks.map((breakTips) => (
+              <List.Item key={breakTips} icon={<FaMugHot />}>
+                {breakTips}
+              </List.Item>
+            ))}
+          </List>
+        </Container>
       </Drawer>
     </>
   );

@@ -2,25 +2,18 @@ import {
   Badge,
   Box,
   Button,
-  ButtonGroup,
   Center,
   Container,
-  Heading,
-  Icon,
+  Group,
   Text,
-  useColorMode,
-  useEventListener,
-} from "@chakra-ui/react";
-import { cond, equals, not, toUpper } from "ramda";
-import { useEffect } from "react";
+  Title,
+} from "@mantine/core";
+import { useDocumentTitle, useHotkeys } from "@mantine/hooks";
+import { not, toUpper } from "ramda";
 import { FaPause, FaPlay, FaStepForward, FaStop } from "react-icons/fa";
 import { LONG_BREAK, SHORT_BREAK, WORK } from "../../state/constants";
 import { getModeText } from "../../utils/extra.utils";
-import {
-  getEndTime,
-  getTime,
-  secondsToMilliseconds,
-} from "../../utils/time.util";
+import { getTime } from "../../utils/time.util";
 import { useTimer } from "./useTimer";
 
 const Timer = () => {
@@ -31,57 +24,59 @@ const Timer = () => {
     getFinishTime,
     isPlaying,
     mode,
-    steps,
     session,
     timer,
   } = useTimer();
 
-  const keys = cond([
-    [equals(" "), () => handleToggleTimer()],
-    [equals("p"), () => handleStopTimer()],
-    [equals("n"), () => handleNextTimer()],
+  useHotkeys([
+    ["space", () => handleToggleTimer()],
+    ["p", () => handleStopTimer()],
+    ["n", () => handleNextTimer()],
   ]);
 
-  useEventListener("keyup", (evt: KeyboardEvent) => {
-    if (evt.target !== document.body) return;
-    keys(evt.key);
-  });
-
-  useEffect(() => {
-    document.title = `${getTime(timer)} | ${getModeText(mode)}`;
-  }, [mode, timer]);
+  useDocumentTitle(`${getTime(timer)} | ${getModeText(mode)}`);
 
   return (
-    <Container maxWidth="2xl">
+    <Container>
       <Box
-        boxShadow="lg"
-        padding="4"
-        borderRadius="lg"
-        marginY="2.5"
-        bg={mode === WORK ? "red.600" : "green.600"}
+        sx={(theme) => ({
+          minWidth: "30vw",
+          background:
+            mode === WORK ? theme.colors.red[7] : theme.colors.green[7],
+          padding: theme.spacing.md,
+          borderRadius: theme.spacing.md,
+        })}
       >
-        <Badge bg={mode === WORK ? "red.400" : "green.400"} textColor="white">
+        <Badge
+          sx={(theme) => ({
+            background:
+              mode === WORK ? theme.colors.red[4] : theme.colors.green[4],
+            color: theme.colors.gray[0],
+            userSelect: "none",
+          })}
+        >
           {toUpper(getModeText(mode))}
         </Badge>
-        <Center flexDirection={"column"}>
-          <Heading as="h3" size="4xl" color="white" userSelect="none">
+        <Center sx={{ flexDirection: "column" }}>
+          <Title order={3} size={80} color="white">
             {getTime(timer)}
-          </Heading>
-          <Text marginTop="2" userSelect="none">
-            Session #{session}
-          </Text>
-          <ButtonGroup marginY="3.5">
+          </Title>
+          <Text color="white">Session #{session}</Text>
+          <Group my={10}>
             {not(isPlaying) ? (
               <>
                 <Button
-                  leftIcon={<Icon as={FaPlay} />}
+                  leftIcon={<FaPlay />}
                   title="Play <Space>"
+                  color={mode === WORK ? "red.9" : "green.9"}
                   onClick={handleToggleTimer}
                 >
                   Play
                 </Button>
                 <Button
-                  leftIcon={<Icon as={FaStepForward} />}
+                  leftIcon={<FaStepForward />}
+                  title="Skip <N>"
+                  color={mode === WORK ? "red.9" : "green.9"}
                   onClick={handleNextTimer}
                 >
                   Skip
@@ -90,23 +85,26 @@ const Timer = () => {
             ) : (
               <>
                 <Button
-                  leftIcon={<Icon as={FaPause} />}
+                  leftIcon={<FaPause />}
                   title="Pause <Space>"
+                  color={mode === WORK ? "red.9" : "green.9"}
                   onClick={handleToggleTimer}
                 >
                   Pause
                 </Button>
                 {mode === SHORT_BREAK || mode === LONG_BREAK ? (
                   <Button
-                    leftIcon={<Icon as={FaStepForward} />}
+                    leftIcon={<FaStepForward />}
+                    color={mode === WORK ? "red.9" : "green.9"}
                     onClick={handleNextTimer}
                   >
                     Skip
                   </Button>
                 ) : (
                   <Button
-                    leftIcon={<Icon as={FaStop} />}
+                    leftIcon={<FaStop />}
                     title="Stop <P>"
+                    color={mode === WORK ? "red.9" : "green.9"}
                     onClick={handleStopTimer}
                   >
                     Stop
@@ -114,11 +112,11 @@ const Timer = () => {
                 )}
               </>
             )}
-          </ButtonGroup>
+          </Group>
           {isPlaying && (
-            <Heading as="h5" size="sm" color="white" userSelect="none">
+            <Title order={5} size="h5" my={10} color="white">
               Next timer finish at {getFinishTime()}
-            </Heading>
+            </Title>
           )}
         </Center>
       </Box>
@@ -137,67 +135,91 @@ export const TimerWidget = () => {
     session,
     mode,
   } = useTimer();
-  const { setColorMode, colorMode } = useColorMode();
-
-  useEffect(() => {
-    const lastColorMode = colorMode;
-    setColorMode("dark");
-    return () => setColorMode(lastColorMode);
-  }, []);
 
   return (
-    <Box bg={mode === WORK ? "red.600" : "green.600"}>
-      <Center height="100vh" flexDirection="column">
-        <Heading as="h2" fontSize="8xl">
+    <Box
+      sx={(theme) => ({
+        width: "100vw",
+        height: "100vh",
+        background: mode === WORK ? theme.colors.red[7] : theme.colors.green[7],
+      })}
+    >
+      <Center
+        sx={{ height: "100%", alignItems: "center", flexDirection: "column" }}
+      >
+        <Title
+          order={2}
+          size={"6rem"}
+          color="white"
+          sx={{
+            userSelect: "none",
+          }}
+        >
           {getTime(timer)}
-        </Heading>
-        <Text fontSize="lg">session #{session}</Text>
-        <ButtonGroup marginY="3.5">
+        </Title>
+        <Text color="white">session #{session}</Text>
+        <Group my={10}>
           {not(isPlaying) ? (
             <>
               <Button
-                size="sm"
-                leftIcon={<Icon as={FaPlay} />}
+                leftIcon={<FaPlay />}
                 title="Play <Space>"
+                color={mode === WORK ? "red.9" : "green.9"}
                 onClick={handleToggleTimer}
               >
                 Play
               </Button>
-              {timer && (
-                <Button
-                  size="sm"
-                  leftIcon={<Icon as={FaStepForward} />}
-                  onClick={handleNextTimer}
-                >
-                  Skip
-                </Button>
-              )}
+              <Button
+                leftIcon={<FaStepForward />}
+                title="Skip <N>"
+                color={mode === WORK ? "red.9" : "green.9"}
+                onClick={handleNextTimer}
+              >
+                Skip
+              </Button>
             </>
           ) : (
             <>
               <Button
-                size="sm"
-                leftIcon={<Icon as={FaPause} />}
+                leftIcon={<FaPause />}
                 title="Pause <Space>"
+                color={mode === WORK ? "red.9" : "green.9"}
                 onClick={handleToggleTimer}
               >
                 Pause
               </Button>
-              <Button
-                size="sm"
-                leftIcon={<Icon as={FaStop} />}
-                title="Stop <P>"
-                onClick={handleStopTimer}
-              >
-                Stop
-              </Button>
+              {mode === SHORT_BREAK || mode === LONG_BREAK ? (
+                <Button
+                  leftIcon={<FaStepForward />}
+                  color={mode === WORK ? "red.9" : "green.9"}
+                  onClick={handleNextTimer}
+                >
+                  Skip
+                </Button>
+              ) : (
+                <Button
+                  leftIcon={<FaStop />}
+                  title="Stop <P>"
+                  color={mode === WORK ? "red.9" : "green.9"}
+                  onClick={handleStopTimer}
+                >
+                  Stop
+                </Button>
+              )}
             </>
           )}
-        </ButtonGroup>
+        </Group>
         {isPlaying && (
-          <Heading as="h5" size="sm" color="white" userSelect="none">
+          <Title
+            order={5}
+            size="h5"
+            color="white"
+            sx={{
+              userSelect: "none",
+            }}
+          >
             Next timer finish at {getFinishTime()}
-          </Heading>
+          </Title>
         )}
       </Center>
     </Box>

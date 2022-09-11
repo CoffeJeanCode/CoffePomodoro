@@ -1,4 +1,4 @@
-import { Heading, List, VStack } from "@chakra-ui/react";
+import { Title, List, ScrollArea } from "@mantine/core";
 import { isEmpty } from "ramda";
 import { FC, memo } from "react";
 import { Task } from "../../types/tasks.types";
@@ -9,13 +9,15 @@ interface TasksListProps {
 }
 
 export const TasksList: FC<TasksListProps> = memo(({ tasks }) => (
-  <List spacing="2" overflowY="auto" height="xs" width="full">
-    {isEmpty(tasks) ? (
-      <Heading as="h3" size="md">
-        No Tasks
-      </Heading>
-    ) : (
-      tasks.map((task: Task) => <TaskItem key={task.id} task={task} />)
-    )}
-  </List>
+  <ScrollArea sx={{ height: 250 }}>
+    <List my={5}>
+      {isEmpty(tasks) ? (
+        <Title order={3} size="md">
+          No Tasks
+        </Title>
+      ) : (
+        tasks.map((task: Task) => <TaskItem key={task.id} task={task} />)
+      )}
+    </List>
+  </ScrollArea>
 ));

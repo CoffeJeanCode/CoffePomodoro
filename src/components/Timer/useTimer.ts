@@ -1,4 +1,4 @@
-import { useInterval } from "@chakra-ui/react";
+import { useDocumentTitle } from "@mantine/hooks";
 import { and, head, last } from "ramda";
 import { useState, useEffect } from "react";
 import { useRecoilState, useResetRecoilState } from "recoil";
@@ -14,7 +14,7 @@ import { getEndTime, secondsToMilliseconds } from "../../utils/time.util";
 
 export const useTimer = () => {
   const [config] = useRecoilState(timersConfig);
-  const [playNotification] = useSound(last(config.alarms), {
+  const [playNotification] = useSound(config.alarms.alarm1, {
     volume: 0.5,
   });
   const [isPlaying, setIsPlaying] = useState(false);
@@ -40,6 +40,7 @@ export const useTimer = () => {
 
     return () => clearInterval(interval);
   }, [timer, isPlaying, timersConfig]);
+
   useEffect(() => {
     setMode(WORK);
   }, []);
@@ -61,9 +62,7 @@ export const useTimer = () => {
     setMode(steps === 7 ? LONG_BREAK : mode === WORK ? SHORT_BREAK : WORK);
   };
 
-  const handleToggleTimer = () => {
-    setIsPlaying((isPlay) => !isPlay);
-  };
+  const handleToggleTimer = () => setIsPlaying((isPlay) => !isPlay);
 
   const handleStopTimer = () => {
     setIsPlaying(false);

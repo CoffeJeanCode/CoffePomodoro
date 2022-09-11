@@ -1,12 +1,4 @@
-import {
-  Box,
-  Button,
-  ButtonGroup,
-  Editable,
-  EditableInput,
-  EditablePreview,
-  Icon,
-} from "@chakra-ui/react";
+import { Box, Button, Group } from "@mantine/core";
 import { FC, memo, useState } from "react";
 import { FaTrash } from "react-icons/fa";
 import { useRecoilState } from "recoil";
@@ -39,21 +31,21 @@ export const TaskItem: FC<TaskItemProps> = memo(({ task }) => {
   };
 
   return (
-    <Box width="full" display="flex" justifyContent="space-between">
-      <Editable value={value} width="xl" placeholder="No description">
-        <EditablePreview />
-        <EditableInput value={value} onChange={handleUpdateTask} />
-      </Editable>
-      <ButtonGroup>
+    <Box
+      sx={{ width: "100%", display: "flex", justifyContent: "space-between" }}
+      my={5}
+    >
+      {value}
+      <Group>
         <Button
-          leftIcon={<Icon as={FaTrash} />}
-          justifySelf="end"
+          leftIcon={<FaTrash />}
+          sx={{ justifySelf: "end" }}
           size="xs"
           onClick={handleRemoveTask}
         >
           Delete
         </Button>
-      </ButtonGroup>
+      </Group>
     </Box>
   );
 });

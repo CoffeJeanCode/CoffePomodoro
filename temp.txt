@@ -1,1 +1,0 @@
-<Heading as="h4">25:00</Heading>

@@ -1,8 +1,5 @@
-import { Button } from "@chakra-ui/button";
-import Icon from "@chakra-ui/icon";
-import { Input, InputGroup, InputRightElement } from "@chakra-ui/input";
-import { Container, Divider, Heading } from "@chakra-ui/layout";
 import { isEmpty } from "ramda";
+import { Title, Button, Input, Group, Container, Divider } from "@mantine/core";
 import { SyntheticEvent, useState } from "react";
 import { FaPlus } from "react-icons/fa";
 import { useRecoilState } from "recoil";
@@ -26,22 +23,22 @@ const Tasks = () => {
   };
 
   return (
-    <Container>
-      <Heading as="h2">Tasks</Heading>
-      <Divider marginY="3.5" />
+    <Container my={20}>
+      <Title order={2} size={30} color="white">
+        Tasks
+      </Title>
+      <Divider my={16} />
       <form onSubmit={handleAddTask}>
-        <InputGroup marginY="5">
+        <Group my={5}>
           <Input
             placeholder="Write your tasks..."
-            onChange={(evt) => setValue(evt.target.value)}
+            onChange={(evt: any) => setValue(evt.target.value)}
             value={value}
           />
-          <InputRightElement width="18">
-            <Button leftIcon={<Icon as={FaPlus} />} type="submit">
-              Add
-            </Button>
-          </InputRightElement>
-        </InputGroup>
+          <Button leftIcon={<FaPlus />} type="submit">
+            Add
+          </Button>
+        </Group>
       </form>
       <TasksList tasks={tasks} />
     </Container>
