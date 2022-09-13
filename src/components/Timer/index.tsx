@@ -30,9 +30,9 @@ const Timer = () => {
   } = useTimer();
 
   useHotkeys([
-    ["space", () => handleToggleTimer()],
-    ["p", () => handleStopTimer()],
-    ["n", () => handleNextTimer()],
+    ["Space", () => handleToggleTimer()],
+    ["S", () => handleStopTimer()],
+    ["N", () => handleNextTimer()],
   ]);
 
   useDocumentTitle(`${getTime(timer)} | ${getModeText(mode)}`);
@@ -136,6 +136,12 @@ export const TimerWidget = () => {
     session,
     mode,
   } = useTimer();
+
+  useHotkeys([
+    ["shift+P", () => handleToggleTimer()],
+    ["shift+S", () => handleStopTimer()],
+    ["shift+N", () => handleNextTimer()],
+  ]);
 
   return (
     <Box

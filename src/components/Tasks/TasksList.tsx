@@ -12,7 +12,7 @@ export const TasksList: FC<TasksListProps> = memo(({ tasks }) => (
   <ScrollArea sx={{ height: 250 }}>
     <List my={5}>
       {isEmpty(tasks) ? (
-        <Title order={3} size="md">
+        <Title order={3} size={15}>
           No Tasks
         </Title>
       ) : (
