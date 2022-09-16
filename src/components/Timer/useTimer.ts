@@ -20,7 +20,7 @@ export const useTimer = () => {
   const [mode, setMode] = useRecoilState(modeSelector);
   const [timer, setTimer] = useRecoilState(currentTimer);
   const [session, setSession] = useRecoilState(currentSession);
-  const [steps, setSteps] = useState(0);
+  const [steps, setSteps] = useState(1);
   const resetCurrentTimer = useResetRecoilState(currentTimer);
 
   useEffect(() => {
