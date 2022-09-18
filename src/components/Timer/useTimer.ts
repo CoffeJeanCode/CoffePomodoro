@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useRecoilState, useResetRecoilState } from "recoil";
 import useSound from "use-sound";
 import {
+  alarmSelector,
   currentSession,
   currentTimer,
   modeSelector,
@@ -12,8 +13,8 @@ import { LONG_BREAK, SHORT_BREAK, WORK } from "../../state/constants";
 import { getEndTime, secondsToMilliseconds } from "../../utils/time.util";
 
 export const useTimer = () => {
-  const [config] = useRecoilState(timersConfig);
-  const [playNotification] = useSound(config.alarms.alarm2, {
+  const [currentAlarm] = useRecoilState(alarmSelector);
+  const [playNotification] = useSound(currentAlarm.url, {
     volume: 0.5,
   });
   const [isPlaying, setIsPlaying] = useState(false);

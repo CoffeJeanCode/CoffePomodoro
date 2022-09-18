@@ -13,8 +13,8 @@ export const timersConfig = atom({
   key: "timerConfig",
   default: {
     alarms: {
-      alarm1: Micellaneus,
-      alarm2: Interface,
+      Micellaneus: { title: "Micellaneus", url: Micellaneus },
+      Interface: { title: "Interface", url: Interface },
     },
     timers: {
       [WORK]: minutesToSeconds(25),
@@ -28,6 +28,12 @@ export const timersConfig = atom({
 export const currentTimer = atom({
   key: "currentTimer",
   default: 0,
+  effects: [persistAtom],
+});
+
+export const currentAlarm = atom({
+  key: "currentAlarm",
+  default: { title: "Micellaneus", url: Micellaneus },
   effects: [persistAtom],
 });
 
@@ -58,5 +64,15 @@ export const modeSelector = selector({
 
     set(currentMode, newMode);
     set(currentTimer, timer);
+  },
+});
+
+export const alarmSelector = selector({
+  key: "alarm",
+  get: ({ get }) => get(currentAlarm),
+  set: ({ set, get }, alarmKey) => {
+    const { alarms } = get(timersConfig);
+
+    set(currentAlarm, alarms[alarmKey]);
   },
 });

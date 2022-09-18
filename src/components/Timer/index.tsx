@@ -14,6 +14,7 @@ import { FaPause, FaPlay, FaStepForward, FaStop } from "react-icons/fa";
 import { LONG_BREAK, SHORT_BREAK, WORK } from "../../state/constants";
 import { getModeText } from "../../utils/extra.utils";
 import { getTime } from "../../utils/time.util";
+import { SettingWidget } from "../Settings";
 import { useTimer } from "./useTimer";
 
 const Timer = () => {
@@ -228,6 +229,7 @@ export const TimerWidget = () => {
             Next timer finish at {getFinishTime()}
           </Title>
         )}
+        <SettingWidget />
       </Center>
     </Box>
   );
