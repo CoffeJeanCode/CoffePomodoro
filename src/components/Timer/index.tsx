@@ -10,6 +10,7 @@ import {
 } from "@mantine/core";
 import { useDocumentTitle, useHotkeys } from "@mantine/hooks";
 import { not, toUpper } from "ramda";
+import { useEffect } from "react";
 import { FaPause, FaPlay, FaStepForward, FaStop } from "react-icons/fa";
 import { LONG_BREAK, SHORT_BREAK, WORK } from "../../state/constants";
 import { getModeText } from "../../utils/extra.utils";
@@ -29,6 +30,28 @@ const Timer = () => {
     session,
     timer,
   } = useTimer();
+
+  useEffect(() => {
+    const favicon: any = document.getElementById("favicon");
+    const faviconSize = 16;
+
+    if (!favicon) return;
+
+    const canvas = document.createElement("canvas");
+    canvas.width = faviconSize;
+    canvas.height = faviconSize;
+
+    const context = canvas.getContext("2d");
+    const img = document.createElement("img");
+
+    img.src = mode === WORK ? "favicon.svg" : "/favicon-break.svg";
+
+    img.onload = () => {
+      if (!context) return;
+      context.drawImage(img, 0, 0, faviconSize, faviconSize);
+      favicon.href = canvas.toDataURL("image/png");
+    };
+  }, [mode]);
 
   useHotkeys([
     ["Space", () => handleToggleTimer()],
