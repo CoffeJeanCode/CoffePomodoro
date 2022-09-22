@@ -17,11 +17,11 @@ import { alarmSelector, currentMode, timersConfig } from "../../state";
 import { LONG_BREAK, SHORT_BREAK, WORK } from "../../state/constants";
 import { minutesToSeconds, secondsToMinutes } from "../../utils/time.util";
 import { SliderSettings } from "./SliderSettings";
+import { useSettings } from "./useSetting";
 
 const Settings = () => {
   const [isOpen, setIsOpen] = useState(false);
-
-  const [config, setConfig] = useRecoilState(timersConfig);
+  const { config, setConfigValue } = useSettings();
   const [alarm, setAlarm] = useRecoilState(alarmSelector);
 
   const handleAlarm = (value: string) => {
@@ -63,15 +63,7 @@ const Settings = () => {
                   },
                 ]}
                 defaultValue={secondsToMinutes(config.timers[WORK])}
-                onChange={(value) =>
-                  setConfig({
-                    ...config,
-                    timers: {
-                      ...config.timers,
-                      [WORK]: minutesToSeconds(value),
-                    },
-                  })
-                }
+                onChange={(value) => setConfigValue(`timers.${WORK}`, value)}
               />
               <SliderSettings
                 title="Short Break Timer"
@@ -93,13 +85,10 @@ const Settings = () => {
                 ]}
                 defaultValue={secondsToMinutes(config.timers[SHORT_BREAK])}
                 onChange={(value) =>
-                  setConfig({
-                    ...config,
-                    timers: {
-                      ...config.timers,
-                      [SHORT_BREAK]: minutesToSeconds(value),
-                    },
-                  })
+                  setConfigValue(
+                    `timers.${SHORT_BREAK}`,
+                    minutesToSeconds(value)
+                  )
                 }
               />
               <SliderSettings
@@ -122,13 +111,10 @@ const Settings = () => {
                 ]}
                 defaultValue={secondsToMinutes(config.timers[LONG_BREAK])}
                 onChange={(value) =>
-                  setConfig({
-                    ...config,
-                    timers: {
-                      ...config.timers,
-                      [LONG_BREAK]: minutesToSeconds(value),
-                    },
-                  })
+                  setConfigValue(
+                    `timers.${LONG_BREAK}`,
+                    minutesToSeconds(value)
+                  )
                 }
               />
             </Group>
@@ -152,9 +138,13 @@ const Settings = () => {
 
 export const SettingWidget = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [config, setConfig] = useRecoilState(timersConfig);
+  const { config, setConfigValue } = useSettings();
   const mode = useRecoilValue(currentMode);
+  const [alarm, setAlarm] = useRecoilState(alarmSelector);
 
+  const handleAlarm = (value: string) => {
+    setAlarm(value);
+  };
   return (
     <>
       <Button
@@ -210,13 +200,7 @@ export const SettingWidget = () => {
                 ]}
                 defaultValue={secondsToMinutes(config.timers[WORK])}
                 onChange={(value) =>
-                  setConfig({
-                    ...config,
-                    timers: {
-                      ...config.timers,
-                      [WORK]: minutesToSeconds(value),
-                    },
-                  })
+                  setConfigValue(`timers.${WORK}`, minutesToSeconds(value))
                 }
               />
               <SliderSettings
@@ -239,13 +223,10 @@ export const SettingWidget = () => {
                 ]}
                 defaultValue={secondsToMinutes(config.timers[SHORT_BREAK])}
                 onChange={(value) =>
-                  setConfig({
-                    ...config,
-                    timers: {
-                      ...config.timers,
-                      [SHORT_BREAK]: minutesToSeconds(value),
-                    },
-                  })
+                  setConfigValue(
+                    `timers.${SHORT_BREAK}`,
+                    minutesToSeconds(value)
+                  )
                 }
               />
               <SliderSettings
@@ -268,16 +249,23 @@ export const SettingWidget = () => {
                 ]}
                 defaultValue={secondsToMinutes(config.timers[LONG_BREAK])}
                 onChange={(value) =>
-                  setConfig({
-                    ...config,
-                    timers: {
-                      ...config.timers,
-                      [LONG_BREAK]: minutesToSeconds(value),
-                    },
-                  })
+                  setConfigValue(
+                    `timers.${LONG_BREAK}`,
+                    minutesToSeconds(value)
+                  )
                 }
               />
             </Group>
+          </Box>
+          <Box my={20}>
+            <Title order={3} size={25}>
+              Alarm
+            </Title>
+            <Select
+              defaultValue={alarm.title}
+              data={keys<string>(config.alarms)}
+              onChange={handleAlarm}
+            ></Select>
           </Box>
         </Container>
       </Modal>
