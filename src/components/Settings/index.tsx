@@ -63,7 +63,9 @@ const Settings = () => {
                   },
                 ]}
                 defaultValue={secondsToMinutes(config.timers[WORK])}
-                onChange={(value) => setConfigValue(`timers.${WORK}`, value)}
+                onChange={(value) =>
+                  setConfigValue(`timers.${WORK}`, minutesToSeconds(value))
+                }
               />
               <SliderSettings
                 title="Short Break Timer"

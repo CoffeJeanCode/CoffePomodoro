@@ -30,11 +30,11 @@ export const useTimer = () => {
 
   useEffect(() => {
     let interval: number;
-    const then = Date.now() + secondsToMilliseconds(timer);
-    setFinishTime(then);
 
     interval = setInterval(() => {
-      let secondsLeft = Math.round(millisecondsToSeconds(then - Date.now()));
+      let secondsLeft = Math.round(
+        millisecondsToSeconds(finishTime - Date.now())
+      );
       if (isPlaying) setTimer(secondsLeft);
 
       if (timer <= 1) {
@@ -46,6 +46,11 @@ export const useTimer = () => {
 
     return () => clearInterval(interval);
   }, [timer, isPlaying, timersConfig]);
+
+  useEffect(() => {
+    const then = Date.now() + secondsToMilliseconds(timer);
+    setFinishTime(then);
+  }, [isPlaying]);
 
   useEffect(() => {
     setMode(WORK);
