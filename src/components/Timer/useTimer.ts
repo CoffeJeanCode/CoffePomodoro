@@ -30,12 +30,24 @@ export const useTimer = () => {
 
   useEffect(() => {
     let interval: number;
-
+    const then = Date.now() + secondsToMilliseconds(timer);
+    setFinishTime(then);
     interval = setInterval(() => {
-      let secondsLeft = Math.round(
-        millisecondsToSeconds(finishTime - Date.now())
-      );
-      if (isPlaying) setTimer(secondsLeft);
+      if (!isPlaying) clearInterval(interval);
+      else {
+        const secondsLeft = Math.round(
+          millisecondsToSeconds(then - Date.now())
+        );
+        console.log(
+          "🚀 ~ file: useTimer.ts ~ line 41 ~ interval=setInterval ~ secondsLeft",
+          secondsLeft
+        );
+        setTimer(secondsLeft);
+        console.log(
+          "🚀 ~ file: useTimer.ts ~ line 46 ~ interval=setInterval ~ setTimer",
+          timer
+        );
+      }
 
       if (timer <= 1) {
         clearInterval(interval);
@@ -45,12 +57,7 @@ export const useTimer = () => {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [timer, isPlaying, timersConfig]);
-
-  useEffect(() => {
-    const then = Date.now() + secondsToMilliseconds(timer);
-    setFinishTime(then);
-  }, [isPlaying]);
+  }, [timer, isPlaying, mode, timersConfig]);
 
   useEffect(() => {
     setMode(WORK);
