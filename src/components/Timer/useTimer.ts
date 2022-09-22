@@ -1,4 +1,3 @@
-import { and } from "ramda";
 import { useEffect, useState } from "react";
 import { useRecoilState, useResetRecoilState } from "recoil";
 import useSound from "use-sound";
@@ -10,7 +9,11 @@ import {
   timersConfig,
 } from "../../state";
 import { LONG_BREAK, SHORT_BREAK, WORK } from "../../state/constants";
-import { getEndTime, secondsToMilliseconds } from "../../utils/time.util";
+import {
+  getEndTime,
+  millisecondsToSeconds,
+  secondsToMilliseconds,
+} from "../../utils/time.util";
 
 export const useTimer = () => {
   const [currentAlarm] = useRecoilState(alarmSelector);
@@ -22,21 +25,24 @@ export const useTimer = () => {
   const [timer, setTimer] = useRecoilState(currentTimer);
   const [session, setSession] = useRecoilState(currentSession);
   const [steps, setSteps] = useState(1);
+  const [finishTime, setFinishTime] = useState(0);
   const resetCurrentTimer = useResetRecoilState(currentTimer);
 
   useEffect(() => {
     let interval: number;
-    if (and(isPlaying, timer > 0)) {
-      interval = setInterval(() => {
-        clearInterval(interval);
-        setTimer((time: number) => time - 1);
-      }, 1000);
+    const then = Date.now() + secondsToMilliseconds(timer);
+    setFinishTime(then);
 
-      return () => clearInterval(interval);
-    } else if (timer <= 0) {
-      playNotification();
-      handleNextTimer();
-    }
+    interval = setInterval(() => {
+      let secondsLeft = Math.round(millisecondsToSeconds(then - Date.now()));
+      if (isPlaying) setTimer(secondsLeft);
+
+      if (timer <= 1) {
+        clearInterval(interval);
+        playNotification();
+        handleNextTimer();
+      }
+    }, 1000);
 
     return () => clearInterval(interval);
   }, [timer, isPlaying, timersConfig]);
@@ -68,10 +74,7 @@ export const useTimer = () => {
     resetTimer();
   };
 
-  const getFinishTime = () => {
-    const now = Date.now();
-    return getEndTime(now + secondsToMilliseconds(timer));
-  };
+  const getFinishTime = () => getEndTime(finishTime);
 
   return {
     handleNextTimer,
