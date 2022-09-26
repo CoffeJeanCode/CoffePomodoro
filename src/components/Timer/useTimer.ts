@@ -58,6 +58,9 @@ export const useTimer = () => {
 
   const handleNextTimer = () => {
     resetTimer();
+    const canNext = confirm("Would you like go to next mode?");
+    if (!canNext) return;
+
     handleSwitchMode();
     setIsPlaying(false);
     if (steps % 2 === 0) setSession(session + 1);

@@ -25,7 +25,6 @@ const Timer = () => {
     handleToggleTimer,
     getFinishTime,
     isPlaying,
-    steps,
     mode,
     session,
     timer,
