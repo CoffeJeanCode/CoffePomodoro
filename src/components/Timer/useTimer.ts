@@ -3,6 +3,7 @@ import { useRecoilState, useResetRecoilState } from "recoil";
 import useSound from "use-sound";
 import {
   alarmSelector,
+  currentDate,
   currentSession,
   currentTimer,
   modeSelector,
@@ -10,6 +11,7 @@ import {
 } from "../../state";
 import { LONG_BREAK, SHORT_BREAK, WORK } from "../../state/constants";
 import {
+  getDate,
   getEndTime,
   millisecondsToSeconds,
   secondsToMilliseconds,
@@ -21,6 +23,7 @@ export const useTimer = () => {
     volume: 0.5,
   });
   const [isPlaying, setIsPlaying] = useState(false);
+  const [date, setDate] = useRecoilState(currentDate);
   const [mode, setMode] = useRecoilState(modeSelector);
   const [timer, setTimer] = useRecoilState(currentTimer);
   const [session, setSession] = useRecoilState(currentSession);
@@ -54,6 +57,8 @@ export const useTimer = () => {
 
   useEffect(() => {
     setMode(WORK);
+    setDate(getDate(new Date()));
+    setSession(getDate(new Date()) === date ? session : 1);
   }, []);
 
   const handleNextTimer = () => {

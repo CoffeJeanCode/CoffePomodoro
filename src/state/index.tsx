@@ -1,11 +1,11 @@
-import { identity, prop } from "ramda";
+import { prop } from "ramda";
 import { atom, selector } from "recoil";
 import { recoilPersist } from "recoil-persist";
-import { Task } from "../types/tasks.types";
-import { minutesToSeconds } from "../utils/time.util";
-import { LONG_BREAK, SHORT_BREAK, WORK } from "./constants";
 import Interface from "../assets/Interface.mp3";
 import Micellaneus from "../assets/Miscellaneus.mp3";
+import { Task } from "../types/tasks.types";
+import { getDate, minutesToSeconds } from "../utils/time.util";
+import { LONG_BREAK, SHORT_BREAK, WORK } from "./constants";
 
 const { persistAtom } = recoilPersist();
 
@@ -31,6 +31,12 @@ export const currentTimer = atom({
   effects: [persistAtom],
 });
 
+export const currentDate = atom({
+  key: "currentDate",
+  default: getDate(new Date()),
+  effects: [persistAtom],
+});
+
 export const currentAlarm = atom({
   key: "currentAlarm",
   default: { title: "Micellaneus", url: Micellaneus },
@@ -46,6 +52,7 @@ export const currentMode = atom({
 export const currentSession = atom({
   key: "currentSession",
   default: 1,
+  effects: [persistAtom],
 });
 
 export const tasksList = atom<Task[]>({
