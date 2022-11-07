@@ -3,6 +3,8 @@ import { atom, selector } from "recoil";
 import { recoilPersist } from "recoil-persist";
 import Interface from "../assets/Interface.mp3";
 import Micellaneus from "../assets/Miscellaneus.mp3";
+import Rise from "../assets/Rise.mp3";
+import Shake from "../assets/Shake.mp3";
 import { Task } from "../types/tasks.types";
 import { getDate, minutesToSeconds } from "../utils/time.util";
 import { LONG_BREAK, SHORT_BREAK, WORK } from "./constants";
@@ -15,6 +17,8 @@ export const timersConfig = atom({
     alarms: {
       Micellaneus: { title: "Micellaneus", url: Micellaneus },
       Interface: { title: "Interface", url: Interface },
+      Rise: { title: "Rise", url: Rise },
+      Shake: { title: "Shake", url: Shake },
     },
     timers: {
       [WORK]: minutesToSeconds(25),
