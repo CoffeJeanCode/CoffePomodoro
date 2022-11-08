@@ -4,6 +4,7 @@ import useSound from "use-sound";
 import {
   alarmSelector,
   currentDate,
+  currentPomodoro,
   currentSession,
   currentTimer,
   modeSelector,
@@ -27,7 +28,7 @@ export const useTimer = () => {
   const [mode, setMode] = useRecoilState(modeSelector);
   const [timer, setTimer] = useRecoilState(currentTimer);
   const [session, setSession] = useRecoilState(currentSession);
-  const [steps, setSteps] = useState(1);
+  const [steps, setSteps] = useRecoilState(currentPomodoro);
   const [finishTime, setFinishTime] = useState(0);
   const resetCurrentTimer = useResetRecoilState(currentTimer);
 
@@ -56,17 +57,19 @@ export const useTimer = () => {
   }, [timer, isPlaying, mode, timersConfig]);
 
   useEffect(() => {
-    setMode(WORK);
     setDate(getDate(new Date()));
-    setSession(getDate(new Date()) === date ? session : 1);
+    setMode(mode);
+    const isToday = getDate(new Date()) === date;
+    setSession(isToday ? session : 1);
+    setSteps(isToday ? steps : 1);
   }, []);
 
   const handleNextTimer = () => {
     resetTimer();
     handleSwitchMode();
     setIsPlaying(false);
-    if (steps % 2 === 0) setSession(session + 1);
-    setSteps(steps < 8 ? steps + 1 : 1);
+    if (steps % 2 === 0) setSession((session: number) => session + 1);
+    setSteps((steps: number) => (steps > 7 ? 1 : steps + 1));
   };
 
   const resetTimer = () => {
@@ -75,7 +78,9 @@ export const useTimer = () => {
   };
 
   const handleSwitchMode = () =>
-    setMode(steps === 7 ? LONG_BREAK : mode === WORK ? SHORT_BREAK : WORK);
+    setMode(
+      steps % (8 - 1) === 0 ? LONG_BREAK : mode === WORK ? SHORT_BREAK : WORK
+    );
 
   const handleToggleTimer = () => setIsPlaying((isPlay) => !isPlay);
 

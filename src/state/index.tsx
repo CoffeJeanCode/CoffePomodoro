@@ -47,6 +47,12 @@ export const currentAlarm = atom({
   effects: [persistAtom],
 });
 
+export const currentPomodoro = atom({
+  key: "currentPomodoro",
+  default: 1,
+  effects: [persistAtom],
+});
+
 export const currentMode = atom({
   key: "currentMode",
   default: WORK,
