@@ -1,5 +1,5 @@
+import { Button, Container, Divider, Group, Input, Title } from "@mantine/core";
 import { isEmpty } from "ramda";
-import { Title, Button, Input, Group, Container, Divider } from "@mantine/core";
 import { SyntheticEvent, useState } from "react";
 import { FaPlus } from "react-icons/fa";
 import { useRecoilState } from "recoil";
@@ -24,8 +24,8 @@ const Tasks = () => {
 
   return (
     <Container my={20}>
-      <Title order={2} size={30} color="white">
-        Tasks
+      <Title order={2} size={30} color="white" align="center">
+        Focus on
       </Title>
       <Divider my={16} />
       <form onSubmit={handleAddTask}>

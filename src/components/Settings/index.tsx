@@ -6,6 +6,7 @@ import {
   Group,
   Modal,
   Select,
+  Switch,
   Title,
 } from "@mantine/core";
 import { keys } from "ramda";
@@ -13,7 +14,7 @@ import { useState } from "react";
 
 import { FaWrench } from "react-icons/fa";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { alarmSelector, currentMode, timersConfig } from "../../state";
+import { alarmSelector, currentMode } from "../../state";
 import { LONG_BREAK, SHORT_BREAK, WORK } from "../../state/constants";
 import { minutesToSeconds, secondsToMinutes } from "../../utils/time.util";
 import { SliderSettings } from "./SliderSettings";
@@ -64,7 +65,12 @@ const Settings = () => {
                 ]}
                 defaultValue={secondsToMinutes(config.timers[WORK])}
                 onChange={(value) =>
-                  setConfigValue(`timers.${WORK}`, minutesToSeconds(value))
+                  setConfigValue(
+                    `timers.${WORK}`,
+                    import.meta.env.MODE === "development"
+                      ? value
+                      : minutesToSeconds(value)
+                  )
                 }
               />
               <SliderSettings
@@ -122,6 +128,21 @@ const Settings = () => {
             </Group>
           </Box>
 
+          <Box my={20}>
+            <Title order={3} size={25}>
+              Behaviur
+            </Title>
+            <Switch
+              label="Auto play timer"
+              onLabel="ON"
+              offLabel="OFF"
+              size="md"
+              checked={config.canAutoPlay}
+              onChange={(event: any) =>
+                setConfigValue("canAutoPlay", event.currentTarget.checked)
+              }
+            />
+          </Box>
           <Box my={20}>
             <Title order={3} size={25}>
               Alarm

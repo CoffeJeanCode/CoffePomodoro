@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useRecoilState, useResetRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue, useResetRecoilState } from "recoil";
 import useSound from "use-sound";
 import {
   alarmSelector,
@@ -30,6 +30,7 @@ export const useTimer = () => {
   const [session, setSession] = useRecoilState(currentSession);
   const [steps, setSteps] = useRecoilState(currentPomodoro);
   const [finishTime, setFinishTime] = useState(0);
+  const config = useRecoilValue(timersConfig);
   const resetCurrentTimer = useResetRecoilState(currentTimer);
 
   useEffect(() => {
@@ -57,17 +58,18 @@ export const useTimer = () => {
   }, [timer, isPlaying, mode, timersConfig]);
 
   useEffect(() => {
+    const isToday = (is: any, isnt: any) =>
+      getDate(new Date()) === date ? is : isnt;
     setDate(getDate(new Date()));
-    setMode(mode);
-    const isToday = getDate(new Date()) === date;
-    setSession(isToday ? session : 1);
-    setSteps(isToday ? steps : 1);
+    setMode(isToday(mode, WORK));
+    setSession(isToday(session, 1));
+    setSteps(isToday(steps, 1));
   }, []);
 
   const handleNextTimer = () => {
     resetTimer();
     handleSwitchMode();
-    setIsPlaying(false);
+    setIsPlaying(config.canAutoPlay);
     if (steps % 2 === 0) setSession((session: number) => session + 1);
     setSteps((steps: number) => (steps > 7 ? 1 : steps + 1));
   };
@@ -85,7 +87,7 @@ export const useTimer = () => {
   const handleToggleTimer = () => setIsPlaying((isPlay) => !isPlay);
 
   const handleStopTimer = () => {
-    setIsPlaying(false);
+    setIsPlaying(config.canAutoPlay);
     resetTimer();
   };
 

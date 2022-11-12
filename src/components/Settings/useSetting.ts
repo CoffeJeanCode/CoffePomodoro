@@ -1,4 +1,4 @@
-import { lensPath, over, set } from "ramda";
+import { lensPath, set } from "ramda";
 import { useRecoilState } from "recoil";
 import { timersConfig } from "../../state";
 

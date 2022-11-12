@@ -20,6 +20,7 @@ export const timersConfig = atom({
       Rise: { title: "Rise", url: Rise },
       Shake: { title: "Shake", url: Shake },
     },
+    canAutoPlay: false,
     timers: {
       [WORK]: minutesToSeconds(25),
       [SHORT_BREAK]: minutesToSeconds(5),
