@@ -1,3 +1,4 @@
+import { lensPath, set } from "ramda";
 import { useEffect, useState } from "react";
 import { useRecoilState, useRecoilValue, useResetRecoilState } from "recoil";
 import useSound from "use-sound";
@@ -8,12 +9,15 @@ import {
   currentSession,
   currentTimer,
   modeSelector,
+  stats,
   timersConfig,
 } from "../../state";
 import { LONG_BREAK, SHORT_BREAK, WORK } from "../../state/constants";
 import {
   getDate,
   getEndTime,
+  getWeekday,
+  isToday,
   millisecondsToSeconds,
   secondsToMilliseconds,
 } from "../../utils/time.util";
@@ -29,6 +33,7 @@ export const useTimer = () => {
   const [timer, setTimer] = useRecoilState(currentTimer);
   const [session, setSession] = useRecoilState(currentSession);
   const [steps, setSteps] = useRecoilState(currentPomodoro);
+  const [statitics, setStatitics] = useRecoilState(stats);
   const [finishTime, setFinishTime] = useState(0);
   const config = useRecoilValue(timersConfig);
   const resetCurrentTimer = useResetRecoilState(currentTimer);
@@ -58,20 +63,21 @@ export const useTimer = () => {
   }, [timer, isPlaying, mode, timersConfig]);
 
   useEffect(() => {
-    const isToday = (is: any, isnt: any) =>
-      getDate(new Date()) === date ? is : isnt;
+    const verifyDay = isToday(date);
     setDate(getDate(new Date()));
-    setMode(isToday(mode, WORK));
-    setSession(isToday(session, 1));
-    setSteps(isToday(steps, 1));
+    setMode(verifyDay(mode, WORK));
+    setSession(verifyDay(session, 1));
+    setSteps(verifyDay(steps, 1));
   }, []);
 
-  const handleNextTimer = () => {
+  const handleNextTimer = (isSkip: boolean = false) => {
     resetTimer();
     handleSwitchMode();
     setIsPlaying(config.canAutoPlay);
-    if (steps % 2 === 0) setSession((session: number) => session + 1);
-    setSteps((steps: number) => (steps > 7 ? 1 : steps + 1));
+    if (!isSkip) {
+      if (steps % 2 === 0) setSession((session: number) => session + 1);
+      setSteps((steps: number) => (steps > 7 ? 1 : steps + 1));
+    }
   };
 
   const resetTimer = () => {
@@ -94,6 +100,13 @@ export const useTimer = () => {
   const handleEndTimer = () => {
     handleSendNotification();
     handleNextTimer();
+    if (steps % 2 !== 0) return;
+    const today = getWeekday(new Date().getDay());
+    const pathType = lensPath([today]);
+    const value = statitics[today].sessions;
+    console.log(value);
+    const newStats = set(pathType, { sessions: value + 1 }, statitics);
+    setStatitics(newStats);
   };
 
   const handleSendNotification = () => {

@@ -5,6 +5,7 @@ import { FaPlus } from "react-icons/fa";
 import { useRecoilState } from "recoil";
 import { tasksList } from "../../state";
 import { createId } from "../../utils/extra.utils";
+import FocusTask from "./FocusTask";
 import { TasksList } from "./TasksList";
 
 const Tasks = () => {
@@ -27,6 +28,7 @@ const Tasks = () => {
       <Title order={2} size={30} color="white" align="center">
         Focus on
       </Title>
+      <FocusTask />
       <Divider my={16} />
       <form onSubmit={handleAddTask}>
         <Group my={5}>

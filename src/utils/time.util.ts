@@ -1,4 +1,5 @@
 import { compose, divide, modulo, multiply, __ } from "ramda";
+import { DAYS } from "../state/constants";
 
 export const minutesToSeconds = multiply(60);
 export const secondsToMinutes = compose(Math.floor, divide(__, 60));
@@ -14,6 +15,8 @@ export const getDate = (date: Date) =>
     (date.getMonth() + 1).toString().padStart(2, "0"),
     date.getDate().toString().padStart(2, "0"),
   ].join("-");
+
+export const getWeekday = (day: number) => DAYS[day - 1] ?? DAYS[0];
 
 export const getTime = (rawSeconds: number) => {
   const minutes = secondsToMinutes(rawSeconds);
@@ -31,3 +34,6 @@ export const getEndTime = (timestamp: number) => {
 
   return `${adjustedHour}:${minutes} ${formatSun(hour)}`;
 };
+
+export const isToday = (date: string) => (is: any, isnt: any) =>
+  getDate(new Date()) === date ? is : isnt;

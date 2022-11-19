@@ -1,7 +1,7 @@
-import { Container, Title, Center, Group } from "@mantine/core";
-import { useEffect } from "react";
+import { Center, Container, Group, Title } from "@mantine/core";
 import Helps from "../../components/Helps";
 import Settings from "../../components/Settings";
+import Stats from "../../components/Stats";
 import Tasks from "../../components/Tasks";
 import Timer from "../../components/Timer";
 
@@ -14,6 +14,7 @@ const Home = () => {
         </Title>
         <Group mb={20}>
           <Settings />
+          <Stats />
           <Helps />
         </Group>
         <Timer />

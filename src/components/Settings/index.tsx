@@ -25,10 +25,6 @@ const Settings = () => {
   const { config, setConfigValue } = useSettings();
   const [alarm, setAlarm] = useRecoilState(alarmSelector);
 
-  const handleAlarm = (value: string) => {
-    setAlarm(value);
-  };
-
   return (
     <>
       <Button leftIcon={<FaWrench />} onClick={() => setIsOpen(true)}>
@@ -95,7 +91,9 @@ const Settings = () => {
                 onChange={(value) =>
                   setConfigValue(
                     `timers.${SHORT_BREAK}`,
-                    minutesToSeconds(value)
+                    import.meta.env.MODE === "development"
+                      ? value
+                      : minutesToSeconds(value)
                   )
                 }
               />
@@ -150,7 +148,7 @@ const Settings = () => {
             <Select
               defaultValue={alarm.title}
               data={keys<string>(config.alarms)}
-              onChange={handleAlarm}
+              onChange={(value: string) => setAlarm(value)}
             ></Select>
           </Box>
         </Container>

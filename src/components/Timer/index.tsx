@@ -55,7 +55,7 @@ const Timer = () => {
   useHotkeys([
     ["Space", () => handleToggleTimer()],
     ["S", () => handleStopTimer()],
-    ["N", () => handleNextTimer()],
+    ["N", () => handleNextTimer(true)],
   ]);
 
   useDocumentTitle(`${getTime(timer)} | ${getModeText(mode)}`);
@@ -101,7 +101,7 @@ const Timer = () => {
                   leftIcon={<FaStepForward />}
                   title="Skip <N>"
                   color={mode === WORK ? "red.9" : "green.9"}
-                  onClick={handleNextTimer}
+                  onClick={() => handleNextTimer(true)}
                 >
                   Skip
                 </Button>
@@ -120,7 +120,7 @@ const Timer = () => {
                   <Button
                     leftIcon={<FaStepForward />}
                     color={mode === WORK ? "red.9" : "green.9"}
-                    onClick={handleNextTimer}
+                    onClick={() => handleNextTimer(true)}
                   >
                     Skip
                   </Button>
@@ -163,7 +163,7 @@ export const TimerWidget = () => {
   useHotkeys([
     ["shift+P", () => handleToggleTimer()],
     ["shift+S", () => handleStopTimer()],
-    ["shift+N", () => handleNextTimer()],
+    ["shift+N", () => handleNextTimer(true)],
   ]);
 
   return (
@@ -203,7 +203,7 @@ export const TimerWidget = () => {
                 leftIcon={<FaStepForward />}
                 title="Skip <N>"
                 color={mode === WORK ? "red.9" : "green.9"}
-                onClick={handleNextTimer}
+                onClick={() => handleNextTimer(true)}
               >
                 Skip
               </Button>
@@ -222,7 +222,7 @@ export const TimerWidget = () => {
                 <Button
                   leftIcon={<FaStepForward />}
                   color={mode === WORK ? "red.9" : "green.9"}
-                  onClick={handleNextTimer}
+                  onClick={() => handleNextTimer(true)}
                 >
                   Skip
                 </Button>

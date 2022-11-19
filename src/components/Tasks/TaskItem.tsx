@@ -1,8 +1,9 @@
 import { Box, Button, Group } from "@mantine/core";
-import { FC, memo, useState } from "react";
+import { isEmpty } from "ramda";
+import { FC, memo, useEffect, useState } from "react";
 import { FaTrash } from "react-icons/fa";
 import { useRecoilState } from "recoil";
-import { tasksList } from "../../state";
+import { currentTask, tasksList } from "../../state";
 import { Task } from "../../types/tasks.types";
 
 interface TaskItemProps {
@@ -11,8 +12,14 @@ interface TaskItemProps {
 
 export const TaskItem: FC<TaskItemProps> = memo(({ task }) => {
   const [tasks, setTasks] = useRecoilState(tasksList);
+  const [currentWork, setCurrentWork] = useRecoilState(currentTask);
   const [value, setValue] = useState(task.title);
   const [times, setTimes] = useState(task.times);
+  const [isCurrent, setIsCurrent] = useState(currentWork.id === task.id);
+
+  useEffect(() => {
+    setIsCurrent(currentWork.id === task.id);
+  }, [currentWork]);
 
   const handleRemoveTask = () => {
     const newTasks = tasks.filter((t) => t.id !== task.id);
@@ -30,10 +37,25 @@ export const TaskItem: FC<TaskItemProps> = memo(({ task }) => {
     setTasks(newTasks);
   };
 
+  const handleCurrentTask = () => {
+    setCurrentWork(() =>
+      isEmpty(tasks) ? { id: "", title: "", cateogory: "", times: 1 } : task
+    );
+  };
+
   return (
     <Box
-      sx={{ width: "100%", display: "flex", justifyContent: "space-between" }}
+      sx={{
+        width: "100%",
+        display: "flex",
+        justifyContent: "space-between",
+        padding: "0.5rem",
+        borderRadius: 10,
+        pointerEvent: "cursor",
+      }}
       my={5}
+      onClick={handleCurrentTask}
+      bg={isCurrent ? "#141516" : "#1A1B1E"}
     >
       {value}
       <Group>
