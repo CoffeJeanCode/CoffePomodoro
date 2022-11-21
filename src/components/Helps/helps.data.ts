@@ -11,12 +11,12 @@ export const helps = {
     main: [
       { key: "Space", action: "Toggle timer" },
       { key: "N", action: "Next timer" },
-      { key: "S", action: "Next timer" },
+      { key: "S", action: "Stop timer" },
     ],
     widget: [
       { key: "Shift + P", action: "Toggle timer" },
       { key: "Shift + N", action: "Next timer" },
-      { key: "Shitt + S", action: "Next timer" },
+      { key: "Shitt + S", action: "Stop timer" },
     ],
   },
 };

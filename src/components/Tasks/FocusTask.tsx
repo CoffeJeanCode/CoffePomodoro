@@ -3,7 +3,6 @@ import { currentTask } from "../../state";
 
 const FocusTask = () => {
   const [currentWork] = useRecoilState(currentTask);
-  console.log(currentWork);
   return <>{currentWork.title}</>;
 };
 

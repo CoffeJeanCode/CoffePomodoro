@@ -74,9 +74,9 @@ export const useTimer = () => {
     resetTimer();
     handleSwitchMode();
     setIsPlaying(config.canAutoPlay);
+    setSteps((steps: number) => (steps > 8 - 1 ? 1 : steps + 1));
     if (!isSkip) {
       if (steps % 2 === 0) setSession((session: number) => session + 1);
-      setSteps((steps: number) => (steps > 7 ? 1 : steps + 1));
     }
   };
 
@@ -100,11 +100,10 @@ export const useTimer = () => {
   const handleEndTimer = () => {
     handleSendNotification();
     handleNextTimer();
-    if (steps % 2 !== 0) return;
+    if (mode !== WORK) return;
     const today = getWeekday(new Date().getDay());
     const pathType = lensPath([today]);
     const value = statitics[today].sessions;
-    console.log(value);
     const newStats = set(pathType, { sessions: value + 1 }, statitics);
     setStatitics(newStats);
   };

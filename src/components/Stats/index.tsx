@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { Line } from "react-chartjs-2";
 import { FaChartBar } from "react-icons/fa";
 import { useRecoilState } from "recoil";
-import { currentDate, stats } from "../../state";
+import { stats } from "../../state";
 import { DAYS } from "../../state/constants";
 
 Chart.register(...registerables);
@@ -13,7 +13,6 @@ Chart.register(...registerables);
 const Stats = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [statitics, setStatitics] = useRecoilState(stats);
-  const [date, setDate] = useRecoilState(currentDate);
 
   useEffect(() => {
     const defaultStats =
@@ -34,7 +33,7 @@ const Stats = () => {
   return (
     <>
       <Button leftIcon={<FaChartBar />} onClick={() => setIsOpen(true)}>
-        Stats
+        Week Stats
       </Button>
       <Drawer
         opened={isOpen}
@@ -52,7 +51,7 @@ const Stats = () => {
               scales: {
                 y: {
                   min: 0,
-                  max: 25,
+                  max: 20,
                 },
               },
             }}

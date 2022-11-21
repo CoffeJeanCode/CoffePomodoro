@@ -69,6 +69,7 @@ const Timer = () => {
             mode === WORK ? theme.colors.red[7] : theme.colors.green[7],
           padding: theme.spacing.md,
           borderRadius: theme.spacing.md,
+          transition: "background .7s ease",
         })}
       >
         <Badge
@@ -127,7 +128,7 @@ const Timer = () => {
                 ) : (
                   <Button
                     leftIcon={<FaStop />}
-                    title="Stop <P>"
+                    title="Stop <S>"
                     color={mode === WORK ? "red.9" : "green.9"}
                     onClick={handleStopTimer}
                   >
