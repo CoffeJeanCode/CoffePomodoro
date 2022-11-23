@@ -53,7 +53,7 @@ export const useTimer = () => {
         setTimer(secondsLeft);
       }
 
-      if (timer <= 0) {
+      if (timer + 1 <= 1) {
         clearInterval(interval);
         handleEndTimer();
       }
