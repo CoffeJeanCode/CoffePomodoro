@@ -53,7 +53,7 @@ export const useTimer = () => {
         setTimer(secondsLeft);
       }
 
-      if (timer <= 1) {
+      if (timer <= 0) {
         clearInterval(interval);
         handleEndTimer();
       }
@@ -63,6 +63,7 @@ export const useTimer = () => {
   }, [timer, isPlaying, mode, timersConfig]);
 
   useEffect(() => {
+    console.log(getWeekday(3));
     const verifyDay = isToday(date);
     setDate(getDate(new Date()));
     setMode(verifyDay(mode, WORK));
@@ -75,8 +76,8 @@ export const useTimer = () => {
     handleSwitchMode();
     setIsPlaying(config.canAutoPlay);
     setSteps((steps: number) => (steps > 8 - 1 ? 1 : steps + 1));
-    if (!isSkip) {
-      if (steps % 2 === 0) setSession((session: number) => session + 1);
+    if (isSkip) {
+      if (mode === WORK) setSession((session: number) => session + 1);
     }
   };
 

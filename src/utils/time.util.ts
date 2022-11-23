@@ -16,7 +16,7 @@ export const getDate = (date: Date) =>
     date.getDate().toString().padStart(2, "0"),
   ].join("-");
 
-export const getWeekday = (day: number) => DAYS[day - 1] ?? DAYS[0];
+export const getWeekday = (day: number) => DAYS[day] ?? DAYS[0];
 
 export const getTime = (rawSeconds: number) => {
   const minutes = secondsToMinutes(rawSeconds);
