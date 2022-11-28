@@ -76,9 +76,8 @@ export const useTimer = () => {
     handleSwitchMode();
     setIsPlaying(config.canAutoPlay);
     setSteps((steps: number) => (steps > 8 - 1 ? 1 : steps + 1));
-    if (isSkip) {
-      if (mode === WORK) setSession((session: number) => session + 1);
-    }
+    if (isSkip) return;
+    if (mode === WORK) setSession((session: number) => session + 1);
   };
 
   const resetTimer = () => {
