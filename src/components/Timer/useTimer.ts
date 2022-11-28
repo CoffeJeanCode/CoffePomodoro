@@ -63,7 +63,6 @@ export const useTimer = () => {
   }, [timer, isPlaying, mode, timersConfig]);
 
   useEffect(() => {
-    console.log(getWeekday(3));
     const verifyDay = isToday(date);
     setDate(getDate(new Date()));
     setMode(verifyDay(mode, WORK));
@@ -103,8 +102,15 @@ export const useTimer = () => {
     if (mode !== WORK) return;
     const today = getWeekday(new Date().getDay());
     const pathType = lensPath([today]);
-    const value = statitics[today].sessions;
-    const newStats = set(pathType, { sessions: value + 1 }, statitics);
+    const { sessions, time } = statitics[today];
+    const newStats = set(
+      pathType,
+      {
+        sessions: sessions + 1,
+        time: time + config.timers[WORK],
+      },
+      statitics
+    );
     setStatitics(newStats);
   };
 

@@ -1,18 +1,26 @@
-import { Button, Container, Drawer, Title } from "@mantine/core";
+import {
+  Button,
+  Container,
+  Drawer,
+  SegmentedControl,
+  Title,
+} from "@mantine/core";
 import { Chart, registerables } from "chart.js";
-import { keys, pluck, props, reduce } from "ramda";
+import { keys, map, pluck, props, reduce } from "ramda";
 import { useEffect, useState } from "react";
 import { Line } from "react-chartjs-2";
 import { FaChartBar } from "react-icons/fa";
 import { useRecoilState } from "recoil";
 import { stats } from "../../state";
-import { DAYS } from "../../state/constants";
+import { DAYS, SESSIONS_STAT, TIME_STAT } from "../../state/constants";
+import { secondsToMinutes } from "../../utils/time.util";
 
 Chart.register(...registerables);
 
 const Stats = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [statitics, setStatitics] = useRecoilState(stats);
+  const [statType, setStatType] = useState(SESSIONS_STAT);
 
   useEffect(() => {
     const defaultStats =
@@ -24,7 +32,9 @@ const Stats = () => {
               return acc;
             },
             {},
-            DAYS.map((day) => ({ [day]: { sessions: 0 } }))
+            DAYS.map((day) => ({
+              [day]: { [SESSIONS_STAT]: 0, [TIME_STAT]: 0 },
+            }))
           )
         : statitics;
     setStatitics(defaultStats);
@@ -38,12 +48,22 @@ const Stats = () => {
       <Drawer
         opened={isOpen}
         position="bottom"
+        size={400}
         onClose={() => setIsOpen(false)}
       >
         <Container>
           <Title order={2} size={35}>
             Stats
           </Title>
+          <SegmentedControl
+            my={10}
+            data={[
+              { label: "Sessions", value: SESSIONS_STAT },
+              { label: "Time", value: TIME_STAT },
+            ]}
+            value={statType}
+            onChange={setStatType}
+          />
           <Line
             height={60}
             options={{
@@ -51,17 +71,22 @@ const Stats = () => {
               scales: {
                 y: {
                   min: 0,
-                  max: 20,
+                  max: statType === SESSIONS_STAT ? 25 : 500,
                 },
               },
             }}
             data={{
               labels: DAYS,
-
               datasets: [
                 {
-                  label: "N° Sessions",
-                  data: pluck<any>("sessions")(props(DAYS)<any>(statitics)),
+                  label:
+                    statType === SESSIONS_STAT ? "N° Sessions" : "# Minutes",
+                  data:
+                    statType === SESSIONS_STAT
+                      ? pluck<any>(SESSIONS_STAT)(props(DAYS)<any>(statitics))
+                      : map(secondsToMinutes)(
+                          pluck<any>(TIME_STAT)(props(DAYS)<any>(statitics))
+                        ),
                   backgroundColor: [
                     "rgba(255, 99, 132, 0.2)",
                     "rgba(255, 159, 64, 0.2)",
