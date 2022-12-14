@@ -41,7 +41,6 @@ export const useTimer = () => {
   useEffect(() => {
     let interval: number;
     const then = Date.now() + secondsToMilliseconds(timer);
-
     setFinishTime(then);
 
     interval = setInterval(() => {
@@ -60,7 +59,11 @@ export const useTimer = () => {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [timer, isPlaying, mode, timersConfig]);
+  }, [timer, isPlaying, mode, config]);
+
+  useEffect(() => {
+    setMode(mode);
+  }, [config.timers]);
 
   useEffect(() => {
     const verifyDay = isToday(date);

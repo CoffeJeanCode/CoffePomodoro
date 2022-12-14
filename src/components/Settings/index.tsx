@@ -22,14 +22,20 @@ import { useSettings } from "./useSetting";
 
 const Settings = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { config, setConfigValue } = useSettings();
-  const [alarm, setAlarm] = useRecoilState(alarmSelector);
-
+  const {
+    config,
+    isSettingsChanged,
+    alarm,
+    handleAlarm,
+    setConfigValue,
+    handleSaveConfig,
+  } = useSettings();
   return (
     <>
       <Button leftIcon={<FaWrench />} onClick={() => setIsOpen(true)}>
         Settings
       </Button>
+
       <Drawer opened={isOpen} position="left" onClose={() => setIsOpen(false)}>
         <Container>
           <Title order={2} size={35}>
@@ -148,9 +154,12 @@ const Settings = () => {
             <Select
               defaultValue={alarm.title}
               data={keys<string>(config.alarms)}
-              onChange={(value: string) => setAlarm(value)}
+              onChange={(value: string) => handleAlarm(value)}
             ></Select>
           </Box>
+          {isSettingsChanged && (
+            <Button onClick={() => handleSaveConfig()}>Save Changes</Button>
+          )}
         </Container>
       </Drawer>
     </>

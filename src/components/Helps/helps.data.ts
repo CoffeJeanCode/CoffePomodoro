@@ -5,6 +5,7 @@ export const helps = {
     "Meditate",
     "Posture",
     "Go outside",
+    "Stretches",
     "Mini Exersise",
   ],
   hotkeys: {
