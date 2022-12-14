@@ -109,7 +109,7 @@ export const useTimer = () => {
     const newStats = set(
       pathType,
       {
-        sessions: sessions + 1,
+        sessions: session,
         time: time + config.timers[WORK],
       },
       statitics

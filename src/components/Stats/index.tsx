@@ -5,7 +5,6 @@ import {
   SegmentedControl,
   Title,
 } from "@mantine/core";
-import { useLocalStorage } from "@mantine/hooks";
 import { Chart, registerables } from "chart.js";
 import { keys, map, pluck, props, reduce } from "ramda";
 import { useEffect, useState } from "react";
@@ -14,7 +13,11 @@ import { FaChartBar } from "react-icons/fa";
 import { useRecoilState } from "recoil";
 import { stats } from "../../state";
 import { DAYS, SESSIONS_STAT, TIME_STAT } from "../../state/constants";
-import { getDate, secondsToMinutes } from "../../utils/time.util";
+import {
+  getDate,
+  getNextFirstDate,
+  secondsToMinutes,
+} from "../../utils/time.util";
 
 Chart.register(...registerables);
 
@@ -22,17 +25,12 @@ const Stats = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [statitics, setStatitics] = useRecoilState(stats);
   const [statType, setStatType] = useState(SESSIONS_STAT);
-  const [lastTime, setLastTime] = useLocalStorage({
-    key: "lastTime",
-    defaultValue: { day: getDate(new Date()), time: new Date().getHours() },
-  });
 
   useEffect(() => {
     const defaultStats =
       keys(statitics).length === 0 ||
-      (new Date().getDay() === 1 &&
-        lastTime.time !== new Date().getHours() &&
-        getDate(new Date()) !== lastTime.day)
+      (getDate(new Date()) === getDate(getNextFirstDate()) &&
+        keys(statitics).length > 0)
         ? reduce(
             (acc: any, value: any) => {
               const key = keys(value)[0];
@@ -45,7 +43,6 @@ const Stats = () => {
             }))
           )
         : statitics;
-    setLastTime({ ...lastTime, time: new Date().getHours() });
     setStatitics(defaultStats);
   }, []);
 

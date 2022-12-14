@@ -37,3 +37,13 @@ export const getEndTime = (timestamp: number) => {
 
 export const isToday = (date: string) => (is: any, isnt: any) =>
   getDate(new Date()) === date ? is : isnt;
+
+export const getNextFirstDate = (date = new Date()) => {
+  const dateCopy = new Date(date.getTime());
+
+  return new Date(
+    dateCopy.setDate(
+      dateCopy.getDate() + ((7 - dateCopy.getDay() + 1) % 7 || 7)
+    )
+  );
+};
