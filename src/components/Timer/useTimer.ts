@@ -54,7 +54,7 @@ export const useTimer = () => {
 
       if (timer <= 1) {
         clearInterval(interval);
-        handleEndTimer();
+        handleEndTimer(); 
       }
     }, 1000);
 
@@ -105,7 +105,7 @@ export const useTimer = () => {
     if (mode !== WORK) return;
     const today = getWeekday(new Date().getDay());
     const pathType = lensPath([today]);
-    const { sessions, time } = statitics[today];
+    const { time } = statitics[today];
     const newStats = set(
       pathType,
       {

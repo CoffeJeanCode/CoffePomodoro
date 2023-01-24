@@ -18,6 +18,16 @@ export const getDate = (date: Date) =>
 
 export const getWeekday = (day: number) => DAYS[day] ?? DAYS[0];
 
+export const getCurrentWeek = (currentDate: Date) => {
+  const startYearDate = new Date(currentDate.getFullYear(), 0, 1);
+
+  return Math.ceil(
+    Math.floor(
+      (currentDate.valueOf() - startYearDate.valueOf()) / (24 * 60 * 60 * 1000)
+    ) / 7
+  );
+};
+
 export const getTime = (rawSeconds: number) => {
   const minutes = secondsToMinutes(rawSeconds);
   const seconds = getSeconds(rawSeconds);
