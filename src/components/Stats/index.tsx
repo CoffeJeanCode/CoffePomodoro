@@ -5,6 +5,7 @@ import {
   SegmentedControl,
   Title,
 } from "@mantine/core";
+import { useLocalStorage } from "@mantine/hooks";
 import { Chart, registerables } from "chart.js";
 import { keys, map, pluck, props, reduce } from "ramda";
 import { useEffect, useState } from "react";
@@ -14,8 +15,10 @@ import { useRecoilState } from "recoil";
 import { stats } from "../../state";
 import { DAYS, SESSIONS_STAT, TIME_STAT } from "../../state/constants";
 import {
+  getCurrentWeek,
   getDate,
   getNextFirstDate,
+  getWeekday,
   secondsToMinutes,
 } from "../../utils/time.util";
 
@@ -25,12 +28,14 @@ const Stats = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [statitics, setStatitics] = useRecoilState(stats);
   const [statType, setStatType] = useState(SESSIONS_STAT);
+  const [currentWeek, setCurrentWeek] = useLocalStorage({
+    key: "currentWeek",
+    defaultValue: getCurrentWeek(new Date()),
+  });
 
   useEffect(() => {
     const defaultStats =
-      keys(statitics).length === 0 ||
-      (getDate(new Date()) === getDate(getNextFirstDate()) &&
-        keys(statitics).length > 0)
+      keys(statitics).length === 0 || getCurrentWeek(new Date()) !== currentWeek
         ? reduce(
             (acc: any, value: any) => {
               const key = keys(value)[0];
@@ -43,6 +48,7 @@ const Stats = () => {
             }))
           )
         : statitics;
+    setCurrentWeek(getCurrentWeek(new Date()));
     setStatitics(defaultStats);
   }, []);
 
