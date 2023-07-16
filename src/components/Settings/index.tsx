@@ -9,27 +9,28 @@ import {
   Switch,
   Title,
 } from "@mantine/core";
-import { keys } from "ramda";
 import { useState } from "react";
 
+import { keys } from "ramda";
 import { FaWrench } from "react-icons/fa";
-import { useRecoilState, useRecoilValue } from "recoil";
-import { alarmSelector, currentMode } from "../../state";
+import { useRecoilValue } from "recoil";
+import { currentMode } from "../../state";
 import { LONG_BREAK, SHORT_BREAK, WORK } from "../../state/constants";
 import { minutesToSeconds, secondsToMinutes } from "../../utils/time.util";
 import { SliderSettings } from "./SliderSettings";
-import { useSettings } from "./useSetting";
+import { useConfiguration } from "./useConfiguracion";
 
 const Settings = () => {
   const [isOpen, setIsOpen] = useState(false);
+
   const {
-    config,
+    configuration: config,
     isSettingsChanged,
-    alarm,
-    handleAlarm,
+    saveConfiguration,
     setConfigValue,
-    handleSaveConfig,
-  } = useSettings();
+    setAlarm,
+  } = useConfiguration();
+
   return (
     <>
       <Button leftIcon={<FaWrench />} onClick={() => setIsOpen(true)}>
@@ -152,13 +153,13 @@ const Settings = () => {
               Alarm
             </Title>
             <Select
-              defaultValue={alarm.title}
+              defaultValue={config.alarm.title}
               data={keys<string>(config.alarms)}
-              onChange={(value: string) => handleAlarm(value)}
+              onChange={setAlarm}
             ></Select>
           </Box>
           {isSettingsChanged && (
-            <Button onClick={() => handleSaveConfig()}>Save Changes</Button>
+            <Button onClick={() => saveConfiguration()}>Save Changes</Button>
           )}
         </Container>
       </Drawer>
@@ -168,9 +169,14 @@ const Settings = () => {
 
 export const SettingWidget = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { config, setConfigValue } = useSettings();
+  const {
+    configuration: config,
+    isSettingsChanged,
+    saveConfiguration,
+    setConfigValue,
+    setAlarm,
+  } = useConfiguration();
   const mode = useRecoilValue(currentMode);
-  const [alarm, setAlarm] = useRecoilState(alarmSelector);
 
   const handleAlarm = (value: string) => {
     setAlarm(value);
@@ -292,9 +298,9 @@ export const SettingWidget = () => {
               Alarm
             </Title>
             <Select
-              defaultValue={alarm.title}
+              defaultValue={config.alarm.title}
               data={keys<string>(config.alarms)}
-              onChange={handleAlarm}
+              onChange={setAlarm}
             ></Select>
           </Box>
         </Container>

@@ -16,7 +16,7 @@ import { LONG_BREAK, SHORT_BREAK, WORK } from "../../state/constants";
 import { getModeText } from "../../utils/extra.utils";
 import { getTime } from "../../utils/time.util";
 import { SettingWidget } from "../Settings";
-import { useTimer } from "./useTimer";
+import useTimer from "./useTimer";
 
 const Timer = () => {
   const {
@@ -60,6 +60,33 @@ const Timer = () => {
 
   useDocumentTitle(`${getTime(timer)} | ${getModeText(mode)}`);
 
+  const playButtonProps = {
+    leftIcon: isPlaying ? <FaPause /> : <FaPlay />,
+    title: isPlaying ? "Pause <Space>" : "Play <Space>",
+    color: mode === WORK ? "red.9" : "green.9",
+    onClick: handleToggleTimer,
+  };
+
+  const skipButtonProps = {
+    leftIcon: <FaStepForward />,
+    color: mode === WORK ? "red.9" : "green.9",
+    onClick: () => handleNextTimer(true),
+  };
+
+  const pauseButtonProps = {
+    leftIcon: <FaPause />,
+    title: "Pause <Space>",
+    color: mode === WORK ? "red.9" : "green.9",
+    onClick: () => handleToggleTimer(),
+  };
+
+  const stopButtonProps = {
+    leftIcon: <FaStop />,
+    title: "Stop <S>",
+    color: mode === WORK ? "red.9" : "green.9",
+    onClick: handleStopTimer,
+  };
+
   return (
     <Container>
       <Box
@@ -90,50 +117,16 @@ const Timer = () => {
           <Group my={10}>
             {not(isPlaying) ? (
               <>
-                <Button
-                  leftIcon={<FaPlay />}
-                  title="Play <Space>"
-                  color={mode === WORK ? "red.9" : "green.9"}
-                  onClick={handleToggleTimer}
-                >
-                  Play
-                </Button>
-                <Button
-                  leftIcon={<FaStepForward />}
-                  title="Skip <N>"
-                  color={mode === WORK ? "red.9" : "green.9"}
-                  onClick={() => handleNextTimer(true)}
-                >
-                  Skip
-                </Button>
+                <Button {...playButtonProps}>Play</Button>
+                <Button {...skipButtonProps}>Skip</Button>
               </>
             ) : (
               <>
-                <Button
-                  leftIcon={<FaPause />}
-                  title="Pause <Space>"
-                  color={mode === WORK ? "red.9" : "green.9"}
-                  onClick={handleToggleTimer}
-                >
-                  Pause
-                </Button>
+                <Button {...pauseButtonProps}>Pause</Button>
                 {mode === SHORT_BREAK || mode === LONG_BREAK ? (
-                  <Button
-                    leftIcon={<FaStepForward />}
-                    color={mode === WORK ? "red.9" : "green.9"}
-                    onClick={() => handleNextTimer(true)}
-                  >
-                    Skip
-                  </Button>
+                  <Button {...skipButtonProps}>Skip</Button>
                 ) : (
-                  <Button
-                    leftIcon={<FaStop />}
-                    title="Stop <S>"
-                    color={mode === WORK ? "red.9" : "green.9"}
-                    onClick={handleStopTimer}
-                  >
-                    Stop
-                  </Button>
+                  <Button {...stopButtonProps}>Stop</Button>
                 )}
               </>
             )}
