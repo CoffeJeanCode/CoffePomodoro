@@ -36,15 +36,6 @@ const Helps = () => {
               </List.Item>
             ))}
           </List>
-          <Title order={4}>Widget</Title>
-          <List spacing={10}>
-            {helps.hotkeys.widget.map((hotkey) => (
-              <List.Item key={hotkey.key} my={10}>
-                <Kbd mr={10}>{hotkey.key}</Kbd>
-                {hotkey.action}
-              </List.Item>
-            ))}
-          </List>
         </Container>
       </Drawer>
     </>

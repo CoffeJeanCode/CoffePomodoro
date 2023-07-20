@@ -1,9 +1,8 @@
 import { MantineProvider } from "@mantine/core";
 import { RecoilRoot } from "recoil";
-import { Route, Router } from "wouter";
+import { Route } from "wouter";
 
 import Home from "./pages/Home";
-import Widget from "./pages/Widget";
 
 function App() {
   return (
@@ -13,10 +12,7 @@ function App() {
       withGlobalStyles
     >
       <RecoilRoot>
-        <Router>
-          <Route path="/" component={Home} />
-          <Route path="/widget" component={Widget} />
-        </Router>
+        <Route path="/" component={Home} />
       </RecoilRoot>
     </MantineProvider>
   );
