@@ -22,8 +22,8 @@ import {
 
 const useTimer = () => {
   const config = useRecoilValue(configAtom);
-  const [playNotification] = useSound(config.alarm.url, {
-    volume: 0.5
+  const [playNotification] = useSound(config.notification.alarm.url, {
+    volume: config.notification.volume
   });
   const [isPlaying, setIsPlaying] = useState(false);
   const [date, setDate] = useRecoilState(currentDate);
@@ -120,6 +120,22 @@ const useTimer = () => {
 
   const handleSendNotification = () => {
     playNotification();
+    if (config.notification.desktopNofitication) {
+      const notificationBody =
+        mode === WORK
+          ? "Well done! Work mode complete. Take a break and recharge!"
+          : mode === SHORT_BREAK
+          ? "Break's over! Time to get back in action!"
+          : mode === LONG_BREAK
+          ? "You rocked the break! Let's get back to work."
+          : "Timer finish";
+      new Notification("Timer has finished", {
+        lang: "en",
+        body: notificationBody,
+        icon: "/favicon.svg", // TODO: add state for current icon
+        vibrate: [100, 200, 300]
+      });
+    }
   };
 
   const getFinishTime = () => getEndTime(finishTime);

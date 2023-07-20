@@ -36,20 +36,12 @@ export const useConfiguration = () => {
     );
   };
 
-  const setAlarm = (alarm: string) => {
-    setIsSettingsChanged(true);
-    setTempConfiguration((prevConfig: any) =>
-      mergeAll([prevConfig, { alarm: configuration.alarms[alarm] }])
-    );
-  };
-
   return {
     configuration: tempConfiguration,
     isSettingsChanged,
     updateConfiguration,
     saveConfiguration,
     resetConfiguration,
-    setConfigValue,
-    setAlarm
+    setConfigValue
   };
 };

@@ -9,9 +9,7 @@ export const SliderSettings: FC<SliderSettingsProps> = memo(
   ({ title, marks, min, max, defaultValue, onChange }) => {
     return (
       <Box my={10}>
-        <Title order={4} size={20}>
-          {title}
-        </Title>
+        <Title order={4}>{title}</Title>
         <Slider
           min={min}
           max={max}

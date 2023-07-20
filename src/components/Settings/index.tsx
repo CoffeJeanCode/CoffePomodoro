@@ -4,7 +4,9 @@ import {
   Container,
   Drawer,
   Group,
+  ScrollArea,
   Select,
+  Slider,
   Switch,
   Title
 } from "@mantine/core";
@@ -19,14 +21,14 @@ import { useConfiguration } from "./useConfiguracion";
 
 const Settings = () => {
   const [isOpen, setIsOpen] = useState(false);
-
   const {
     configuration: config,
     isSettingsChanged,
     saveConfiguration,
-    setConfigValue,
-    setAlarm
+    setConfigValue
   } = useConfiguration();
+
+  console.log(config);
 
   return (
     <>
@@ -34,12 +36,17 @@ const Settings = () => {
         Settings
       </Button>
 
-      <Drawer opened={isOpen} position="left" onClose={() => setIsOpen(false)}>
+      <Drawer
+        opened={isOpen}
+        position="left"
+        onClose={() => setIsOpen(false)}
+        scrollAreaComponent={ScrollArea.Autosize}
+        mah={"90vh"}
+      >
         <Container>
           <Title order={2} size={35}>
             Settings
           </Title>
-
           <Box my={20}>
             <Title order={3} size={25}>
               Timers
@@ -115,6 +122,10 @@ const Settings = () => {
                     label: "10"
                   },
                   {
+                    value: 15,
+                    label: "15"
+                  },
+                  {
                     value: 20,
                     label: "20"
                   }
@@ -129,31 +140,75 @@ const Settings = () => {
               />
             </Group>
           </Box>
-
+          <Title order={3} size={25}>
+            Behaviur
+          </Title>
           <Box my={20}>
-            <Title order={3} size={25}>
-              Behaviur
-            </Title>
             <Switch
               label="Auto play timer"
               onLabel="ON"
               offLabel="OFF"
               size="md"
               checked={config.canAutoPlay}
-              onChange={(event: any) =>
+              onChange={(event) =>
                 setConfigValue("canAutoPlay", event.currentTarget.checked)
               }
             />
           </Box>
+          <Title order={3} size={25}>
+            Notification
+          </Title>
           <Box my={20}>
-            <Title order={3} size={25}>
-              Alarm
-            </Title>
-            <Select
-              defaultValue={config.alarm.title}
-              data={keys<string>(config.alarms)}
-              onChange={setAlarm}
-            ></Select>
+            <Group>
+              <Box my={5}>
+                <Title order={4}>Alarm</Title>
+                <Select
+                  value={config.notification.alarm.title}
+                  data={keys<string>(config.alarms)}
+                  onChange={(title: string) => {
+                    setConfigValue("notification.alarm", config.alarms[title]);
+                  }}
+                />
+              </Box>
+              <Box my={5}>
+                <Title order={4}>Volume</Title>
+                <Slider
+                  min={0.1}
+                  max={1}
+                  step={0.1}
+                  label={(value) => `${value * 100}%`}
+                  value={config.notification.volume}
+                  onChange={(value) =>
+                    setConfigValue("notification.volume", value)
+                  }
+                />
+              </Box>
+              <Box my={5}>
+                <Title order={4}>Desktop Notifications</Title>
+                <Switch
+                  checked={config.notification.desktopNofitication}
+                  onChange={(evt) => {
+                    const {
+                      target: { checked }
+                    } = evt;
+                    setConfigValue("notification.desktopNofitication", checked);
+                    if (checked)
+                      Notification.requestPermission().then((perm) => {
+                        if (perm === "granted")
+                          setConfigValue(
+                            "notification.desktopNofitication",
+                            true
+                          );
+                        else
+                          setConfigValue(
+                            "notification.desktopNofitication",
+                            false
+                          );
+                      });
+                  }}
+                />
+              </Box>
+            </Group>
           </Box>
           {isSettingsChanged && (
             <Button onClick={() => saveConfiguration()}>Save Changes</Button>

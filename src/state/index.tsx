@@ -12,6 +12,7 @@ import { LONG_BREAK, SHORT_BREAK, WORK } from "./constants";
 const { persistAtom } = recoilPersist();
 
 const alarmsConfig = {
+  // TODO: put in other file
   Micellaneus: { title: "Micellaneus", url: Micellaneus },
   Interface: { title: "Interface", url: Interface },
   Rise: { title: "Rise", url: Rise },
@@ -27,12 +28,16 @@ const defaultTimers = {
 export const config = atom({
   key: "pomodoroConfig",
   default: {
-    alarms: alarmsConfig,
-    canAutoPlay: false,
     timers: defaultTimers,
-    alarm: alarmsConfig["Micellaneus"]
+    alarms: alarmsConfig,
+    notification: {
+      alarm: alarmsConfig["Micellaneus"],
+      desktopNofitication: Notification.permission === "granted",
+      volume: 0.5
+    },
+    canAutoPlay: false
   },
-  effects_UNSTABLE: [persistAtom]
+  effects: [persistAtom]
 });
 
 export const currentTask = atom<Task>({
