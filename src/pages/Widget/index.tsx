@@ -1,4 +1,4 @@
-import { TimerWidget } from "../../components/Timer";
+import TimerWidget from "../../components/Timer";
 
 const Widget = () => {
   return (

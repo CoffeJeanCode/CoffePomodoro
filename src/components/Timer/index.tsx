@@ -9,13 +9,11 @@ import {
   Title
 } from "@mantine/core";
 import { useDocumentTitle, useHotkeys } from "@mantine/hooks";
-import { not, toUpper } from "ramda";
 import { useEffect } from "react";
 import { FaPause, FaPlay, FaStepForward, FaStop } from "react-icons/fa";
 import { LONG_BREAK, SHORT_BREAK, WORK } from "../../state/constants";
 import { getModeText } from "../../utils/extra.utils";
 import { getTime } from "../../utils/time.util";
-import { SettingWidget } from "../Settings";
 import useTimer from "./useTimer";
 
 const Timer = () => {
@@ -107,7 +105,7 @@ const Timer = () => {
             userSelect: "none"
           })}
         >
-          {toUpper(getModeText(mode))}
+          {getModeText(mode).toLocaleUpperCase()}
         </Badge>
         <Center sx={{ flexDirection: "column" }}>
           <Title order={3} size={80} color="white">
@@ -115,7 +113,7 @@ const Timer = () => {
           </Title>
           <Text color="white">Session #{session}</Text>
           <Group my={10}>
-            {not(isPlaying) ? (
+            {!isPlaying ? ( // TODO: Componentizer
               <>
                 <Button {...playButtonProps}>Play</Button>
                 <Button {...skipButtonProps}>Skip</Button>
@@ -139,119 +137,6 @@ const Timer = () => {
         </Center>
       </Box>
     </Container>
-  );
-};
-
-export const TimerWidget = () => {
-  const {
-    handleNextTimer,
-    handleToggleTimer,
-    handleStopTimer,
-    getFinishTime,
-    timer,
-    isPlaying,
-    session,
-    mode
-  } = useTimer();
-
-  useHotkeys([
-    ["shift+P", () => handleToggleTimer()],
-    ["shift+S", () => handleStopTimer()],
-    ["shift+N", () => handleNextTimer(true)]
-  ]);
-
-  return (
-    <Box
-      sx={(theme) => ({
-        width: "100vw",
-        height: "100vh",
-        background: mode === WORK ? theme.colors.red[7] : theme.colors.green[7]
-      })}
-    >
-      <Center
-        sx={{
-          height: "100%",
-          alignItems: "center",
-          flexDirection: "column"
-        }}
-      >
-        <Title
-          order={2}
-          size={"6rem"}
-          color="white"
-          sx={{
-            userSelect: "none"
-          }}
-        >
-          {getTime(timer)}
-        </Title>
-        <Text color="white">session #{session}</Text>
-        <Group my={10}>
-          {not(isPlaying) ? (
-            <>
-              <Button
-                leftIcon={<FaPlay />}
-                title="Play <Space>"
-                color={mode === WORK ? "red.9" : "green.9"}
-                onClick={handleToggleTimer}
-              >
-                Play
-              </Button>
-              <Button
-                leftIcon={<FaStepForward />}
-                title="Skip <N>"
-                color={mode === WORK ? "red.9" : "green.9"}
-                onClick={() => handleNextTimer(true)}
-              >
-                Skip
-              </Button>
-            </>
-          ) : (
-            <>
-              <Button
-                leftIcon={<FaPause />}
-                title="Pause <Space>"
-                color={mode === WORK ? "red.9" : "green.9"}
-                onClick={handleToggleTimer}
-              >
-                Pause
-              </Button>
-              {mode === SHORT_BREAK || mode === LONG_BREAK ? (
-                <Button
-                  leftIcon={<FaStepForward />}
-                  color={mode === WORK ? "red.9" : "green.9"}
-                  onClick={() => handleNextTimer(true)}
-                >
-                  Skip
-                </Button>
-              ) : (
-                <Button
-                  leftIcon={<FaStop />}
-                  title="Stop <P>"
-                  color={mode === WORK ? "red.9" : "green.9"}
-                  onClick={handleStopTimer}
-                >
-                  Stop
-                </Button>
-              )}
-            </>
-          )}
-        </Group>
-        {isPlaying && (
-          <Title
-            order={5}
-            size="h5"
-            color="white"
-            sx={{
-              userSelect: "none"
-            }}
-          >
-            Next timer finish at {getFinishTime()}
-          </Title>
-        )}
-        <SettingWidget />
-      </Center>
-    </Box>
   );
 };
 
