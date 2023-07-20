@@ -12,6 +12,7 @@ import { useDocumentTitle, useHotkeys } from "@mantine/hooks";
 import { useEffect } from "react";
 import { FaPause, FaPlay, FaStepForward, FaStop } from "react-icons/fa";
 import { useRecoilState } from "recoil";
+import useChangeFavIcon from "../../hooks/useChangeFavIcon";
 import { currentIcon } from "../../state";
 import { LONG_BREAK, SHORT_BREAK, WORK } from "../../state/constants";
 import { getModeText } from "../../utils/extra.utils";
@@ -32,27 +33,10 @@ const Timer = () => {
   const [favIcon, setFavIcon] = useRecoilState(currentIcon);
 
   useEffect(() => {
-    const favicon = document.getElementById("favicon") as HTMLLinkElement;
-    const faviconSize = 16;
-
-    if (!favicon) return;
-
-    const canvas = document.createElement("canvas");
-    canvas.width = faviconSize;
-    canvas.height = faviconSize;
-
-    const context = canvas.getContext("2d");
-    const img = document.createElement("img");
-
-    setFavIcon(mode === WORK ? "favicon.svg" : "favicon-break.svg");
-    img.src = favIcon;
-
-    img.onload = () => {
-      if (!context) return;
-      context.drawImage(img, 0, 0, faviconSize, faviconSize);
-      favicon.href = canvas.toDataURL("image/png");
-    };
+    setFavIcon(mode !== WORK ? "favicon.svg" : "favicon-break.svg");
   }, [mode]);
+
+  useChangeFavIcon({ new: favIcon, original: "favicon.svg" }, 16, [mode]);
 
   useHotkeys([
     ["Space", () => handleToggleTimer()],
@@ -117,7 +101,7 @@ const Timer = () => {
           </Title>
           <Text color="white">Session #{session}</Text>
           <Group my={10}>
-            {!isPlaying ? ( // TODO: Componentizer
+            {!isPlaying ? (
               <>
                 <Button {...playButtonProps}>Play</Button>
                 <Button {...skipButtonProps}>Skip</Button>

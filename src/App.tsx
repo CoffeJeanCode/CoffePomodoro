@@ -4,7 +4,7 @@ import { Route } from "wouter";
 
 import Home from "./pages/Home";
 
-function App() {
+const App = () => {
   return (
     <MantineProvider
       theme={{ colorScheme: "dark" }}
@@ -16,6 +16,6 @@ function App() {
       </RecoilRoot>
     </MantineProvider>
   );
-}
+};
 
 export default App;

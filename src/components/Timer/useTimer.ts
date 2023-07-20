@@ -61,7 +61,7 @@ const useTimer = () => {
   }, [timer, isPlaying, mode, config]);
 
   useEffect(() => {
-    setMode(mode);
+    resetTimer();
   }, [config.timers]);
 
   useEffect(() => {
@@ -72,12 +72,14 @@ const useTimer = () => {
     setSteps(verifyDay(steps, 1));
   }, []);
 
-  const handleNextTimer = (isSkip: boolean = false) => {
+  const handleNextTimer = (isSkip: boolean) => {
     resetTimer();
     handleSwitchMode();
+
+    if (isSkip) return;
+
     setIsPlaying(config.canAutoPlay);
     setSteps((steps: number) => (steps > 8 - 1 ? 1 : steps + 1));
-    if (isSkip) return;
     if (mode === WORK) setSession((session: number) => session + 1);
   };
 
@@ -100,7 +102,7 @@ const useTimer = () => {
 
   const handleEndTimer = () => {
     handleSendNotification();
-    handleNextTimer();
+    handleNextTimer(false);
     if (mode !== WORK) return;
     const today = getWeekday(new Date().getDay());
     const newStatistics = updateStatisticsForToday(today);
