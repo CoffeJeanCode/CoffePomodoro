@@ -4,6 +4,7 @@ import useSound from "use-sound";
 import {
   config as configAtom,
   currentDate,
+  currentIcon,
   currentPomodoro,
   currentSession,
   currentTimer,
@@ -25,6 +26,7 @@ const useTimer = () => {
   const [playNotification] = useSound(config.notification.alarm.url, {
     volume: config.notification.volume
   });
+  const [finishTime, setFinishTime] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [date, setDate] = useRecoilState(currentDate);
   const [mode, setMode] = useRecoilState(modeSelector);
@@ -32,7 +34,7 @@ const useTimer = () => {
   const [session, setSession] = useRecoilState(currentSession);
   const [steps, setSteps] = useRecoilState(currentPomodoro);
   const [statistics, setStatistics] = useRecoilState(stats);
-  const [finishTime, setFinishTime] = useState(0);
+  const favIcon = useRecoilValue(currentIcon);
   const resetCurrentTimer = useResetRecoilState(currentTimer);
 
   useEffect(() => {
@@ -132,7 +134,7 @@ const useTimer = () => {
       new Notification("Timer has finished", {
         lang: "en",
         body: notificationBody,
-        icon: "/favicon.svg", // TODO: add state for current icon
+        icon: favIcon,
         vibrate: [100, 200, 300]
       });
     }

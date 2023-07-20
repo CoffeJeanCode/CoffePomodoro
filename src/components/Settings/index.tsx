@@ -13,11 +13,14 @@ import {
 import { useState } from "react";
 
 import { keys } from "ramda";
-import { FaWrench } from "react-icons/fa";
-import { LONG_BREAK, SHORT_BREAK, WORK } from "../../state/constants";
+import { FaBell, FaWrench } from "react-icons/fa";
+import useSound from "use-sound";
+import { ALARMS, LONG_BREAK, SHORT_BREAK, WORK } from "../../state/constants";
 import { minutesToSeconds, secondsToMinutes } from "../../utils/time.util";
 import { SliderSettings } from "./SliderSettings";
 import { useConfiguration } from "./useConfiguracion";
+
+type AlarmTitle = keyof typeof ALARMS;
 
 const Settings = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -27,8 +30,9 @@ const Settings = () => {
     saveConfiguration,
     setConfigValue
   } = useConfiguration();
-
-  console.log(config);
+  const [playNotification] = useSound(config.notification.alarm.url, {
+    volume: config.notification.volume
+  });
 
   return (
     <>
@@ -162,26 +166,32 @@ const Settings = () => {
             <Group>
               <Box my={5}>
                 <Title order={4}>Alarm</Title>
-                <Select
-                  value={config.notification.alarm.title}
-                  data={keys<string>(config.alarms)}
-                  onChange={(title: string) => {
-                    setConfigValue("notification.alarm", config.alarms[title]);
-                  }}
-                />
-              </Box>
-              <Box my={5}>
-                <Title order={4}>Volume</Title>
-                <Slider
-                  min={0.1}
-                  max={1}
-                  step={0.1}
-                  label={(value) => `${value * 100}%`}
-                  value={config.notification.volume}
-                  onChange={(value) =>
-                    setConfigValue("notification.volume", value)
-                  }
-                />
+                <Group>
+                  <Button onClick={() => playNotification()}>
+                    <FaBell />
+                  </Button>
+                  <Select
+                    value={config.notification.alarm.title}
+                    data={keys(ALARMS)}
+                    onChange={(title: AlarmTitle) => {
+                      setConfigValue("notification.alarm", ALARMS[title]);
+                      playNotification();
+                    }}
+                  />
+                  <Box my={5}>
+                    <Title order={4}>Volume</Title>
+                    <Slider
+                      min={0.1}
+                      max={1}
+                      step={0.1}
+                      label={(value) => `${value * 100}%`}
+                      value={config.notification.volume}
+                      onChange={(value) =>
+                        setConfigValue("notification.volume", value)
+                      }
+                    />
+                  </Box>
+                </Group>
               </Box>
               <Box my={5}>
                 <Title order={4}>Desktop Notifications</Title>
