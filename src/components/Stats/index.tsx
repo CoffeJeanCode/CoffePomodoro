@@ -3,7 +3,7 @@ import {
   Container,
   Drawer,
   SegmentedControl,
-  Title,
+  Title
 } from "@mantine/core";
 import { useLocalStorage } from "@mantine/hooks";
 import { Chart, registerables } from "chart.js";
@@ -19,7 +19,7 @@ import {
   getDate,
   getNextFirstDate,
   getWeekday,
-  secondsToMinutes,
+  secondsToMinutes
 } from "../../utils/time.util";
 
 Chart.register(...registerables);
@@ -30,7 +30,7 @@ const Stats = () => {
   const [statType, setStatType] = useState(SESSIONS_STAT);
   const [currentWeek, setCurrentWeek] = useLocalStorage({
     key: "currentWeek",
-    defaultValue: getCurrentWeek(new Date()),
+    defaultValue: getCurrentWeek(new Date())
   });
 
   useEffect(() => {
@@ -44,7 +44,7 @@ const Stats = () => {
             },
             {},
             DAYS.map((day) => ({
-              [day]: { [SESSIONS_STAT]: 0, [TIME_STAT]: 0 },
+              [day]: { [SESSIONS_STAT]: 0, [TIME_STAT]: 0 }
             }))
           )
         : statitics;
@@ -71,7 +71,7 @@ const Stats = () => {
             my={10}
             data={[
               { label: "Sessions", value: SESSIONS_STAT },
-              { label: "Time", value: TIME_STAT },
+              { label: "Time", value: TIME_STAT }
             ]}
             value={statType}
             onChange={setStatType}
@@ -83,9 +83,9 @@ const Stats = () => {
               scales: {
                 y: {
                   min: 0,
-                  max: statType === SESSIONS_STAT ? 25 : 500,
-                },
-              },
+                  max: statType === SESSIONS_STAT ? 25 : 500
+                }
+              }
             }}
             data={{
               labels: DAYS,
@@ -106,7 +106,7 @@ const Stats = () => {
                     "rgba(75, 192, 192, 0.2)",
                     "rgba(54, 162, 235, 0.2)",
                     "rgba(153, 102, 255, 0.2)",
-                    "rgba(201, 203, 207, 0.2)",
+                    "rgba(201, 203, 207, 0.2)"
                   ],
                   borderColor: [
                     "rgb(255, 99, 132)",
@@ -115,13 +115,13 @@ const Stats = () => {
                     "rgb(75, 192, 192)",
                     "rgb(54, 162, 235)",
                     "rgb(153, 102, 255)",
-                    "rgb(201, 203, 207)",
+                    "rgb(201, 203, 207)"
                   ],
                   borderWidth: 1,
                   fill: true,
-                  tension: 0.4,
-                },
-              ],
+                  tension: 0.4
+                }
+              ]
             }}
           />
         </Container>

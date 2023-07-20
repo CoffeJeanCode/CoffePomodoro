@@ -18,7 +18,7 @@ const Tasks = () => {
 
     setTasks([
       { title: String(value), id: createId(), cateogory: "", times: 1 },
-      ...tasks,
+      ...tasks
     ]);
     setValue("");
   };

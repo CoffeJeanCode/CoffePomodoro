@@ -8,7 +8,7 @@ export const DAYS = [
   "Wednesday",
   "Thursday",
   "Friday",
-  "Saturday",
+  "Saturday"
 ];
 export const SESSIONS_STAT = "sessions";
 export const TIME_STAT = "time";

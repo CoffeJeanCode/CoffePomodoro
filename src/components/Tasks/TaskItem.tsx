@@ -51,7 +51,7 @@ export const TaskItem: FC<TaskItemProps> = memo(({ task }) => {
         justifyContent: "space-between",
         padding: "0.5rem",
         borderRadius: 10,
-        pointerEvent: "cursor",
+        pointerEvent: "cursor"
       }}
       my={5}
       onClick={handleCurrentTask}

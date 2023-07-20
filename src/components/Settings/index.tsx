@@ -7,7 +7,7 @@ import {
   Modal,
   Select,
   Switch,
-  Title,
+  Title
 } from "@mantine/core";
 import { useState } from "react";
 
@@ -28,7 +28,7 @@ const Settings = () => {
     isSettingsChanged,
     saveConfiguration,
     setConfigValue,
-    setAlarm,
+    setAlarm
   } = useConfiguration();
 
   return (
@@ -55,16 +55,16 @@ const Settings = () => {
                 marks={[
                   {
                     value: 25,
-                    label: "25",
+                    label: "25"
                   },
                   {
                     value: 40,
-                    label: "40",
+                    label: "40"
                   },
                   {
                     value: 60,
-                    label: "60",
-                  },
+                    label: "60"
+                  }
                 ]}
                 defaultValue={secondsToMinutes(config.timers[WORK])}
                 onChange={(value) =>
@@ -83,16 +83,16 @@ const Settings = () => {
                 marks={[
                   {
                     value: 5,
-                    label: "5",
+                    label: "5"
                   },
                   {
                     value: 7,
-                    label: "7",
+                    label: "7"
                   },
                   {
                     value: 10,
-                    label: "10",
-                  },
+                    label: "10"
+                  }
                 ]}
                 defaultValue={secondsToMinutes(config.timers[SHORT_BREAK])}
                 onChange={(value) =>
@@ -111,16 +111,16 @@ const Settings = () => {
                 marks={[
                   {
                     value: 5,
-                    label: "5",
+                    label: "5"
                   },
                   {
                     value: 10,
-                    label: "10",
+                    label: "10"
                   },
                   {
                     value: 20,
-                    label: "20",
-                  },
+                    label: "20"
+                  }
                 ]}
                 defaultValue={secondsToMinutes(config.timers[LONG_BREAK])}
                 onChange={(value) =>
@@ -174,7 +174,7 @@ export const SettingWidget = () => {
     isSettingsChanged,
     saveConfiguration,
     setConfigValue,
-    setAlarm,
+    setAlarm
   } = useConfiguration();
   const mode = useRecoilValue(currentMode);
 
@@ -201,7 +201,7 @@ export const SettingWidget = () => {
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            flexDirection: "column",
+            flexDirection: "column"
           }}
         >
           <Box my={20}>
@@ -213,7 +213,7 @@ export const SettingWidget = () => {
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
-                justifyContent: "center",
+                justifyContent: "center"
               }}
             >
               <SliderSettings
@@ -223,16 +223,16 @@ export const SettingWidget = () => {
                 marks={[
                   {
                     value: 25,
-                    label: "25",
+                    label: "25"
                   },
                   {
                     value: 40,
-                    label: "40",
+                    label: "40"
                   },
                   {
                     value: 60,
-                    label: "60",
-                  },
+                    label: "60"
+                  }
                 ]}
                 defaultValue={secondsToMinutes(config.timers[WORK])}
                 onChange={(value) =>
@@ -246,16 +246,16 @@ export const SettingWidget = () => {
                 marks={[
                   {
                     value: 5,
-                    label: "5",
+                    label: "5"
                   },
                   {
                     value: 7,
-                    label: "7",
+                    label: "7"
                   },
                   {
                     value: 10,
-                    label: "10",
-                  },
+                    label: "10"
+                  }
                 ]}
                 defaultValue={secondsToMinutes(config.timers[SHORT_BREAK])}
                 onChange={(value) =>
@@ -272,16 +272,16 @@ export const SettingWidget = () => {
                 marks={[
                   {
                     value: 5,
-                    label: "5",
+                    label: "5"
                   },
                   {
                     value: 10,
-                    label: "10",
+                    label: "10"
                   },
                   {
                     value: 20,
-                    label: "20",
-                  },
+                    label: "20"
+                  }
                 ]}
                 defaultValue={secondsToMinutes(config.timers[LONG_BREAK])}
                 onChange={(value) =>

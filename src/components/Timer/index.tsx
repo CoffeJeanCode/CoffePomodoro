@@ -6,7 +6,7 @@ import {
   Container,
   Group,
   Text,
-  Title,
+  Title
 } from "@mantine/core";
 import { useDocumentTitle, useHotkeys } from "@mantine/hooks";
 import { not, toUpper } from "ramda";
@@ -27,7 +27,7 @@ const Timer = () => {
     isPlaying,
     mode,
     session,
-    timer,
+    timer
   } = useTimer();
 
   useEffect(() => {
@@ -55,7 +55,7 @@ const Timer = () => {
   useHotkeys([
     ["Space", () => handleToggleTimer()],
     ["S", () => handleStopTimer()],
-    ["N", () => handleNextTimer(true)],
+    ["N", () => handleNextTimer(true)]
   ]);
 
   useDocumentTitle(`${getTime(timer)} | ${getModeText(mode)}`);
@@ -64,27 +64,27 @@ const Timer = () => {
     leftIcon: isPlaying ? <FaPause /> : <FaPlay />,
     title: isPlaying ? "Pause <Space>" : "Play <Space>",
     color: mode === WORK ? "red.9" : "green.9",
-    onClick: handleToggleTimer,
+    onClick: handleToggleTimer
   };
 
   const skipButtonProps = {
     leftIcon: <FaStepForward />,
     color: mode === WORK ? "red.9" : "green.9",
-    onClick: () => handleNextTimer(true),
+    onClick: () => handleNextTimer(true)
   };
 
   const pauseButtonProps = {
     leftIcon: <FaPause />,
     title: "Pause <Space>",
     color: mode === WORK ? "red.9" : "green.9",
-    onClick: () => handleToggleTimer(),
+    onClick: () => handleToggleTimer()
   };
 
   const stopButtonProps = {
     leftIcon: <FaStop />,
     title: "Stop <S>",
     color: mode === WORK ? "red.9" : "green.9",
-    onClick: handleStopTimer,
+    onClick: handleStopTimer
   };
 
   return (
@@ -96,7 +96,7 @@ const Timer = () => {
             mode === WORK ? theme.colors.red[7] : theme.colors.green[7],
           padding: theme.spacing.md,
           borderRadius: theme.spacing.md,
-          transition: "background .7s ease",
+          transition: "background .7s ease"
         })}
       >
         <Badge
@@ -104,7 +104,7 @@ const Timer = () => {
             background:
               mode === WORK ? theme.colors.red[4] : theme.colors.green[4],
             color: theme.colors.gray[0],
-            userSelect: "none",
+            userSelect: "none"
           })}
         >
           {toUpper(getModeText(mode))}
@@ -151,13 +151,13 @@ export const TimerWidget = () => {
     timer,
     isPlaying,
     session,
-    mode,
+    mode
   } = useTimer();
 
   useHotkeys([
     ["shift+P", () => handleToggleTimer()],
     ["shift+S", () => handleStopTimer()],
-    ["shift+N", () => handleNextTimer(true)],
+    ["shift+N", () => handleNextTimer(true)]
   ]);
 
   return (
@@ -165,18 +165,22 @@ export const TimerWidget = () => {
       sx={(theme) => ({
         width: "100vw",
         height: "100vh",
-        background: mode === WORK ? theme.colors.red[7] : theme.colors.green[7],
+        background: mode === WORK ? theme.colors.red[7] : theme.colors.green[7]
       })}
     >
       <Center
-        sx={{ height: "100%", alignItems: "center", flexDirection: "column" }}
+        sx={{
+          height: "100%",
+          alignItems: "center",
+          flexDirection: "column"
+        }}
       >
         <Title
           order={2}
           size={"6rem"}
           color="white"
           sx={{
-            userSelect: "none",
+            userSelect: "none"
           }}
         >
           {getTime(timer)}
@@ -239,7 +243,7 @@ export const TimerWidget = () => {
             size="h5"
             color="white"
             sx={{
-              userSelect: "none",
+              userSelect: "none"
             }}
           >
             Next timer finish at {getFinishTime()}

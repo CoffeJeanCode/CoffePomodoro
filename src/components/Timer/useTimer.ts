@@ -8,7 +8,7 @@ import {
   currentSession,
   currentTimer,
   modeSelector,
-  stats,
+  stats
 } from "../../state";
 import { LONG_BREAK, SHORT_BREAK, WORK } from "../../state/constants";
 import {
@@ -17,13 +17,13 @@ import {
   getWeekday,
   isToday,
   millisecondsToSeconds,
-  secondsToMilliseconds,
+  secondsToMilliseconds
 } from "../../utils/time.util";
 
 const useTimer = () => {
   const config = useRecoilValue(configAtom);
   const [playNotification] = useSound(config.alarm.url, {
-    volume: 0.5,
+    volume: 0.5
   });
   const [isPlaying, setIsPlaying] = useState(false);
   const [date, setDate] = useRecoilState(currentDate);
@@ -110,11 +110,11 @@ const useTimer = () => {
     const updatedStats = {
       ...existingStats,
       sessions: session,
-      time: existingStats.time + config.timers[WORK],
+      time: existingStats.time + config.timers[WORK]
     };
     return {
       ...statistics,
-      [today]: updatedStats,
+      [today]: updatedStats
     };
   };
 
@@ -135,7 +135,7 @@ const useTimer = () => {
     steps,
     session,
     timer,
-    playNotification,
+    playNotification
   };
 };
 

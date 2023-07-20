@@ -15,13 +15,13 @@ const alarmsConfig = {
   Micellaneus: { title: "Micellaneus", url: Micellaneus },
   Interface: { title: "Interface", url: Interface },
   Rise: { title: "Rise", url: Rise },
-  Shake: { title: "Shake", url: Shake },
+  Shake: { title: "Shake", url: Shake }
 };
 
 const defaultTimers = {
   [WORK]: minutesToSeconds(25),
   [SHORT_BREAK]: minutesToSeconds(5),
-  [LONG_BREAK]: minutesToSeconds(10),
+  [LONG_BREAK]: minutesToSeconds(10)
 };
 
 export const config = atom({
@@ -30,9 +30,9 @@ export const config = atom({
     alarms: alarmsConfig,
     canAutoPlay: false,
     timers: defaultTimers,
-    alarm: alarmsConfig["Micellaneus"],
+    alarm: alarmsConfig["Micellaneus"]
   },
-  effects_UNSTABLE: [persistAtom],
+  effects_UNSTABLE: [persistAtom]
 });
 
 export const currentTask = atom<Task>({
@@ -41,57 +41,57 @@ export const currentTask = atom<Task>({
     id: "",
     title: "",
     cateogory: "",
-    times: 1,
+    times: 1
   },
-  effects: [persistAtom],
+  effects: [persistAtom]
 });
 
 export const currentTimer = atom({
   key: "currentTimer",
   default: 0,
-  effects: [persistAtom],
+  effects: [persistAtom]
 });
 
 export const currentDate = atom({
   key: "currentDate",
   default: getDate(new Date()),
-  effects: [persistAtom],
+  effects: [persistAtom]
 });
 
 export const currentAlarm = atom({
   key: "currentAlarm",
   default: { title: "Micellaneus", url: Micellaneus },
-  effects: [persistAtom],
+  effects: [persistAtom]
 });
 
 export const currentPomodoro = atom({
   key: "currentPomodoro",
   default: 1,
-  effects: [persistAtom],
+  effects: [persistAtom]
 });
 
 export const currentMode = atom({
   key: "currentMode",
   default: WORK,
-  effects: [persistAtom],
+  effects: [persistAtom]
 });
 
 export const currentSession = atom({
   key: "currentSession",
   default: 1,
-  effects: [persistAtom],
+  effects: [persistAtom]
 });
 
 export const tasksList = atom<Task[]>({
   key: "tasksList",
   default: [],
-  effects: [persistAtom],
+  effects: [persistAtom]
 });
 
 export const stats = atom({
   key: "stats",
   default: {},
-  effects: [persistAtom],
+  effects: [persistAtom]
 });
 
 export const modeSelector = selector({
@@ -104,5 +104,5 @@ export const modeSelector = selector({
 
     set(currentMode, newMode);
     set(currentTimer, timer);
-  },
+  }
 });

@@ -50,6 +50,6 @@ export const useConfiguration = () => {
     saveConfiguration,
     resetConfiguration,
     setConfigValue,
-    setAlarm,
+    setAlarm
   };
 };
