@@ -4,7 +4,7 @@ import { FC, memo, useEffect, useState } from "react";
 import { FaTrash } from "react-icons/fa";
 import { useRecoilState } from "recoil";
 import { currentTask, tasksList } from "../../state";
-import { Task } from "../../types/tasks.types";
+import { Task } from "../../types";
 
 interface TaskItemProps {
   task: Task;

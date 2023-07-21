@@ -1,7 +1,7 @@
 import { List, ScrollArea, Title } from "@mantine/core";
 import { isEmpty } from "ramda";
 import { FC, memo } from "react";
-import { Task } from "../../types/tasks.types";
+import { Task } from "../../types";
 import { TaskItem } from "./TaskItem";
 
 interface TasksListProps {

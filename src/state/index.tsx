@@ -1,19 +1,19 @@
 import { prop } from "ramda";
 import { atom, selector } from "recoil";
 import { recoilPersist } from "recoil-persist";
-import type { Task } from "../types/tasks.types";
+import type { Configuration, Timers } from "../types";
 import { getDate, minutesToSeconds } from "../utils/time.util";
-import { ALARMS, LONG_BREAK, SHORT_BREAK, WORK } from "./constants";
+import { ALARMS, LONG_BREAK, POMODORO, SHORT_BREAK } from "./constants";
 
 const { persistAtom } = recoilPersist();
 
-const defaultTimers = {
-  [WORK]: minutesToSeconds(25),
+const defaultTimers: Timers = {
+  [POMODORO]: minutesToSeconds(25),
   [SHORT_BREAK]: minutesToSeconds(5),
   [LONG_BREAK]: minutesToSeconds(10)
 };
 
-export const config = atom({
+export const config = atom<Configuration>({
   key: "pomodoroConfig",
   default: {
     timers: defaultTimers,
@@ -27,7 +27,7 @@ export const config = atom({
   effects: [persistAtom]
 });
 
-export const currentTask = atom<Task>({
+export const currentTask = atom<object>({
   key: "currentTask",
   default: {
     id: "",
@@ -64,7 +64,7 @@ export const currentPomodoro = atom({
 
 export const currentMode = atom({
   key: "currentMode",
-  default: WORK,
+  default: POMODORO,
   effects: [persistAtom]
 });
 
@@ -74,7 +74,7 @@ export const currentSession = atom({
   effects: [persistAtom]
 });
 
-export const tasksList = atom<Task[]>({
+export const tasksList = atom<[]>({
   key: "tasksList",
   default: [],
   effects: [persistAtom]

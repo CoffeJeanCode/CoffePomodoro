@@ -13,12 +13,14 @@ import { FC } from "react";
 import { FaBell } from "react-icons/fa";
 import useSound from "use-sound";
 import { ALARMS } from "../../state/constants";
+import { Configuration } from "../../types";
 
 type AlarmTitle = keyof typeof ALARMS;
 
 interface Props {
-  configuration: any;
-  setConfigValue: any;
+  configuration: Configuration;
+  // rome-ignore lint: romelint/suspicious/noExplicitAny
+  setConfigValue: (path: string, value: any) => void;
 }
 
 const NotificationSettings: FC<Props> = ({ configuration, setConfigValue }) => {
@@ -43,7 +45,6 @@ const NotificationSettings: FC<Props> = ({ configuration, setConfigValue }) => {
               data={keys(ALARMS)}
               onChange={(title: AlarmTitle) => {
                 setConfigValue("notification.alarm", ALARMS[title]);
-                playNotification();
               }}
             />
             <Box my={5}>

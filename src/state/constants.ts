@@ -3,7 +3,7 @@ import Micellaneus from "../assets/Miscellaneus.mp3";
 import Rise from "../assets/Rise.mp3";
 import Shake from "../assets/Shake.mp3";
 
-export const WORK = "work";
+export const POMODORO = "work";
 export const SHORT_BREAK = "short break";
 export const LONG_BREAK = "long break";
 export const DAYS = [

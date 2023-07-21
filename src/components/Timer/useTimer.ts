@@ -11,7 +11,7 @@ import {
   modeSelector,
   stats
 } from "../../state";
-import { LONG_BREAK, SHORT_BREAK, WORK } from "../../state/constants";
+import { LONG_BREAK, POMODORO, SHORT_BREAK } from "../../state/constants";
 import {
   getDate,
   getEndTime,
@@ -67,7 +67,7 @@ const useTimer = () => {
   useEffect(() => {
     const verifyDay = isToday(date);
     setDate(getDate(new Date()));
-    setMode(verifyDay(mode, WORK));
+    setMode(verifyDay(mode, POMODORO));
     setSession(verifyDay(session, 1));
     setSteps(verifyDay(steps, 1));
   }, []);
@@ -80,17 +80,21 @@ const useTimer = () => {
 
     setIsPlaying(config.canAutoPlay);
     setSteps((steps: number) => (steps > 8 - 1 ? 1 : steps + 1));
-    if (mode === WORK) setSession((session: number) => session + 1);
+    if (mode === POMODORO) setSession((session: number) => session + 1);
   };
 
   const resetTimer = () => {
     resetCurrentTimer();
-    setMode(WORK);
+    setMode(POMODORO);
   };
 
   const handleSwitchMode = () =>
     setMode(
-      steps % (8 - 1) === 0 ? LONG_BREAK : mode === WORK ? SHORT_BREAK : WORK
+      steps % (8 - 1) === 0
+        ? LONG_BREAK
+        : mode === POMODORO
+        ? SHORT_BREAK
+        : POMODORO
     );
 
   const handleToggleTimer = () => setIsPlaying((isPlay) => !isPlay);
@@ -103,7 +107,7 @@ const useTimer = () => {
   const handleEndTimer = () => {
     handleSendNotification();
     handleNextTimer(false);
-    if (mode !== WORK) return;
+    if (mode !== POMODORO) return;
     const today = getWeekday(new Date().getDay());
     const newStatistics = updateStatisticsForToday(today);
     setStatistics(newStatistics);
@@ -114,7 +118,7 @@ const useTimer = () => {
     const updatedStats = {
       ...existingStats,
       sessions: session,
-      time: existingStats.time + config.timers[WORK]
+      time: existingStats.time + config.timers[POMODORO]
     };
     return {
       ...statistics,
@@ -126,7 +130,7 @@ const useTimer = () => {
     playNotification();
     if (config.notification.desktopNofitication) {
       const notificationBody =
-        mode === WORK
+        mode === POMODORO
           ? "Well done! Work mode complete. Take a break and recharge!"
           : mode === SHORT_BREAK
           ? "Break's over! Time to get back in action!"

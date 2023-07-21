@@ -1,13 +1,15 @@
 import { Box, Group, Title } from "@mantine/core";
 
 import { FC } from "react";
-import { LONG_BREAK, SHORT_BREAK, WORK } from "../../state/constants";
+import { LONG_BREAK, POMODORO, SHORT_BREAK } from "../../state/constants";
+import { Configuration } from "../../types";
 import { minutesToSeconds, secondsToMinutes } from "../../utils/time.util";
 import { SliderSettings } from "./SliderSettings";
 
 interface Props {
-  configuration: any;
-  setConfigValue: any;
+  configuration: Configuration;
+  // rome-ignore lint: romelint/suspicious/noExplicitAny
+  setConfigValue: (path: string, value: any) => void;
 }
 
 const TimerSettings: FC<Props> = ({ configuration, setConfigValue }) => {
@@ -35,10 +37,10 @@ const TimerSettings: FC<Props> = ({ configuration, setConfigValue }) => {
               label: "60"
             }
           ]}
-          defaultValue={secondsToMinutes(configuration.timers[WORK])}
+          defaultValue={secondsToMinutes(configuration.timers[POMODORO])}
           onChange={(value) =>
             setConfigValue(
-              `timers.${WORK}`,
+              `timers.${POMODORO}`,
               import.meta.env.MODE === "development"
                 ? value
                 : minutesToSeconds(value)

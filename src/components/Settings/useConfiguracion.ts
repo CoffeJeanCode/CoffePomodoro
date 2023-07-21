@@ -2,6 +2,7 @@ import { lensPath, mergeAll, set } from "ramda";
 import { useEffect, useState } from "react";
 import { useRecoilState, useResetRecoilState } from "recoil";
 import { config } from "../../state";
+import { Configuration } from "../../types";
 
 export const useConfiguration = () => {
   const [configuration, setConfiguration] = useRecoilState(config);
@@ -13,9 +14,10 @@ export const useConfiguration = () => {
     setTempConfiguration(configuration);
   }, [configuration]);
 
-  const updateConfiguration = (changes: object) => {
+  // rome-ignore : romelint/suspicious/noExplicitAny
+  const updateConfiguration = (changes: Configuration) => {
     setIsSettingsChanged(true);
-    setTempConfiguration((prevConfig: any) => mergeAll([prevConfig, changes]));
+    setTempConfiguration((prevConfig) => mergeAll([prevConfig, changes]));
   };
 
   const saveConfiguration = () => {
@@ -28,10 +30,13 @@ export const useConfiguration = () => {
     setIsSettingsChanged(false);
     setTempConfiguration(configuration);
   };
-
-  const setConfigValue = (path: string, value: any) => {
+  const setConfigValue = (
+    path: keyof typeof configuration | string,
+    // rome-ignore lint: romelint/suspicious/noExplicitAny
+    value: any
+  ) => {
     setIsSettingsChanged(true);
-    setTempConfiguration((prevConfig: any) =>
+    setTempConfiguration((prevConfig: Configuration) =>
       set(lensPath(path.split(".")), value, prevConfig)
     );
   };

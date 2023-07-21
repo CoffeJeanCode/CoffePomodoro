@@ -1,10 +1,12 @@
 import { Box, Switch, Title } from "@mantine/core";
 
 import { FC } from "react";
+import { Configuration } from "../../types";
 
 interface Props {
-  configuration: any;
-  setConfigValue: any;
+  configuration: Configuration;
+  // rome-ignore lint: romelint/suspicious/noExplicitAny
+  setConfigValue: (path: string, value: any) => void;
 }
 
 const BehaviurSettings: FC<Props> = ({ configuration, setConfigValue }) => {

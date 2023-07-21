@@ -1,5 +1,5 @@
 import { Button, Container, Drawer, ScrollArea, Title } from "@mantine/core";
-import { useState } from "react";
+import { memo, useState } from "react";
 
 import { FaWrench } from "react-icons/fa";
 import BehaviurSettings from "./BehaviurSettings";
@@ -56,4 +56,4 @@ const Settings = () => {
   );
 };
 
-export default Settings;
+export default memo(Settings);
