@@ -6,13 +6,12 @@ import {
   Container,
   Group,
   Text,
-  Title
+  Title,
 } from "@mantine/core";
-import { useDocumentTitle, useHotkeys } from "@mantine/hooks";
+import { useDocumentTitle, useFavicon, useHotkeys } from "@mantine/hooks";
 import { useEffect } from "react";
 import { FaPause, FaPlay, FaStepForward, FaStop } from "react-icons/fa";
 import { useRecoilState } from "recoil";
-import useChangeFavIcon from "../../hooks/useChangeFavIcon";
 import { currentIcon } from "../../state";
 import { LONG_BREAK, POMODORO, SHORT_BREAK } from "../../state/constants";
 import { getModeText } from "../../utils/extra.utils";
@@ -28,20 +27,20 @@ const Timer = () => {
     isPlaying,
     mode,
     session,
-    timer
+    timer,
   } = useTimer();
   const [favIcon, setFavIcon] = useRecoilState(currentIcon);
 
   useEffect(() => {
-    setFavIcon(mode !== POMODORO ? "favicon.svg" : "favicon-break.svg");
+    setFavIcon(mode === POMODORO ? "favicon.svg" : "favicon-break.svg");
   }, [mode]);
 
-  useChangeFavIcon({ new: favIcon, original: "favicon.svg" }, 16, [mode]);
+  useFavicon(favIcon);
 
   useHotkeys([
     ["Space", () => handleToggleTimer()],
     ["S", () => handleStopTimer()],
-    ["N", () => handleNextTimer(true)]
+    ["N", () => handleNextTimer(true)],
   ]);
 
   useDocumentTitle(`${getTime(timer)} | ${getModeText(mode)}`);
@@ -50,27 +49,28 @@ const Timer = () => {
     leftIcon: isPlaying ? <FaPause /> : <FaPlay />,
     title: isPlaying ? "Pause <Space>" : "Play <Space>",
     color: mode === POMODORO ? "red.9" : "green.9",
-    onClick: handleToggleTimer
+    onClick: handleToggleTimer,
   };
 
   const skipButtonProps = {
     leftIcon: <FaStepForward />,
     color: mode === POMODORO ? "red.9" : "green.9",
-    onClick: () => handleNextTimer(true)
+    title: "Skip <N>",
+    onClick: () => handleNextTimer(true),
   };
 
   const pauseButtonProps = {
     leftIcon: <FaPause />,
     title: "Pause <Space>",
     color: mode === POMODORO ? "red.9" : "green.9",
-    onClick: () => handleToggleTimer()
+    onClick: () => handleToggleTimer(),
   };
 
   const stopButtonProps = {
     leftIcon: <FaStop />,
     title: "Stop <S>",
     color: mode === POMODORO ? "red.9" : "green.9",
-    onClick: handleStopTimer
+    onClick: handleStopTimer,
   };
 
   return (
@@ -82,7 +82,7 @@ const Timer = () => {
             mode === POMODORO ? theme.colors.red[7] : theme.colors.green[7],
           padding: theme.spacing.md,
           borderRadius: theme.spacing.md,
-          transition: "background .7s ease"
+          transition: "background .7s ease",
         })}
       >
         <Badge
@@ -90,7 +90,7 @@ const Timer = () => {
             background:
               mode === POMODORO ? theme.colors.red[4] : theme.colors.green[4],
             color: theme.colors.gray[0],
-            userSelect: "none"
+            userSelect: "none",
           })}
         >
           {getModeText(mode).toLocaleUpperCase()}
