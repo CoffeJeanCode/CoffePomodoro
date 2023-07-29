@@ -11,7 +11,7 @@ const TimerMode: FC = () => {
       size="lg"
       sx={(theme) => ({
         background:
-          mode === Mode.Pomodoro ? theme.colors.red[4] : theme.colors.green[4],
+          mode === Mode.Pomodoro ? theme.colors.red[5] : theme.colors.green[5],
         color: theme.colors.gray[0],
         userSelect: "none",
       })}

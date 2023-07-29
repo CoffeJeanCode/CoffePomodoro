@@ -5,7 +5,7 @@ import { FC, memo } from "react";
 const TimerText: FC = () => {
   const timerText = useTimerState((timer) => timer.remainingTimeText);
   return (
-    <Title order={3} size={100} sx={{ userSelect: "none" }} color="white">
+    <Title order={3} size={120} sx={{ userSelect: "none" }} color="white">
       {timerText}
     </Title>
   );

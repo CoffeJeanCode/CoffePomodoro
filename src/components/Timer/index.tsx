@@ -1,8 +1,9 @@
 import { FavIcon, Mode } from "@/models/info";
 import { useInfoState } from "@/stores";
-import { Box, Center, Container } from "@mantine/core";
+import { Box, Button, Center, Container, Group, Sx } from "@mantine/core";
 import { useDocumentTitle, useFavicon, useHotkeys } from "@mantine/hooks";
-import { memo, useEffect } from "react";
+import { memo, useEffect, useMemo, useState } from "react";
+import { RiFullscreenFill } from "react-icons/ri";
 import TimerControllers from "./TimerControllers";
 import TimerInfo from "./TimerInfo";
 import TimerMode from "./TimerMode";
@@ -18,6 +19,7 @@ const Timer = () => {
     remainingTimeText,
   } = useTimer();
   const { mode, favIcon, setFavIcon } = useInfoState();
+  const [isFullScreen, setIsFullScreen] = useState(false);
 
   useEffect(() => {
     setFavIcon(mode === Mode.Pomodoro ? FavIcon.work : FavIcon.break);
@@ -29,24 +31,48 @@ const Timer = () => {
     ["Space", () => handleToggleTimer()],
     ["S", () => handleStopTimer()],
     ["N", () => handleNextTimer({ isSkip: true })],
+    ["F", () => handleFullScreen()],
   ]);
 
+  const handleFullScreen = () => setIsFullScreen(!isFullScreen);
+
+  const fullScreenStyle: Sx = useMemo(
+    () =>
+      isFullScreen
+        ? {
+            width: "100vw",
+            height: "100vh",
+            position: "absolute",
+            top: 0,
+            left: 0,
+            display: "grid",
+            placeItems: "center",
+          }
+        : {},
+    [isFullScreen]
+  );
   return (
     <Container>
       <Box
         sx={(theme) => ({
+          ...fullScreenStyle,
           minWidth: "30vw",
           background:
             mode === Mode.Pomodoro
-              ? theme.colors.red[7]
-              : theme.colors.green[7],
+              ? theme.colors.red[8]
+              : theme.colors.green[8],
           padding: theme.spacing.md,
           borderRadius: theme.spacing.md,
-          transition: "background .7s ease",
+          transition: "all .7s ease",
         })}
       >
         <Center sx={{ flexDirection: "column" }}>
-          <TimerMode />
+          <Group>
+            <TimerMode />
+            <Button size="xs" color="red.8" onClick={handleFullScreen}>
+              <RiFullscreenFill />
+            </Button>
+          </Group>
           <TimerText />
           <TimerControllers
             mode={mode}
