@@ -1,5 +1,5 @@
 import { FavIcon, Info, Mode } from "@/models";
-import { getDate } from "@/utils/time.util";
+import { getCurrentWeek, getDate } from "@/utils/time.util";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
@@ -14,6 +14,7 @@ interface InfoState extends Info {
 const initialState: Info = {
   favIcon: FavIcon.work,
   mode: Mode.Pomodoro,
+  week: getCurrentWeek(new Date()),
   date: getDate(new Date()),
   pomodoros: 1,
   sessions: 1,

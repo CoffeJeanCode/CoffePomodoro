@@ -1,16 +1,20 @@
 import Helps from "@/components/Helps";
 import Settings from "@/components/Settings";
+import Stats from "@/components/Stats";
 import Timer from "@/components/Timer";
 import { useInfoState } from "@/stores";
-import { isToday } from "@/utils/time.util";
+import { useStatsState } from "@/stores/states/stats";
+import { getCurrentWeek, isToday } from "@/utils/time.util";
 import { Center, Container, Group, Title } from "@mantine/core";
 import { useEffect } from "react";
 
 const Home = () => {
-  const { date, resetInfo } = useInfoState();
+  const { date, week, resetInfo } = useInfoState();
+  const resetStats = useStatsState((stats) => stats.resetStats);
 
   useEffect(() => {
     if (!isToday(date)) resetInfo();
+    if (week !== getCurrentWeek(new Date())) resetStats();
   }, []);
 
   return (
@@ -21,7 +25,7 @@ const Home = () => {
         </Title>
         <Group mb={20}>
           <Settings />
-          {/* <Stats /> */}
+          <Stats />
           <Helps />
         </Group>
         <Timer />
