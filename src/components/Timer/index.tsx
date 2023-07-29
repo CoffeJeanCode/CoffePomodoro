@@ -15,7 +15,7 @@ const Timer = () => {
     handleStopTimer,
     handleToggleTimer,
     isRunning,
-    remainingTime,
+    remainingTimeText,
   } = useTimer();
   const { mode, favIcon, setFavIcon } = useInfoState();
 
@@ -24,7 +24,7 @@ const Timer = () => {
   }, [mode]);
 
   useFavicon(favIcon);
-  useDocumentTitle(`${remainingTime}`);
+  useDocumentTitle(`${remainingTimeText} | ${mode.toLocaleUpperCase()}`);
   useHotkeys([
     ["Space", () => handleToggleTimer()],
     ["S", () => handleStopTimer()],
