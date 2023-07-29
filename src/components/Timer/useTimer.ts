@@ -2,7 +2,7 @@ import { Mode } from "@/models";
 import { useConfigState, useInfoState, useTimerState } from "@/stores";
 import { useStatsState } from "@/stores/states/stats";
 import { showNotification } from "@/utils/notification.utils";
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import useSound from "use-sound";
 import {
   getToday,
@@ -41,6 +41,11 @@ const useTimer = () => {
   // rome-ignore lint: romelint/suspicious/noExplicitAny
   const intervalRef = useRef<any>(null);
 
+  const calculatedToLongBreak = useMemo(
+    () => behaviur.pomodorosToLongBreak * 2 - 1,
+    [behaviur]
+  );
+
   useEffect(() => {
     const then = Date.now() + secondsToMilliseconds(remainingTime);
     setFinishTime(then);
@@ -72,15 +77,15 @@ const useTimer = () => {
     handleSwitchMode();
 
     if (isSkip) return;
-    setIsRunning(behaviur.canAutoPlay);
 
-    setPomodoros(pomodoros > 8 - 1 ? pomodoros : pomodoros + 1);
-    setSessions(mode !== Mode.Pomodoro ? sessions : sessions + 1);
+    setIsRunning(behaviur.canAutoPlay);
+    setPomodoros(pomodoros < calculatedToLongBreak ? pomodoros + 1 : 1);
+    setSessions(mode !== Mode.Pomodoro ? sessions + 1 : sessions);
   };
 
   const handleSwitchMode = () =>
     setMode(
-      pomodoros % (8 - 1) === 0
+      pomodoros % calculatedToLongBreak === 0
         ? Mode.LongBreak
         : mode === Mode.Pomodoro
         ? Mode.ShortBreak
