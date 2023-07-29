@@ -1,5 +1,4 @@
 import { MantineProvider } from "@mantine/core";
-import { RecoilRoot } from "recoil";
 import { Route } from "wouter";
 
 import Home from "./pages/Home";
@@ -11,9 +10,7 @@ const App = () => {
       withNormalizeCSS
       withGlobalStyles
     >
-      <RecoilRoot>
-        <Route path="/" component={Home} />
-      </RecoilRoot>
+      <Route path="/" component={Home} />
     </MantineProvider>
   );
 };

@@ -1,166 +1,105 @@
-import { useEffect, useState } from "react";
-import { useRecoilState, useRecoilValue, useResetRecoilState } from "recoil";
+import { Mode } from "@/models";
+import { useConfigState, useInfoState, useTimerState } from "@/stores";
+import { showNotification } from "@/utils/notification.utils";
+import { useEffect, useRef } from "react";
 import useSound from "use-sound";
-import {
-  config as configAtom,
-  currentDate,
-  currentIcon,
-  currentPomodoro,
-  currentSession,
-  currentTimer,
-  modeSelector,
-  stats
-} from "../../state";
-import { LONG_BREAK, POMODORO, SHORT_BREAK } from "../../state/constants";
-import {
-  getDate,
-  getEndTime,
-  getWeekday,
-  isToday,
-  millisecondsToSeconds,
-  secondsToMilliseconds
-} from "../../utils/time.util";
+import { millisecondsToSeconds, secondsToMilliseconds } from "../../utils/time.util";
 
 const useTimer = () => {
-  const config = useRecoilValue(configAtom);
-  const [playNotification] = useSound(config.notification.alarm.url, {
-    volume: config.notification.volume
-  });
-  const [finishTime, setFinishTime] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [date, setDate] = useRecoilState(currentDate);
-  const [mode, setMode] = useRecoilState(modeSelector);
-  const [timer, setTimer] = useRecoilState(currentTimer);
-  const [session, setSession] = useRecoilState(currentSession);
-  const [steps, setSteps] = useRecoilState(currentPomodoro);
-  const [statistics, setStatistics] = useRecoilState(stats);
-  const favIcon = useRecoilValue(currentIcon);
-  const resetCurrentTimer = useResetRecoilState(currentTimer);
+	const {
+		config: { timers, notification, behaviur },
+	} = useConfigState();
+	const { favIcon, mode, pomodoros, sessions, setMode, setPomodoros, setSessions } = useInfoState();
+	const { remainingTime, remainingTimeText, isRunning, setIsRunning, setFinishTime, setRemainingTime, resetTimer } =
+		useTimerState();
 
-  useEffect(() => {
-    let interval: number;
-    const then = Date.now() + secondsToMilliseconds(timer);
-    setFinishTime(then);
+	const [playNotification] = useSound(notification.alarm.url, {
+		volume: notification.volume,
+	});
 
-    interval = setInterval(() => {
-      if (!isPlaying) clearInterval(interval);
-      else {
-        const secondsLeft = Math.round(
-          millisecondsToSeconds(then - Date.now())
-        );
-        setTimer(secondsLeft);
-      }
+	// rome-ignore lint: romelint/suspicious/noExplicitAny
+	const intervalRef = useRef<any>(null);
 
-      if (timer <= 1) {
-        clearInterval(interval);
-        handleEndTimer();
-      }
-    }, 1000);
+	useEffect(() => {
+		const then = Date.now() + secondsToMilliseconds(remainingTime);
+		setFinishTime(then);
 
-    return () => clearInterval(interval);
-  }, [timer, isPlaying, mode, config]);
+		intervalRef.current = setInterval(() => {
+			if (!isRunning) clearInterval(intervalRef.current);
+			else {
+				const secondsLeft = Math.round(millisecondsToSeconds(then - Date.now()));
+				setRemainingTime(secondsLeft);
+			}
 
-  useEffect(() => {
-    resetTimer();
-  }, [config.timers]);
+			if (remainingTime <= 1) {
+				clearInterval(intervalRef.current);
+				handleEndTimer();
+			}
+		}, 1000);
 
-  useEffect(() => {
-    const verifyDay = isToday(date);
-    setDate(getDate(new Date()));
-    setMode(verifyDay(mode, POMODORO));
-    setSession(verifyDay(session, 1));
-    setSteps(verifyDay(steps, 1));
-  }, []);
+		return () => clearInterval(intervalRef.current);
+	}, [isRunning, remainingTime, timers]);
 
-  const handleNextTimer = (isSkip: boolean) => {
-    resetTimer();
-    handleSwitchMode();
+	useEffect(() => {
+		const newRemainingTime = Number(timers[mode]);
+		setRemainingTime(newRemainingTime);
+	}, [mode, timers]);
 
-    if (isSkip) return;
+	const handleNextTimer = ({ isSkip }: { isSkip: boolean }) => {
+		handleSwitchMode();
 
-    setIsPlaying(config.canAutoPlay);
-    setSteps((steps: number) => (steps > 8 - 1 ? 1 : steps + 1));
-    if (mode === POMODORO) setSession((session: number) => session + 1);
-  };
+		if (isSkip) return;
+		setIsRunning(behaviur.canAutoPlay);
 
-  const resetTimer = () => {
-    resetCurrentTimer();
-    setMode(POMODORO);
-  };
+		setPomodoros(pomodoros > 8 - 1 ? pomodoros : pomodoros + 1);
+		setSessions(mode !== Mode.Pomodoro ? sessions : sessions + 1);
+	};
 
-  const handleSwitchMode = () =>
-    setMode(
-      steps % (8 - 1) === 0
-        ? LONG_BREAK
-        : mode === POMODORO
-        ? SHORT_BREAK
-        : POMODORO
-    );
+	const handleSwitchMode = () =>
+		setMode(pomodoros % (8 - 1) === 0 ? Mode.LongBreak : mode === Mode.Pomodoro ? Mode.ShortBreak : Mode.Pomodoro);
 
-  const handleToggleTimer = () => setIsPlaying((isPlay) => !isPlay);
+	const handleToggleTimer = () => setIsRunning(!isRunning);
 
-  const handleStopTimer = () => {
-    setIsPlaying(config.canAutoPlay);
-    resetTimer();
-  };
+	const handleStopTimer = () => {
+		setIsRunning(behaviur.canAutoPlay);
+		if (resetTimer) resetTimer();
+	};
 
-  const handleEndTimer = () => {
-    handleSendNotification();
-    handleNextTimer(false);
-    if (mode !== POMODORO) return;
-    const today = getWeekday(new Date().getDay());
-    const newStatistics = updateStatisticsForToday(today);
-    setStatistics(newStatistics);
-  };
+	const handleEndTimer = () => {
+		handleSendNotification();
+		handleNextTimer({ isSkip: false });
+	};
 
-  const updateStatisticsForToday = (today: string) => {
-    const existingStats = statistics[today] || { sessions: 0, time: 0 };
-    const updatedStats = {
-      ...existingStats,
-      sessions: session,
-      time: existingStats.time + config.timers[POMODORO]
-    };
-    return {
-      ...statistics,
-      [today]: updatedStats
-    };
-  };
+	const handleSendNotification = () => {
+		playNotification();
 
-  const handleSendNotification = () => {
-    playNotification();
-    if (config.notification.desktopNofitication) {
-      const notificationBody =
-        mode === POMODORO
-          ? "Well done! Work mode complete. Take a break and recharge!"
-          : mode === SHORT_BREAK
-          ? "Break's over! Time to get back in action!"
-          : mode === LONG_BREAK
-          ? "You rocked the break! Let's get back to work."
-          : "Timer finish";
-      new Notification("Timer has finished", {
-        lang: "en",
-        body: notificationBody,
-        icon: favIcon,
-        vibrate: [100, 200, 300]
-      });
-    }
-  };
+		if (!notification.desktopNofitication) return;
 
-  const getFinishTime = () => getEndTime(finishTime);
+		const notificationBody =
+			mode === Mode.Pomodoro
+				? "Well done! Work mode complete. Take a break and recharge!"
+				: mode === Mode.ShortBreak
+				? "Break's over! Time to get back in action!"
+				: mode === Mode.LongBreak
+				? "You rocked the break! Let's get back to work."
+				: "Timer finish";
+		showNotification("Timer has finished", notification.desktopNofitication, {
+			lang: "en",
+			body: notificationBody,
+			icon: favIcon,
+			vibrate: [100, 200, 300],
+		});
+	};
 
-  return {
-    handleNextTimer,
-    handleStopTimer,
-    handleSwitchMode,
-    handleToggleTimer,
-    getFinishTime,
-    isPlaying,
-    mode,
-    steps,
-    session,
-    timer,
-    playNotification
-  };
+	return {
+		handleNextTimer,
+		handleStopTimer,
+		handleSwitchMode,
+		handleToggleTimer,
+		isRunning,
+		remainingTime,
+		remainingTimeText,
+	};
 };
 
 export default useTimer;

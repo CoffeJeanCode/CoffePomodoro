@@ -1,131 +1,56 @@
-import {
-  Badge,
-  Box,
-  Button,
-  Center,
-  Container,
-  Group,
-  Text,
-  Title,
-} from "@mantine/core";
+import { FavIcon, Mode } from "@/models/info";
+import { useInfoState } from "@/stores";
+import { Box, Center, Container } from "@mantine/core";
 import { useDocumentTitle, useFavicon, useHotkeys } from "@mantine/hooks";
-import { useEffect } from "react";
-import { FaPause, FaPlay, FaStepForward, FaStop } from "react-icons/fa";
-import { useRecoilState } from "recoil";
-import { currentIcon } from "../../state";
-import { LONG_BREAK, POMODORO, SHORT_BREAK } from "../../state/constants";
-import { getModeText } from "../../utils/extra.utils";
-import { getTime } from "../../utils/time.util";
+import { memo, useEffect } from "react";
+import TimerControllers from "./TimerControllers";
+import TimerInfo from "./TimerInfo";
+import TimerMode from "./TimerMode";
+import TimerText from "./TimerText";
 import useTimer from "./useTimer";
 
 const Timer = () => {
-  const {
-    handleNextTimer,
-    handleStopTimer,
-    handleToggleTimer,
-    getFinishTime,
-    isPlaying,
-    mode,
-    session,
-    timer,
-  } = useTimer();
-  const [favIcon, setFavIcon] = useRecoilState(currentIcon);
+	const { handleNextTimer, handleStopTimer, handleToggleTimer, isRunning, remainingTime } = useTimer();
+	const { mode, favIcon, setFavIcon } = useInfoState();
 
-  useEffect(() => {
-    setFavIcon(mode === POMODORO ? "favicon.svg" : "favicon-break.svg");
-  }, [mode]);
+	useEffect(() => {
+		setFavIcon(mode === Mode.Pomodoro ? FavIcon.work : FavIcon.break);
+	}, [mode]);
 
-  useFavicon(favIcon);
+	useFavicon(favIcon);
+	useDocumentTitle(`${remainingTime}`);
+	useHotkeys([
+		["Space", () => handleToggleTimer()],
+		["S", () => handleStopTimer()],
+		["N", () => handleNextTimer({ isSkip: true })],
+	]);
 
-  useHotkeys([
-    ["Space", () => handleToggleTimer()],
-    ["S", () => handleStopTimer()],
-    ["N", () => handleNextTimer(true)],
-  ]);
-
-  useDocumentTitle(`${getTime(timer)} | ${getModeText(mode)}`);
-
-  const playButtonProps = {
-    leftIcon: isPlaying ? <FaPause /> : <FaPlay />,
-    title: isPlaying ? "Pause <Space>" : "Play <Space>",
-    color: mode === POMODORO ? "red.9" : "green.9",
-    onClick: handleToggleTimer,
-  };
-
-  const skipButtonProps = {
-    leftIcon: <FaStepForward />,
-    color: mode === POMODORO ? "red.9" : "green.9",
-    title: "Skip <N>",
-    onClick: () => handleNextTimer(true),
-  };
-
-  const pauseButtonProps = {
-    leftIcon: <FaPause />,
-    title: "Pause <Space>",
-    color: mode === POMODORO ? "red.9" : "green.9",
-    onClick: () => handleToggleTimer(),
-  };
-
-  const stopButtonProps = {
-    leftIcon: <FaStop />,
-    title: "Stop <S>",
-    color: mode === POMODORO ? "red.9" : "green.9",
-    onClick: handleStopTimer,
-  };
-
-  return (
-    <Container>
-      <Box
-        sx={(theme) => ({
-          minWidth: "30vw",
-          background:
-            mode === POMODORO ? theme.colors.red[7] : theme.colors.green[7],
-          padding: theme.spacing.md,
-          borderRadius: theme.spacing.md,
-          transition: "background .7s ease",
-        })}
-      >
-        <Badge
-          sx={(theme) => ({
-            background:
-              mode === POMODORO ? theme.colors.red[4] : theme.colors.green[4],
-            color: theme.colors.gray[0],
-            userSelect: "none",
-          })}
-        >
-          {getModeText(mode).toLocaleUpperCase()}
-        </Badge>
-        <Center sx={{ flexDirection: "column" }}>
-          <Title order={3} size={80} color="white">
-            {getTime(timer)}
-          </Title>
-          <Text color="white">Session #{session}</Text>
-          <Group my={10}>
-            {!isPlaying ? (
-              <>
-                <Button {...playButtonProps}>Play</Button>
-                <Button {...skipButtonProps}>Skip</Button>
-              </>
-            ) : (
-              <>
-                <Button {...pauseButtonProps}>Pause</Button>
-                {mode === SHORT_BREAK || mode === LONG_BREAK ? (
-                  <Button {...skipButtonProps}>Skip</Button>
-                ) : (
-                  <Button {...stopButtonProps}>Stop</Button>
-                )}
-              </>
-            )}
-          </Group>
-          {isPlaying && (
-            <Title order={5} size="h5" my={10} color="white">
-              Next timer finish at {getFinishTime()}
-            </Title>
-          )}
-        </Center>
-      </Box>
-    </Container>
-  );
+	return (
+		<Container>
+			<Box
+				sx={(theme) => ({
+					minWidth: "30vw",
+					background: mode === Mode.Pomodoro ? theme.colors.red[7] : theme.colors.green[7],
+					padding: theme.spacing.md,
+					borderRadius: theme.spacing.md,
+					transition: "background .7s ease",
+				})}
+			>
+				<Center sx={{ flexDirection: "column" }}>
+					<TimerMode />
+					<TimerText />
+					<TimerControllers
+						mode={mode}
+						handleNextTimer={handleNextTimer}
+						handleStopTimer={handleStopTimer}
+						handleToggleTimer={handleToggleTimer}
+						isPlaying={isRunning}
+					/>
+					<TimerInfo />
+				</Center>
+			</Box>
+		</Container>
+	);
 };
 
-export default Timer;
+export default memo(Timer);
