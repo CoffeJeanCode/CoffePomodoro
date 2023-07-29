@@ -21,7 +21,7 @@ Chart.register(...registerables);
 
 const Stats = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { stats, productivityStat } = useStatsState();
+  const { stats, prevWeekStats, productivityStat } = useStatsState();
   const [statType, setStatType] = useState(StatType.Sessions);
 
   const labels = keys(stats);

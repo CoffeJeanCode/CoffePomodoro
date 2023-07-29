@@ -95,8 +95,9 @@ const useTimer = () => {
   const handleToggleTimer = () => setIsRunning(!isRunning);
 
   const handleStopTimer = () => {
+    if (mode !== Mode.Pomodoro) return;
+    setRemainingTime(timers[mode]);
     setIsRunning(behaviur.canAutoPlay);
-    if (resetTimer) resetTimer();
   };
 
   const handleEndTimer = () => {
