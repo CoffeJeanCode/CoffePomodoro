@@ -4,31 +4,35 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 interface InfoState extends Info {
-	setMode: (mode: Mode) => void;
-	setFavIcon: (favIcon: FavIcon) => void;
-	setPomodoros: (pomodoros: number) => void;
-	setSessions: (sessions: number) => void;
-	setInfo: (newInfo: Info) => void;
+  setMode: (mode: Mode) => void;
+  setFavIcon: (favIcon: FavIcon) => void;
+  setPomodoros: (pomodoros: number) => void;
+  setSessions: (sessions: number) => void;
+  resetInfo: () => void;
 }
 
+const initialState: Info = {
+  favIcon: FavIcon.work,
+  mode: Mode.Pomodoro,
+  date: getDate(new Date()),
+  pomodoros: 1,
+  sessions: 1,
+};
+
 export const useInfoState = create<InfoState>()(
-	persist(
-		(set) => ({
-			favIcon: FavIcon.work,
-			mode: Mode.Pomodoro,
-			date: getDate(new Date()),
-			pomodoros: 1,
-			sessions: 1,
-			setFavIcon: (favIcon) => set(() => ({ favIcon })),
-			setPomodoros: (pomodoros) => set(() => ({ pomodoros })),
-			setSessions: (sessions) => set(() => ({ sessions })),
-			setMode: (mode) => set(() => ({ mode })),
-			setInfo: (info) => set(() => ({ ...info })),
-		}),
-		{
-			name: "info",
-		},
-	),
+  persist(
+    (set) => ({
+      ...initialState,
+      setFavIcon: (favIcon) => set(() => ({ favIcon })),
+      setPomodoros: (pomodoros) => set(() => ({ pomodoros })),
+      setSessions: (sessions) => set(() => ({ sessions })),
+      setMode: (mode) => set(() => ({ mode })),
+      resetInfo: () => set(initialState),
+    }),
+    {
+      name: "info",
+    }
+  )
 );
 
 // export const infoSelector = selector({
