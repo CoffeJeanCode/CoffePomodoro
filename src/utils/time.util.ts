@@ -34,7 +34,7 @@ export const getToday = (date: Date) => {
 export const getWeekday = (day: number) => DAYS[day] ?? DAYS[0];
 
 export const getCurrentWeek = (currentDate: Date) => {
-  const startYearDate = new Date(currentDate.getFullYear(), 0, 1);
+  const startYearDate = new Date(new Date(currentDate).getFullYear(), 0, 1);
 
   return Math.ceil(
     Math.floor(
