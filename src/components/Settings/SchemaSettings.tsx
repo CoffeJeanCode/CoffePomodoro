@@ -1,5 +1,6 @@
 import { Configuration } from "@/models";
 import { useSchemasState } from "@/stores/states/schema";
+import { secondsToMinutes } from "@/utils/time.util";
 import { Box, Button, Chip, Flex, ScrollArea, Title } from "@mantine/core";
 import { values } from "ramda";
 import { FC } from "react";
@@ -18,7 +19,7 @@ const SchemaSettings: FC<Props> = ({ configuration }) => {
 
   const handleAddSchema = () => {
     addSchema({
-      title: values(timers).join(" "),
+      title: values(timers).map(secondsToMinutes).join(" "),
       ...timers,
     });
   };
