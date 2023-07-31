@@ -1,6 +1,6 @@
 import { Configuration, Mode } from "@/models";
 import { create } from "zustand";
-import { createJSONStorage, persist } from "zustand/middleware";
+import { persist } from "zustand/middleware";
 import { minutesToSeconds } from "../../utils/time.util";
 import { ALARMS } from "../constants";
 
@@ -41,7 +41,6 @@ export const useConfigState = create<ConfigurationState>()(
     }),
     {
       name: "config",
-      storage: createJSONStorage(() => localStorage),
     }
   )
 );
