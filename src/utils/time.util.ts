@@ -17,7 +17,7 @@ export const getDate = (date: Date) =>
     date.getDate().toString().padStart(2, "0"),
   ].join("-");
 
-export const getToday = () => {
+export const getToday = (date: Date) => {
   const days = [
     "Sunday",
     "Monday",
@@ -27,7 +27,7 @@ export const getToday = () => {
     "Friday",
     "Saturday",
   ];
-  const todayNumber = new Date().getDay();
+  const todayNumber = date.getDay();
   const today = days[todayNumber];
   return Weekday[today as keyof typeof Weekday];
 };

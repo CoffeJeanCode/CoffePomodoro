@@ -17,6 +17,7 @@ const useTimer = () => {
   } = useConfigState();
   const { findCurrentSchema, currentSchemaId } = useSchemasState();
   const {
+    date,
     favIcon,
     mode,
     pomodoros,
@@ -104,7 +105,7 @@ const useTimer = () => {
   const handleEndTimer = () => {
     handleSendNotification();
     handleNextTimer({ isSkip: false });
-    updateDailyStats(getToday(), {
+    updateDailyStats(getToday(date.raw), {
       sessions,
       time: timers[Mode.Pomodoro],
     });

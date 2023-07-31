@@ -11,11 +11,13 @@ interface InfoState extends Info {
   resetInfo: () => void;
 }
 
+const todayDate = new Date();
+
 const initialState: Info = {
   favIcon: FavIcon.work,
   mode: Mode.Pomodoro,
-  week: getCurrentWeek(new Date()),
-  date: getDate(new Date()),
+  date: { formated: getDate(todayDate), raw: todayDate },
+  week: getCurrentWeek(todayDate),
   pomodoros: 1,
   sessions: 1,
 };

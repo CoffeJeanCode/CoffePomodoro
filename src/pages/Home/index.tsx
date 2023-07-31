@@ -13,8 +13,8 @@ const Home = () => {
   const resetStats = useStatsState((stats) => stats.resetStats);
 
   useEffect(() => {
-    if (!isToday(date)) resetInfo();
-    if (week !== getCurrentWeek(new Date())) resetStats();
+    if (!isToday(date.formated)) resetInfo();
+    if (week !== getCurrentWeek(date.raw)) resetStats();
   }, []);
 
   return (

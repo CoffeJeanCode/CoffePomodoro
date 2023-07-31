@@ -10,7 +10,7 @@ export enum FavIcon {
 }
 
 export interface Info {
-  date: string;
+  date: { formated: string; raw: Date };
   week: number;
   favIcon: FavIcon;
   mode: Mode;
