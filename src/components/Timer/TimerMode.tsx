@@ -4,21 +4,20 @@ import { Badge } from "@mantine/core";
 import { FC, memo } from "react";
 
 const TimerMode: FC = () => {
-  const mode = useInfoState((info) => info.mode);
+	const mode = useInfoState((info) => info.mode);
 
-  return (
-    <Badge
-      size="lg"
-      sx={(theme) => ({
-        background:
-          mode === Mode.Pomodoro ? theme.colors.red[5] : theme.colors.green[5],
-        color: theme.colors.gray[0],
-        userSelect: "none",
-      })}
-    >
-      {mode.toLocaleUpperCase()}
-    </Badge>
-  );
+	return (
+		<Badge
+			size="lg"
+			sx={(theme) => ({
+				background: mode === Mode.Pomodoro ? theme.colors.red[5] : theme.colors.green[5],
+				color: theme.colors.gray[0],
+				userSelect: "none",
+			})}
+		>
+			{mode.toLocaleUpperCase()}
+		</Badge>
+	);
 };
 
 export default memo(TimerMode);

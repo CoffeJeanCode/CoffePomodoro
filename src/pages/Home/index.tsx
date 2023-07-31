@@ -9,29 +9,29 @@ import { Center, Container, Group, Title } from "@mantine/core";
 import { useEffect } from "react";
 
 const Home = () => {
-  const { date, week, resetInfo } = useInfoState();
-  const resetStats = useStatsState((stats) => stats.resetStats);
+	const { date, week, resetInfo } = useInfoState();
+	const resetStats = useStatsState((stats) => stats.resetStats);
 
-  useEffect(() => {
-    if (!isToday(date.formated)) resetInfo();
-    if (week !== getCurrentWeek(date.raw)) resetStats();
-  }, []);
+	useEffect(() => {
+		if (!isToday(date.formated)) resetInfo();
+		if (week !== getCurrentWeek(date.raw)) resetStats();
+	}, []);
 
-  return (
-    <Container>
-      <Center sx={{ flexDirection: "column" }}>
-        <Title order={1} color="white" my={10}>
-          CoffePomodoro
-        </Title>
-        <Group mb={20}>
-          <Settings />
-          <Stats />
-          <Helps />
-        </Group>
-        <Timer />
-      </Center>
-    </Container>
-  );
+	return (
+		<Container>
+			<Center sx={{ flexDirection: "column" }}>
+				<Title order={1} color="white" my={10}>
+					CoffePomodoro
+				</Title>
+				<Group mb={20}>
+					<Settings />
+					<Stats />
+					<Helps />
+				</Group>
+				<Timer />
+			</Center>
+		</Container>
+	);
 };
 
 export default Home;
