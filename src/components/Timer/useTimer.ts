@@ -1,5 +1,6 @@
 import { Mode } from "@/models";
 import { useConfigState, useInfoState, useTimerState } from "@/stores";
+import { useSchemasState } from "@/stores/states/schema";
 import { useStatsState } from "@/stores/states/stats";
 import { showNotification } from "@/utils/notification.utils";
 import { useEffect, useMemo, useRef } from "react";
@@ -14,6 +15,7 @@ const useTimer = () => {
   const {
     config: { timers, notification, behaviur },
   } = useConfigState();
+  const { findCurrentSchema, currentSchemaId } = useSchemasState();
   const {
     favIcon,
     mode,
@@ -30,10 +32,8 @@ const useTimer = () => {
     setIsRunning,
     setFinishTime,
     setRemainingTime,
-    resetTimer,
   } = useTimerState();
   const { updateDailyStats } = useStatsState();
-
   const [playNotification] = useSound(notification.alarm.url, {
     volume: notification.volume,
   });
@@ -41,6 +41,7 @@ const useTimer = () => {
   // rome-ignore lint: romelint/suspicious/noExplicitAny
   const intervalRef = useRef<any>(null);
 
+  const currentSchema = useMemo(() => findCurrentSchema(), [currentSchemaId]);
   const calculatedToLongBreak = useMemo(
     () => behaviur.pomodorosToLongBreak * 2 - 1,
     [behaviur]
@@ -69,9 +70,9 @@ const useTimer = () => {
   }, [isRunning, remainingTime, timers]);
 
   useEffect(() => {
-    const newRemainingTime = Number(timers[mode]);
+    const newRemainingTime = currentSchema ? currentSchema[mode] : timers[mode];
     setRemainingTime(newRemainingTime);
-  }, [mode, timers]);
+  }, [mode, timers, currentSchemaId]);
 
   const handleNextTimer = ({ isSkip }: { isSkip: boolean }) => {
     handleSwitchMode();
