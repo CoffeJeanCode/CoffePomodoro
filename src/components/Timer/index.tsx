@@ -69,7 +69,11 @@ const Timer = () => {
         <Center sx={{ flexDirection: "column" }}>
           <Group>
             <TimerMode />
-            <Button size="xs" color="red.8" onClick={handleFullScreen}>
+            <Button
+              size="xs"
+              color={mode === Mode.Pomodoro ? "red.8" : "green.8"}
+              onClick={handleFullScreen}
+            >
               <RiFullscreenFill />
             </Button>
           </Group>
