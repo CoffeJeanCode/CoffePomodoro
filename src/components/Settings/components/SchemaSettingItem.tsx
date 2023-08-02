@@ -37,6 +37,7 @@ const SchemaSettingItem: FC<SchemaSettingItemProps> = ({ schema }) => {
           <Input
             size="xs"
             maw={80}
+            miw={35}
             value={title}
             variant="unstyled"
             onChange={({ target }) => setTitle(target.value)}
