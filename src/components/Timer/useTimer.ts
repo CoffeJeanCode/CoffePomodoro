@@ -15,7 +15,7 @@ const useTimer = () => {
   const {
     config: { timers, notification, behaviur },
   } = useConfigState();
-  const { currentSchemaId, schemas, findCurrentSchema } = useSchemasState();
+  const { schemas, findCurrentSchema } = useSchemasState();
   const {
     date,
     favIcon,
@@ -77,16 +77,17 @@ const useTimer = () => {
   }, [mode, timers, schemas, nextRemainingTime]);
 
   const handleNextTimer = ({ isSkip }: { isSkip: boolean }) => {
-    handleSwitchMode();
+    switchMode();
+
+    setIsRunning(behaviur.canAutoPlay);
+    setPomodoros(pomodoros <= calculatedToLongBreak ? pomodoros + 1 : 1);
 
     if (isSkip) return;
 
-    setIsRunning(behaviur.canAutoPlay);
-    setPomodoros(pomodoros < calculatedToLongBreak ? pomodoros + 1 : 1);
-    setSessions(mode !== Mode.Pomodoro ? sessions + 1 : sessions);
+    setSessions(mode === Mode.Pomodoro ? sessions + 1 : sessions);
   };
 
-  const handleSwitchMode = () =>
+  const switchMode = () =>
     setMode(
       pomodoros % calculatedToLongBreak === 0
         ? Mode.LongBreak
@@ -104,7 +105,7 @@ const useTimer = () => {
   };
 
   const handleEndTimer = () => {
-    handleSendNotification();
+    sendNotification();
     handleNextTimer({ isSkip: false });
     updateDailyStats(getToday(date.raw), {
       sessions,
@@ -112,7 +113,7 @@ const useTimer = () => {
     });
   };
 
-  const handleSendNotification = () => {
+  const sendNotification = () => {
     playNotification();
 
     if (!notification.desktopNofitication) return;
@@ -136,7 +137,7 @@ const useTimer = () => {
   return {
     handleNextTimer,
     handleStopTimer,
-    handleSwitchMode,
+    switchMode,
     handleToggleTimer,
     isRunning,
     remainingTime,

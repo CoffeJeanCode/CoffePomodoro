@@ -18,8 +18,9 @@ export const getDate = (date: Date) =>
 	].join("-");
 
 export const getToday = (date: Date) => {
+	const $date = new Date(date)
 	const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-	const todayNumber = date.getDay();
+	const todayNumber = $date.getDay();
 	const today = days[todayNumber];
 	return Weekday[today as keyof typeof Weekday];
 };
