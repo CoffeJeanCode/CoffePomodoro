@@ -21,13 +21,14 @@ Chart.register(...registerables);
 
 const Stats = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { stats, prevWeekStats, productivityStat } = useStatsState();
+  const { stats, productivityStat } = useStatsState();
   const [statType, setStatType] = useState(StatType.Sessions);
 
   const labels = keys(stats);
   const data = map((weekday) => stats[weekday][statType], labels);
-  const label = statType === StatType.Sessions ? "N° Sessions" : "# Minutes";
-  const maxValue = Number(reduce(max, 0, data));
+  const label = statType === StatType.Sessions ? "# Sessions" : "# Minutes";
+  const maxValue =
+    Number(reduce(max, 0, data)) / (statType === StatType.Sessions ? 1 : 60);
 
   return (
     <>
