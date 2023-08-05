@@ -26,6 +26,11 @@ export const useConfiguration = () => {
     setConfig(tempConfig);
   };
 
+  const cancelConfiguration = () => {
+    setIsSettingsChanged(false);
+    setConfig(config);
+  };
+
   const resetConfiguration = () => {
     if (resetConfig) resetConfig();
     setIsSettingsChanged(false);
@@ -47,6 +52,7 @@ export const useConfiguration = () => {
     isSettingsChanged,
     updateConfiguration,
     saveConfiguration,
+    cancelConfiguration,
     resetConfiguration,
     setConfigValue,
   };

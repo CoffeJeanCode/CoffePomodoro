@@ -1,4 +1,11 @@
-import { Button, Container, Drawer, ScrollArea, Title } from "@mantine/core";
+import {
+  Button,
+  Container,
+  Drawer,
+  Group,
+  ScrollArea,
+  Title,
+} from "@mantine/core";
 import { memo, useState } from "react";
 
 import { TimerSchema } from "@/models/schemas";
@@ -13,17 +20,23 @@ import TimerSettings from "./TimerSettings";
 
 const Settings = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { config, setConfigValue, isSettingsChanged, saveConfiguration } =
-    useConfiguration();
+  const {
+    config,
+    setConfigValue,
+    isSettingsChanged,
+    saveConfiguration,
+    cancelConfiguration,
+  } = useConfiguration();
   const updateCurrentSchema = useSchemasState(
     (schema) => schema.updateCurrentSchema
   );
 
-  const handleSaveSettings = () => {
+  const handleSaveChangesSettings = () => {
     const newTimers = config.timers as TimerSchema;
     updateCurrentSchema({ ...newTimers });
     saveConfiguration();
   };
+  const handleCancelChangesSettings = () => cancelConfiguration();
 
   return (
     <>
@@ -38,7 +51,8 @@ const Settings = () => {
         scrollAreaComponent={ScrollArea.Autosize}
         mah={"90vh"}
         onKeyDown={getHotkeyHandler([
-          ["shift+k+s", handleSaveSettings, { preventDefault: true }],
+          ["shift+k+s", handleSaveChangesSettings, { preventDefault: true }],
+          ["shift+k+c", handleCancelChangesSettings, { preventDefault: true }],
         ])}
       >
         <Container>
@@ -63,7 +77,12 @@ const Settings = () => {
           />
 
           {isSettingsChanged && (
-            <Button onClick={handleSaveSettings}>Save Changes</Button>
+            <Group>
+              <Button onClick={handleSaveChangesSettings}>Save Changes</Button>
+              <Button onClick={handleCancelChangesSettings} color="red">
+                Cancel Changes
+              </Button>
+            </Group>
           )}
         </Container>
       </Drawer>
