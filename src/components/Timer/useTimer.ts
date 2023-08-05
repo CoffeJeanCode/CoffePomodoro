@@ -78,13 +78,12 @@ const useTimer = () => {
 
   const handleNextTimer = ({ isSkip }: { isSkip: boolean }) => {
     switchMode();
-
     setIsRunning(behaviur.canAutoPlay);
-    setPomodoros(pomodoros <= calculatedToLongBreak ? pomodoros + 1 : 1);
-
+    
     if (isSkip) return;
-
+    
     setSessions(mode === Mode.Pomodoro ? sessions + 1 : sessions);
+    setPomodoros(pomodoros <= calculatedToLongBreak ? pomodoros + 1 : 1);
   };
 
   const switchMode = () =>
