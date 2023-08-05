@@ -15,7 +15,9 @@ const Settings = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { config, setConfigValue, isSettingsChanged, saveConfiguration } =
     useConfiguration();
-  const { updateCurrentSchema, currentSchemaId } = useSchemasState();
+  const updateCurrentSchema = useSchemasState(
+    (schema) => schema.updateCurrentSchema
+  );
 
   const handleSaveSettings = () => {
     const newTimers = config.timers as TimerSchema;

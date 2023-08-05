@@ -17,6 +17,7 @@
     "@mantine/hooks": "6.0.17",
     "chart.js": "4.0.1",
     "framer-motion": "7.2.1",
+    "million": "^2.5.4-beta.2",
     "ramda": "0.28.0",
     "react": "18.2.0",
     "react-chartjs-2": "5.0.1",
