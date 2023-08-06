@@ -79,9 +79,9 @@ const useTimer = () => {
   const handleNextTimer = ({ isSkip }: { isSkip: boolean }) => {
     switchMode();
     setIsRunning(behaviur.canAutoPlay);
-    
+
     if (isSkip) return;
-    
+
     setSessions(mode === Mode.Pomodoro ? sessions + 1 : sessions);
     setPomodoros(pomodoros <= calculatedToLongBreak ? pomodoros + 1 : 1);
   };
@@ -107,7 +107,7 @@ const useTimer = () => {
     sendNotification();
     handleNextTimer({ isSkip: false });
     updateDailyStats(getToday(date.raw), {
-      sessions,
+      sessions: sessions - 1,
       time: timers[Mode.Pomodoro],
     });
   };
