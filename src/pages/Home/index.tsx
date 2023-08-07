@@ -6,13 +6,13 @@ import { useInfoState } from "@/stores";
 import { useStatsState } from "@/stores/states/stats";
 import { getCurrentWeek, isToday } from "@/utils/time.util";
 import { Center, Container, Group, Title } from "@mantine/core";
-import { useEffect } from "react";
+import { useLayoutEffect } from "react";
 
 const Home = () => {
   const { date, week, resetInfo } = useInfoState();
   const resetStats = useStatsState((stats) => stats.resetStats);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!isToday(date.formated)) resetInfo();
     if (week !== getCurrentWeek(date.raw)) resetStats();
   }, []);
