@@ -14,6 +14,7 @@ export const helps = {
       { key: "N", action: "Next timer" },
       { key: "S", action: "Stop timer" },
       { key: "F", action: "Full Screen" },
+      { key: "shift+[q-p]", action: "Select schema" },
     ],
   },
 };
