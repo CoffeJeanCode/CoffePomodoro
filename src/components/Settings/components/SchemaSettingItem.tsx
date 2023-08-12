@@ -32,7 +32,12 @@ const SchemaSettingItem: FC<SchemaSettingItemProps> = ({ schema }) => {
         setCurrentSchema(currentSchemaId === schema.id ? "" : currentSchemaId)
       }
     >
-      <Flex justify="space-between" align="center" w="100%">
+      <Flex
+        justify="space-between"
+        align="center"
+        w="100%"
+        title={`${schema["pomodoro"]} min ${schema["short break"]} min ${schema["long break"]} min `}
+      >
         {isEditing ? (
           <Input
             size="xs"
