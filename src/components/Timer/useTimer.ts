@@ -66,6 +66,9 @@ const useTimer = () => {
       if (remainingTime <= 1) {
         clearInterval(intervalRef.current);
         handleEndTimer();
+        if (mode === Mode.Pomodoro) {
+          handleComplete();
+        }
       }
     }, 1000);
 
@@ -77,13 +80,11 @@ const useTimer = () => {
   }, [mode, timers, schemas, nextRemainingTime]);
 
   const handleNextTimer = ({ isSkip }: { isSkip: boolean }) => {
-    switchMode();
+    if (isSkip)
+      setMode(mode === Mode.Pomodoro ? Mode.ShortBreak : Mode.Pomodoro);
+    else switchMode();
     setIsRunning(behaviur.canAutoPlay);
-
-    if (isSkip) return;
-
-    setSessions(mode === Mode.Pomodoro ? sessions + 1 : sessions);
-    setPomodoros(pomodoros <= calculatedToLongBreak ? pomodoros + 1 : 1);
+    setPomodoros(pomodoros > calculatedToLongBreak ? 1 : pomodoros + 1);
   };
 
   const switchMode = () =>
@@ -106,8 +107,12 @@ const useTimer = () => {
   const handleEndTimer = () => {
     sendNotification();
     handleNextTimer({ isSkip: false });
+  };
+
+  const handleComplete = () => {
+    setSessions(sessions + 1);
     updateDailyStats(getToday(date.raw), {
-      sessions: sessions - 1,
+      sessions,
       time: timers[Mode.Pomodoro],
     });
   };
