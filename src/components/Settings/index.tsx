@@ -17,6 +17,7 @@ import BehaviurSettings from "./BehaviurSettings";
 import NotificationSettings from "./NotificationSettings";
 import SchemaSettings from "./SchemaSettings";
 import TimerSettings from "./TimerSettings";
+import { SCHEMA_KEYS } from "@/stores/constants";
 
 const Settings = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -27,17 +28,15 @@ const Settings = () => {
     saveConfiguration,
     cancelConfiguration,
   } = useConfiguration();
-  const updateCurrentSchema = useSchemasState(
-    (schema) => schema.updateCurrentSchema
-  );
+  const { schemas, setCurrentSchema, updateCurrentSchema } = useSchemasState();
 
   const handleSaveChangesSettings = () => {
     const newTimers = config.timers as TimerSchema;
     updateCurrentSchema({ ...newTimers });
     saveConfiguration();
   };
-  const handleCancelChangesSettings = () => cancelConfiguration();
 
+  const handleCancelChangesSettings = () => cancelConfiguration();
   return (
     <>
       <Button leftIcon={<FaWrench />} onClick={() => setIsOpen(true)}>
@@ -53,6 +52,12 @@ const Settings = () => {
         onKeyDown={getHotkeyHandler([
           ["shift+k+s", handleSaveChangesSettings, { preventDefault: true }],
           ["shift+k+c", handleCancelChangesSettings, { preventDefault: true }],
+          ...(schemas.map((schema, idx) => [
+            `shift+${SCHEMA_KEYS[idx]}`,
+            () => {
+              setCurrentSchema(schema.id);
+            },
+          ]) as any),
         ])}
       >
         <Container>

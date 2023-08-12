@@ -1,4 +1,5 @@
 import { Configuration } from "@/models";
+import { SCHEMA_KEYS } from "@/stores/constants";
 import { useSchemasState } from "@/stores/states/schema";
 import { secondsToMinutes } from "@/utils/time.util";
 import { Box, Button, Chip, Flex, ScrollArea, Title } from "@mantine/core";
@@ -43,9 +44,11 @@ const SchemaSettings: FC<Props> = ({ configuration }) => {
           </ScrollArea>
         )}
       </Chip.Group>
-      <Button leftIcon={<FaPlus />} size="xs" onClick={handleAddSchema}>
-        Add Schema
-      </Button>
+      {schemas.length < SCHEMA_KEYS.length && (
+        <Button leftIcon={<FaPlus />} size="xs" onClick={handleAddSchema}>
+          Add Schema
+        </Button>
+      )}
     </Box>
   );
 };
