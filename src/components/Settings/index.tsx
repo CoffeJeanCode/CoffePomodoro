@@ -28,7 +28,8 @@ const Settings = () => {
     saveConfiguration,
     cancelConfiguration,
   } = useConfiguration();
-  const { schemas, setCurrentSchema, updateCurrentSchema } = useSchemasState();
+  const { schemas, currentSchemaId, setCurrentSchema, updateCurrentSchema } =
+    useSchemasState();
 
   const handleSaveChangesSettings = () => {
     const newTimers = config.timers as TimerSchema;
@@ -55,7 +56,9 @@ const Settings = () => {
           ...(schemas.map((schema, idx) => [
             `shift+${SCHEMA_KEYS[idx]}`,
             () => {
-              setCurrentSchema(schema.id);
+              setCurrentSchema(
+                schema.id === currentSchemaId ? "" : schema.id
+              );
             },
           ]) as any),
         ])}
