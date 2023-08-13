@@ -1,6 +1,6 @@
 import { Configuration } from "@/models";
 import { SCHEMA_KEYS } from "@/stores/constants";
-import { useSchemasState } from "@/stores/states/schema";
+import { useSchemasState } from "@/stores";
 import { secondsToMinutes } from "@/utils/time.util";
 import { Box, Button, Chip, Flex, ScrollArea, Title } from "@mantine/core";
 import { values } from "ramda";
@@ -17,11 +17,12 @@ interface Props {
 const SchemaSettings: FC<Props> = ({ configuration }) => {
   const { schemas, currentSchemaId, addSchema, setCurrentSchema } =
     useSchemasState();
-  const { timers } = configuration;
+  const { timers, behaviur } = configuration;
 
   const handleAddSchema = () => {
     addSchema({
       title: values(timers).map(secondsToMinutes).join(" "),
+      pomodorosToLongBreak: behaviur.pomodorosToLongBreak,
       ...timers,
     });
   };

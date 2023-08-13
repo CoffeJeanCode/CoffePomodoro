@@ -45,8 +45,12 @@ const useTimer = () => {
   const currentSchema = findCurrentSchema();
   const nextRemainingTime =
     currentSchema === null ? timers[mode] : currentSchema[mode];
+  const pomodorosToLongBreak =
+    currentSchema === null
+      ? behaviur.pomodorosToLongBreak
+      : currentSchema.pomodorosToLongBreak;
   const calculatedToLongBreak = useMemo(
-    () => behaviur.pomodorosToLongBreak * 2 - 1,
+    () => pomodorosToLongBreak * 2 - 1,
     [behaviur]
   );
 
