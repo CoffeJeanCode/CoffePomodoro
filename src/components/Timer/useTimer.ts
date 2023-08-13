@@ -12,10 +12,8 @@ import {
 } from "../../utils/time.util";
 
 const useTimer = () => {
-  const {
-    config: { timers, notification, behaviur },
-  } = useConfigState();
-  const { schemas, findCurrentSchema } = useSchemasState();
+  const { config } = useConfigState();
+  const { schemas, currentSchemaId, findCurrentSchema } = useSchemasState();
   const {
     date,
     favIcon,
@@ -35,6 +33,10 @@ const useTimer = () => {
     setRemainingTime,
   } = useTimerState();
   const updateDailyStats = useStatsState((stats) => stats.updateDailyStats);
+
+  const { timers, notification, behaviur } =
+    currentSchemaId === "" ? config : findCurrentSchema() ?? config;
+
   const [playNotification] = useSound(notification.alarm.url, {
     volume: notification.volume,
   });
@@ -42,15 +44,9 @@ const useTimer = () => {
   // rome-ignore lint: romelint/suspicious/noExplicitAny
   const intervalRef = useRef<any>(null);
 
-  const currentSchema = findCurrentSchema();
-  const nextRemainingTime =
-    currentSchema === null ? timers[mode] : currentSchema[mode];
-  const pomodorosToLongBreak =
-    currentSchema === null
-      ? behaviur.pomodorosToLongBreak
-      : currentSchema.pomodorosToLongBreak;
+  const nextRemainingTime = timers[mode];
   const calculatedToLongBreak = useMemo(
-    () => pomodorosToLongBreak * 2 - 1,
+    () => behaviur.pomodorosToLongBreak * 2 - 1,
     [behaviur]
   );
 

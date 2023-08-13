@@ -18,26 +18,35 @@ import NotificationSettings from "./NotificationSettings";
 import SchemaSettings from "./SchemaSettings";
 import TimerSettings from "./TimerSettings";
 import { SCHEMA_KEYS } from "@/stores/constants";
+import { Configuration } from "@/models";
 
 const Settings = () => {
   const [isOpen, setIsOpen] = useState(false);
   const {
     config,
-    setConfigValue,
     isSettingsChanged,
+    setConfigValue,
     saveConfiguration,
     cancelConfiguration,
   } = useConfiguration();
-  const { schemas, currentSchemaId, setCurrentSchema, updateCurrentSchema } =
-    useSchemasState();
+  const {
+    schemas,
+    currentSchemaId,
+    setCurrentSchema,
+    updateCurrentSchema,
+    findCurrentSchema,
+  } = useSchemasState();
+  const currentConfig =
+    currentSchemaId === "" ? config : findCurrentSchema() ?? config;
 
   const handleSaveChangesSettings = () => {
-    const newTimers = config.timers as TimerSchema;
-    updateCurrentSchema({ ...newTimers });
+    const newConfigSchema = config as TimerSchema;
+    updateCurrentSchema({ ...newConfigSchema });
     saveConfiguration();
   };
 
   const handleCancelChangesSettings = () => cancelConfiguration();
+
   return (
     <>
       <Button leftIcon={<FaWrench />} onClick={() => setIsOpen(true)}>
@@ -56,9 +65,7 @@ const Settings = () => {
           ...(schemas.map((schema, idx) => [
             `shift+${SCHEMA_KEYS[idx]}`,
             () => {
-              setCurrentSchema(
-                schema.id === currentSchemaId ? "" : schema.id
-              );
+              setCurrentSchema(schema.id === currentSchemaId ? "" : schema.id);
             },
           ]) as any),
         ])}
@@ -68,19 +75,19 @@ const Settings = () => {
             Settings
           </Title>
           <SchemaSettings
-            configuration={config}
+            configuration={currentConfig}
             setConfigValue={setConfigValue}
           />
           <TimerSettings
-            configuration={config}
+            configuration={currentConfig}
             setConfigValue={setConfigValue}
           />
           <BehaviurSettings
-            configuration={config}
+            configuration={currentConfig}
             setConfigValue={setConfigValue}
           />
           <NotificationSettings
-            configuration={config}
+            configuration={currentConfig}
             setConfigValue={setConfigValue}
           />
 

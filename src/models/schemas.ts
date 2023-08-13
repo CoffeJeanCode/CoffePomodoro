@@ -1,9 +1,8 @@
-import { Timers } from "./config";
+import { Configuration } from "./config";
 
-export interface TimerSchema extends Timers {
+export interface TimerSchema extends Configuration {
   id: string;
   title: string;
-  pomodorosToLongBreak: number;
 }
 
 export interface Schemas {

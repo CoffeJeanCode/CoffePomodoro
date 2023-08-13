@@ -1,3 +1,4 @@
+import { TimerSchema } from "@/models/schemas";
 import { Box, Group, Title } from "@mantine/core";
 
 import { FC } from "react";
@@ -6,7 +7,7 @@ import { minutesToSeconds, secondsToMinutes } from "../../utils/time.util";
 import { SliderSettings } from "./components/SliderSettings";
 
 interface Props {
-  configuration: Configuration;
+  configuration: Configuration | TimerSchema;
   // rome-ignore lint: romelint/suspicious/noExplicitAny
   setConfigValue: (path: string, value: any) => void;
 }

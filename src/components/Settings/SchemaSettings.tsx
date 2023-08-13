@@ -7,9 +7,10 @@ import { values } from "ramda";
 import { FC } from "react";
 import { FaPlus } from "react-icons/fa";
 import SchemaSettingItem from "./components/SchemaSettingItem";
+import { TimerSchema } from "@/models/schemas";
 
 interface Props {
-  configuration: Configuration;
+  configuration: Configuration | TimerSchema;
   // rome-ignore lint: romelint/suspicious/noExplicitAny
   setConfigValue: (path: string, value: any) => void;
 }
@@ -17,13 +18,11 @@ interface Props {
 const SchemaSettings: FC<Props> = ({ configuration }) => {
   const { schemas, currentSchemaId, addSchema, setCurrentSchema } =
     useSchemasState();
-  const { timers, behaviur } = configuration;
 
   const handleAddSchema = () => {
     addSchema({
-      title: values(timers).map(secondsToMinutes).join(" "),
-      pomodorosToLongBreak: behaviur.pomodorosToLongBreak,
-      ...timers,
+      title: values(configuration.timers).map(secondsToMinutes).join(" "),
+      ...configuration,
     });
   };
 

@@ -1,10 +1,11 @@
+import { TimerSchema } from "@/models/schemas";
 import { Box, NumberInput, Switch, Title } from "@mantine/core";
 
 import { FC } from "react";
 import { Configuration } from "../../models";
 
 interface Props {
-	configuration: Configuration;
+	configuration: Configuration | TimerSchema;
 	// rome-ignore lint: romelint/suspicious/noExplicitAny
 	setConfigValue: (path: string, value: any) => void;
 }
