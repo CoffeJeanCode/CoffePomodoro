@@ -62,7 +62,20 @@ export const getEndTime = (timestamp: number) => {
   return `${adjustedHour}:${minutes} ${formatSun(hour)}`;
 };
 
-export const isToday = (date: string) => getDate(new Date()) === date;
+export const isToday = (date: Date) => {
+  const today = new Date();
+  return (
+    date.getDate() === today.getDate() &&
+    date.getMonth() === today.getMonth() &&
+    date.getFullYear() === today.getFullYear()
+  );
+};
+
+export const startOfWeek = (date: Date, weekStartsOn: number = 1): Date => {
+  const day = date.getDay();
+  const diff = (day < weekStartsOn ? 7 : 0) + day - weekStartsOn;
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate() - diff);
+};
 
 export const getNextFirstDate = (date = new Date()) => {
   const dateCopy = new Date(date.getTime());
