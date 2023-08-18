@@ -7,8 +7,6 @@ import {
   Title,
 } from "@mantine/core";
 import { memo, useState } from "react";
-
-import { TimerSchema } from "@/models/schemas";
 import { useSchemasState } from "@/stores/states/schema";
 import { getHotkeyHandler } from "@mantine/hooks";
 import { FaWrench } from "react-icons/fa";
@@ -18,17 +16,11 @@ import NotificationSettings from "./NotificationSettings";
 import SchemaSettings from "./SchemaSettings";
 import TimerSettings from "./TimerSettings";
 import { SCHEMA_KEYS } from "@/stores/constants";
-import { Configuration } from "@/models";
+import { TimerSchema } from "@/models/schemas";
+import { ConfigurationState, useConfigState } from "@/stores";
 
 const Settings = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const {
-    config,
-    isSettingsChanged,
-    setConfigValue,
-    saveConfiguration,
-    cancelConfiguration,
-  } = useConfiguration();
   const {
     schemas,
     currentSchemaId,
@@ -36,8 +28,32 @@ const Settings = () => {
     updateCurrentSchema,
     findCurrentSchema,
   } = useSchemasState();
-  const currentConfig =
-    currentSchemaId === "" ? config : findCurrentSchema() ?? config;
+  const {
+    config: configState,
+    setConfiguration,
+    resetConfiguration,
+  } = useConfigState();
+  const currentSchema = findCurrentSchema();
+  const isSchemaSelected = currentSchemaId !== "";
+  const currentConfig = isSchemaSelected
+    ? {
+        config: currentSchema,
+        setConfiguration: updateCurrentSchema,
+        resetConfiguration: resetConfiguration,
+      }
+    : {
+        config: configState,
+        setConfiguration: setConfiguration,
+        resetConfiguration: resetConfiguration,
+      };
+
+  const {
+    config,
+    isSettingsChanged,
+    setConfigValue,
+    saveConfiguration,
+    cancelConfiguration,
+  } = useConfiguration(currentConfig as ConfigurationState);
 
   const handleSaveChangesSettings = () => {
     const newConfigSchema = config as TimerSchema;
@@ -75,19 +91,19 @@ const Settings = () => {
             Settings
           </Title>
           <SchemaSettings
-            configuration={currentConfig}
+            configuration={config}
             setConfigValue={setConfigValue}
           />
           <TimerSettings
-            configuration={currentConfig}
+            configuration={config}
             setConfigValue={setConfigValue}
           />
           <BehaviurSettings
-            configuration={currentConfig}
+            configuration={config}
             setConfigValue={setConfigValue}
           />
           <NotificationSettings
-            configuration={currentConfig}
+            configuration={config}
             setConfigValue={setConfigValue}
           />
 

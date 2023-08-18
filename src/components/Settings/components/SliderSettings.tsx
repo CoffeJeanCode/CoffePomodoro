@@ -6,7 +6,7 @@ interface SliderSettingsProps extends SliderProps {
 }
 
 export const SliderSettings: FC<SliderSettingsProps> = memo(
-  ({ title, marks, min, max, defaultValue, onChange }) => {
+  ({ title, marks, min, max, value, onChange }) => {
     return (
       <Box my={10}>
         <Title order={4}>{title}</Title>
@@ -15,9 +15,9 @@ export const SliderSettings: FC<SliderSettingsProps> = memo(
           max={max}
           label={(value) => `${value} mins`}
           marks={marks}
-          defaultValue={defaultValue}
+          value={value}
           sx={{ width: "20rem" }}
-          onChangeEnd={onChange}
+          onChange={onChange}
         />
       </Box>
     );

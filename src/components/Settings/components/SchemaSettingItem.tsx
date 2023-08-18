@@ -10,18 +10,19 @@ interface SchemaSettingItemProps {
 }
 
 const SchemaSettingItem: FC<SchemaSettingItemProps> = ({ schema }) => {
+  const { timers, id } = schema;
   const { currentSchemaId, updateSchema, deleteSchema, setCurrentSchema } =
     useSchemasState();
   const [isEditing, setIsEditing] = useState(false);
   const [title, setTitle] = useState(schema.title);
 
   const handleDeleteSchema = () => {
-    if (schema.id === currentSchemaId) setCurrentSchema("");
-    deleteSchema(schema.id);
+    if (id === currentSchemaId) setCurrentSchema("");
+    deleteSchema(id);
   };
 
   const handleUpdateTitle = () => {
-    updateSchema(schema.id, { ...schema, title });
+    updateSchema(id, { ...schema, title });
     setIsEditing(false);
   };
 
@@ -29,14 +30,14 @@ const SchemaSettingItem: FC<SchemaSettingItemProps> = ({ schema }) => {
     <Chip
       value={schema.id}
       onClick={() =>
-        setCurrentSchema(currentSchemaId === schema.id ? "" : currentSchemaId)
+        setCurrentSchema(currentSchemaId === id ? "" : currentSchemaId)
       }
     >
       <Flex
         justify="space-between"
         align="center"
         w="100%"
-        title={`${schema["pomodoro"]} min ${schema["short break"]} min ${schema["long break"]} min `}
+        title={`${timers["pomodoro"]} min ${timers["short break"]} min ${timers["long break"]} min `}
       >
         {isEditing ? (
           <Input
@@ -45,12 +46,12 @@ const SchemaSettingItem: FC<SchemaSettingItemProps> = ({ schema }) => {
             miw={35}
             value={title}
             variant="unstyled"
-            onChange={({ target }) => setTitle(target.value)}
+            onChange={(evt) => setTitle(evt.target.value)}
             onKeyDown={getHotkeyHandler([["enter", handleUpdateTitle]])}
             autoFocus
           />
         ) : (
-          <Text>{schema.title}</Text>
+          <Text>{title}</Text>
         )}
         <Flex>
           {isEditing ? (

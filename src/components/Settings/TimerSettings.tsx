@@ -45,7 +45,7 @@ const TimerSettings: FC<Props> = ({ configuration, setConfigValue }) => {
               label: "60",
             },
           ]}
-          defaultValue={secondsToMinutes(configuration.timers[Mode.Pomodoro])}
+          value={secondsToMinutes(configuration.timers[Mode.Pomodoro])}
           onChange={handleUpdateTimer(Mode.Pomodoro)}
         />
         <SliderSettings
@@ -66,7 +66,7 @@ const TimerSettings: FC<Props> = ({ configuration, setConfigValue }) => {
               label: "10",
             },
           ]}
-          defaultValue={secondsToMinutes(configuration.timers[Mode.ShortBreak])}
+          value={secondsToMinutes(configuration.timers[Mode.ShortBreak])}
           onChange={handleUpdateTimer(Mode.ShortBreak)}
         />
         <SliderSettings
@@ -91,7 +91,7 @@ const TimerSettings: FC<Props> = ({ configuration, setConfigValue }) => {
               label: "20",
             },
           ]}
-          defaultValue={secondsToMinutes(configuration.timers[Mode.LongBreak])}
+          value={secondsToMinutes(configuration.timers[Mode.LongBreak])}
           onChange={handleUpdateTimer(Mode.LongBreak)}
         />
       </Group>

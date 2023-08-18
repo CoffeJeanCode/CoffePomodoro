@@ -1,25 +1,20 @@
-import { useConfigState } from "@/stores";
+import { ConfigurationState, useConfigState } from "@/stores";
 import { lensPath, mergeAll, set } from "ramda";
 import { useEffect, useState } from "react";
 import { Configuration } from "../models";
 
-export const useConfiguration = () => {
+export const useConfiguration = (configState: ConfigurationState) => {
   const {
     config,
     setConfiguration: setConfig,
     resetConfiguration: resetConfig,
-  } = useConfigState();
+  } = configState;
   const [tempConfig, setTempConfig] = useState(config);
   const [isSettingsChanged, setIsSettingsChanged] = useState(false);
 
   useEffect(() => {
     setTempConfig(config);
   }, [config]);
-
-  const updateConfiguration = (changes: Configuration) => {
-    setIsSettingsChanged(true);
-    setTempConfig((prevConfig) => mergeAll([prevConfig, changes]));
-  };
 
   const saveConfiguration = () => {
     setIsSettingsChanged(false);
@@ -50,7 +45,6 @@ export const useConfiguration = () => {
   return {
     config: tempConfig,
     isSettingsChanged,
-    updateConfiguration,
     saveConfiguration,
     cancelConfiguration,
     resetConfiguration,

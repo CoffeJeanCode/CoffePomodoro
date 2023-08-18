@@ -36,7 +36,6 @@ const useTimer = () => {
 
   const { timers, notification, behaviur } =
     currentSchemaId === "" ? config : findCurrentSchema() ?? config;
-
   const [playNotification] = useSound(notification.alarm.url, {
     volume: notification.volume,
   });

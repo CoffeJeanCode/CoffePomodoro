@@ -3,13 +3,13 @@ import { createId } from "@/utils/extra.utils";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-interface SchemasState extends Schemas {
+export interface SchemasState extends Schemas {
   addSchema: (schema: Omit<TimerSchema, "id">) => void;
   updateSchema: (id: string, schema: TimerSchema) => void;
   deleteSchema: (id: string) => void;
   setCurrentSchema: (id: string) => void;
   findCurrentSchema: () => TimerSchema | null;
-  updateCurrentSchema: (schema: TimerSchema) => void;
+  updateCurrentSchema: (updatedSchema: TimerSchema) => void;
 }
 
 export const useSchemasState = create<SchemasState>()(
@@ -42,11 +42,11 @@ export const useSchemasState = create<SchemasState>()(
       findCurrentSchema: () =>
         get().schemas.find((schema) => schema.id === get().currentSchemaId) ||
         null,
-      updateCurrentSchema: (updatedTimers) => {
+      updateCurrentSchema: (updatedSchema) => {
         set(() => ({
           schemas: get().schemas.map((schema) =>
             schema.id === get().currentSchemaId
-              ? { ...schema, ...updatedTimers }
+              ? { ...schema, ...updatedSchema }
               : schema
           ),
         }));
