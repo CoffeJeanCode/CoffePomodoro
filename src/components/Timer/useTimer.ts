@@ -72,11 +72,11 @@ const useTimer = () => {
     }, 1000);
 
     return () => clearInterval(intervalRef.current);
-  }, [isRunning, timers, nextRemainingTime]);
+  }, [isRunning, timers, remainingTime]);
 
   useEffect(() => {
     setRemainingTime(nextRemainingTime);
-  }, [mode, timers, nextRemainingTime]);
+  }, [mode, timers, currentSchemaId, nextRemainingTime]);
 
   const handleNextTimer = ({ isSkip }: { isSkip: boolean }) => {
     if (isSkip)

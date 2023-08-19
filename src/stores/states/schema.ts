@@ -43,15 +43,8 @@ export const useSchemasState = create<SchemasState>()(
       findCurrentSchema: () =>
         get().schemas.find((schema) => schema.id === get().currentSchemaId) ||
         null,
-      updateCurrentSchema: (updatedSchema) => {
-        set(() => ({
-          schemas: get().schemas.map((schema) =>
-            schema.id === get().currentSchemaId
-              ? { ...schema, ...updatedSchema }
-              : schema
-          ),
-        }));
-      },
+      updateCurrentSchema: (updatedSchema) =>
+        get().updateSchema(get().currentSchemaId, updatedSchema),
     }),
     {
       name: "schemas",
