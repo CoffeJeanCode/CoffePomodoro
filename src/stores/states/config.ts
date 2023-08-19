@@ -2,6 +2,7 @@ import { Configuration, Mode } from "@/models";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { minutesToSeconds } from "../../utils/time.util";
+import { storeVersion } from "../config";
 import { ALARMS } from "../constants";
 
 export interface ConfigurationState {
@@ -40,6 +41,7 @@ export const useConfigState = create<ConfigurationState>()(
 		}),
 		{
 			name: "config",
+			version: storeVersion
 		},
 	),
 );

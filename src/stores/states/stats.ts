@@ -2,6 +2,7 @@ import { DailyStats, Stats, Weekday } from "@/models/stats";
 import { calculateProductivityImprovement } from "@/utils/stats.utils";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
+import { storeVersion } from "../config";
 
 interface StatsState extends Stats {
 	updateDailyStats: (weekday: Weekday, stats: DailyStats) => void;
@@ -46,7 +47,7 @@ export const useStatsState = create<StatsState>()(
 		}),
 		{
 			name: "stats",
-			storage: createJSONStorage(() => localStorage),
+			version: storeVersion
 		},
 	),
 );
