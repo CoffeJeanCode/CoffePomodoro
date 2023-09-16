@@ -35,16 +35,13 @@ const Timer = () => {
   ]);
 
   const handleFullScreen = async () => {
-    if (!isFullScreen) toggleDocumentFullScreen();
-    setIsFullScreen(!isFullScreen);
-  };
+    const fullScreen = !isFullScreen;
 
-  const toggleDocumentFullScreen = () => {
-    if (!document.fullscreenElement) {
+    if (fullScreen && !document.fullscreenElement)
       document.documentElement.requestFullscreen();
-    } else if (document.exitFullscreen) {
-      document.exitFullscreen();
-    }
+    else if (document.exitFullscreen) document.exitFullscreen();
+    
+    setIsFullScreen(fullScreen);
   };
 
   const fullScreenStyle: Sx = useMemo(
