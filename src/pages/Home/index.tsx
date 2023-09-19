@@ -4,7 +4,7 @@ import Stats from "@/components/Stats";
 import Timer from "@/components/Timer";
 import { useInfoState } from "@/stores";
 import { useStatsState } from "@/stores/states/stats";
-import { isToday, startOfWeek } from "@/utils/time.util";
+import { getEndOfWeek, isToday } from "@/utils/time.util";
 import { Center, Container, Group, Title } from "@mantine/core";
 import { useLocalStorage } from "@mantine/hooks";
 import { useLayoutEffect } from "react";
@@ -12,20 +12,20 @@ import { useLayoutEffect } from "react";
 const Home = () => {
   const { date, resetInfo } = useInfoState();
   const resetStats = useStatsState((stats) => stats.resetStats);
-  const [startOfWeekDate, setStartOfWeekDate] = useLocalStorage({
-    key: "startOfWeek",
-    defaultValue: new Date(),
+  const [endOfWeek, setEndOfWeek] = useLocalStorage({
+    key: "end",
+    defaultValue: getEndOfWeek(new Date(), 1),
+    getInitialValueInEffect: true,
   });
 
   useLayoutEffect(() => {
     const today = new Date(date.raw);
-    const startOfWeekValue: Date = startOfWeek(today, 1);
+    const endOfWeekValue: Date = getEndOfWeek(today, 1);
 
     if (!isToday(today)) resetInfo();
-    if (isToday(startOfWeekValue) || !isToday(startOfWeekDate)) {
-      setStartOfWeekDate(startOfWeekValue);
-      resetInfo();
+    if (today > new Date(endOfWeek)) {
       resetStats();
+      setEndOfWeek(endOfWeekValue);
     }
   }, []);
 
