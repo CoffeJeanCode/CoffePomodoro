@@ -1,1 +1,1 @@
-export const storeVersion = 1;
+export const storeVersion = 2;
