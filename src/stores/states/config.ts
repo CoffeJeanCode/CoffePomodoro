@@ -21,7 +21,7 @@ const initialState: Configuration = {
   timers: defaultTimers,
   notification: {
     alarm: ALARMS["Micellaneus"],
-    desktopNofitication: Notification.permission === "granted",
+    desktopNotification: Notification.permission === "granted",
     volume: 0.5,
   },
   behaviur: {

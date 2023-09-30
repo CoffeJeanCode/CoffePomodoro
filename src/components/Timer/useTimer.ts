@@ -1,7 +1,10 @@
 import { Mode } from "@/models";
-import { useConfigState, useInfoState, useTimerState } from "@/stores";
-import { useSchemasState } from "@/stores/states/schema";
-import { useStatsState } from "@/stores/states/stats";
+import {
+  useConfigState,
+  useInfoState,
+  useStatsState,
+  useTimerState,
+} from "@/stores";
 import { showNotification } from "@/utils/notification.utils";
 import { useEffect, useMemo, useRef } from "react";
 import useSound from "use-sound";
@@ -13,7 +16,6 @@ import {
 
 const useTimer = () => {
   const { config } = useConfigState();
-  const { currentSchemaId, findCurrentSchema } = useSchemasState();
   const {
     date,
     favIcon,
@@ -34,8 +36,7 @@ const useTimer = () => {
   } = useTimerState();
   const updateDailyStats = useStatsState((stats) => stats.updateDailyStats);
 
-  const { timers, notification, behaviur } =
-    currentSchemaId === "" ? config : findCurrentSchema() ?? config;
+  const { timers, notification, behaviur } = config;
   const [playNotification] = useSound(notification.alarm.url, {
     volume: notification.volume,
   });
@@ -76,24 +77,25 @@ const useTimer = () => {
 
   useEffect(() => {
     setRemainingTime(nextRemainingTime);
-  }, [mode, timers, currentSchemaId, nextRemainingTime]);
+  }, [mode, nextRemainingTime]);
 
   const handleNextTimer = ({ isSkip }: { isSkip: boolean }) => {
-    if (isSkip)
-      setMode(mode === Mode.Pomodoro ? Mode.ShortBreak : Mode.Pomodoro);
-    else switchMode();
+    const newMode = mode === Mode.Pomodoro ? Mode.ShortBreak : Mode.Pomodoro;
+    setMode(newMode);
+    switchMode();
     setIsRunning(behaviur.canAutoPlay);
     setPomodoros(pomodoros > calculatedToLongBreak ? 1 : pomodoros + 1);
   };
 
-  const switchMode = () =>
-    setMode(
+  const switchMode = () => {
+    const newMode =
       pomodoros % calculatedToLongBreak === 0
         ? Mode.LongBreak
         : mode === Mode.Pomodoro
         ? Mode.ShortBreak
-        : Mode.Pomodoro
-    );
+        : Mode.Pomodoro;
+    setMode(newMode);
+  };
 
   const handleToggleTimer = () => setIsRunning(!isRunning);
 
@@ -119,7 +121,7 @@ const useTimer = () => {
   const sendNotification = () => {
     playNotification();
 
-    if (!notification.desktopNofitication) return;
+    if (!notification.desktopNotification) return;
 
     const notificationBody =
       mode === Mode.Pomodoro
@@ -129,7 +131,7 @@ const useTimer = () => {
         : mode === Mode.LongBreak
         ? "You rocked the break! Let's get back to work."
         : "Timer finish";
-    showNotification("Timer has finished", notification.desktopNofitication, {
+    showNotification("Timer has finished", notification.desktopNotification, {
       lang: "en",
       body: notificationBody,
       icon: favIcon,
