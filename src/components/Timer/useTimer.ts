@@ -13,7 +13,7 @@ import {
 
 const useTimer = () => {
   const { config } = useConfigState();
-  const { schemas, currentSchemaId, findCurrentSchema } = useSchemasState();
+  const { currentSchemaId, findCurrentSchema } = useSchemasState();
   const {
     date,
     favIcon,
