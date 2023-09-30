@@ -14,11 +14,12 @@ interface Props {
 
 const TimerSettings: FC<Props> = ({ configuration, setConfigValue }) => {
   const handleUpdateTimer = (mode: Mode) => (value: number) =>
-    setConfigValue(`timers.${mode}`, minutesToSeconds(value));
-  // setConfigValue(
-  // 	`timers.${mode}`,
-  // 	import.meta.env.MODE === "development" ? Math.round(value / 2) : minutesToSeconds(value),
-  // );
+    setConfigValue(
+      `timers.${mode}`,
+      import.meta.env.MODE === "development"
+        ? Math.round(value / 2)
+        : minutesToSeconds(value)
+    );
 
   return (
     <Box my={20}>
