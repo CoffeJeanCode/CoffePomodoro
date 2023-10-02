@@ -1,13 +1,13 @@
 import { Configuration } from "@/models";
-import { SCHEMA_KEYS } from "@/stores/constants";
+import { TimerSchema } from "@/models/schemas";
 import { useSchemasState } from "@/stores";
+import { SCHEMA_KEYS } from "@/stores/constants";
 import { secondsToMinutes } from "@/utils/time.util";
 import { Box, Button, Chip, Flex, ScrollArea, Title } from "@mantine/core";
 import { values } from "ramda";
 import { FC } from "react";
 import { FaPlus } from "react-icons/fa";
 import SchemaSettingItem from "./components/SchemaSettingItem";
-import { TimerSchema } from "@/models/schemas";
 
 interface Props {
   configuration: Configuration | TimerSchema;
@@ -45,7 +45,7 @@ const SchemaSettings: FC<Props> = ({ configuration }) => {
         )}
       </Chip.Group>
       {schemas.length < SCHEMA_KEYS.length && (
-        <Button leftIcon={<FaPlus />} size="xs" onClick={handleAddSchema}>
+        <Button leftSection={<FaPlus />} size="xs" onClick={handleAddSchema}>
           Add Schema
         </Button>
       )}

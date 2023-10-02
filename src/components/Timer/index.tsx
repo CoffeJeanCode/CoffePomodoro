@@ -1,6 +1,13 @@
 import { FavIcon, Mode } from "@/models/info";
 import { useInfoState } from "@/stores";
-import { Box, Button, Center, Container, Group, Sx } from "@mantine/core";
+import {
+  Box,
+  Button,
+  Center,
+  Container,
+  Group,
+  MantineStyleProp,
+} from "@mantine/core";
 import { useDocumentTitle, useFavicon, useHotkeys } from "@mantine/hooks";
 import { memo, useEffect, useMemo, useState } from "react";
 import { RiFullscreenFill } from "react-icons/ri";
@@ -40,11 +47,11 @@ const Timer = () => {
     if (fullScreen && !document.fullscreenElement)
       document.documentElement.requestFullscreen();
     else if (document.exitFullscreen) document.exitFullscreen();
-    
+
     setIsFullScreen(fullScreen);
   };
 
-  const fullScreenStyle: Sx = useMemo(
+  const fullScreenStyle: MantineStyleProp = useMemo(
     () =>
       isFullScreen
         ? {
@@ -63,19 +70,19 @@ const Timer = () => {
   return (
     <Container>
       <Box
-        sx={(theme) => ({
-          minWidth: "30vw",
+        style={(theme) => ({
+          minWidth: "min(300, 30vw)",
           background:
             mode === Mode.Pomodoro
               ? theme.colors.red[8]
               : theme.colors.green[8],
-          padding: `${theme.spacing.lg} calc(${theme.spacing.xl} * 2.5)`,
+          padding: `${theme.spacing.lg} calc(${theme.spacing.xl} * 2)`,
           borderRadius: theme.spacing.md,
           transition: "all 500ms ease-in-out",
           ...fullScreenStyle,
         })}
       >
-        <Center sx={{ flexDirection: "column" }}>
+        <Center style={{ flexDirection: "column" }}>
           <Group>
             <TimerMode />
             <Button

@@ -1,4 +1,5 @@
 import { Center, Loader, MantineProvider } from "@mantine/core";
+import "@mantine/core/styles.css";
 import { Suspense, lazy } from "react";
 import { Route } from "wouter";
 
@@ -6,11 +7,7 @@ const Home = lazy(() => import("./pages/Home"));
 
 const App = () => {
   return (
-    <MantineProvider
-      theme={{ colorScheme: "dark" }}
-      withNormalizeCSS
-      withGlobalStyles
-    >
+    <MantineProvider defaultColorScheme="dark" withCssVariables>
       <Suspense
         fallback={
           <Center h="100vh">

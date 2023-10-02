@@ -35,7 +35,7 @@ const Stats = () => {
 
   return (
     <>
-      <Button leftIcon={<FaChartBar />} onClick={() => setIsOpen(true)}>
+      <Button leftSection={<FaChartBar />} onClick={() => setIsOpen(true)}>
         Week Stats
       </Button>
       <Drawer
@@ -63,6 +63,11 @@ const Stats = () => {
             height={60}
             options={{
               normalized: true,
+              scales: {
+                y: {
+                  min: 0,
+                },
+              },
             }}
             data={{
               labels,

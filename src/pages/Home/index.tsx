@@ -28,8 +28,8 @@ const Home = () => {
 
   return (
     <Container>
-      <Center sx={{ flexDirection: "column" }}>
-        <Title order={1} color="white" my={10}>
+      <Center style={{ flexDirection: "column" }}>
+        <Title order={1} c="white" my={10}>
           CoffePomodoro
         </Title>
         <Group mb={20}>
