@@ -30,7 +30,7 @@ const Home = () => {
     <Container>
       <Center style={{ flexDirection: "column" }}>
         <Title order={1} c="white" my={10}>
-          Gabriel Y Jesus Pomodoro
+          Coffe Pomodoro
         </Title>
         <Group mb={20}>
           <Settings />
