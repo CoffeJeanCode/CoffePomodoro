@@ -44,7 +44,7 @@ const useTimer = () => {
   // rome-ignore lint: romelint/suspicious/noExplicitAny
   const intervalRef = useRef<any>(null);
 
-  const nextRemainingTime = timers[mode];
+  const nextRemainingTime = useMemo(() => timers[mode], [mode]);
   const calculatedToLongBreak = useMemo(
     () => behaviur.pomodorosToLongBreak * 2 - 1,
     [behaviur]
@@ -75,27 +75,22 @@ const useTimer = () => {
     return () => clearInterval(intervalRef.current);
   }, [isRunning, timers, remainingTime]);
 
-  useEffect(() => {
-    setRemainingTime(nextRemainingTime);
-  }, [mode, nextRemainingTime]);
+  const handleNextTimer = () => {
+    const newMode = getNewMode();
+    const nextRemainingTime = timers[newMode];
 
-  const handleNextTimer = ({ isSkip }: { isSkip: boolean }) => {
-    const newMode = mode === Mode.Pomodoro ? Mode.ShortBreak : Mode.Pomodoro;
     setMode(newMode);
-    switchMode();
-    setIsRunning(behaviur.canAutoPlay);
     setPomodoros(pomodoros > calculatedToLongBreak ? 1 : pomodoros + 1);
+    setRemainingTime(nextRemainingTime);
+    setIsRunning(behaviur.canAutoPlay);
   };
 
-  const switchMode = () => {
-    const newMode =
-      pomodoros % calculatedToLongBreak === 0
-        ? Mode.LongBreak
-        : mode === Mode.Pomodoro
-        ? Mode.ShortBreak
-        : Mode.Pomodoro;
-    setMode(newMode);
-  };
+  const getNewMode = () =>
+    pomodoros % (calculatedToLongBreak + 1) === 0
+      ? Mode.LongBreak
+      : mode === Mode.Pomodoro
+      ? Mode.ShortBreak
+      : Mode.Pomodoro;
 
   const handleToggleTimer = () => setIsRunning(!isRunning);
 
@@ -107,7 +102,7 @@ const useTimer = () => {
 
   const handleEndTimer = () => {
     sendNotification();
-    handleNextTimer({ isSkip: false });
+    handleNextTimer();
   };
 
   const handleComplete = () => {
@@ -142,7 +137,7 @@ const useTimer = () => {
   return {
     handleNextTimer,
     handleStopTimer,
-    switchMode,
+    getNewMode,
     handleToggleTimer,
     isRunning,
     remainingTime,

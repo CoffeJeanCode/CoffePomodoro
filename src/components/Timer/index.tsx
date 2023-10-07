@@ -37,7 +37,7 @@ const Timer = () => {
   useHotkeys([
     ["Space", () => handleToggleTimer()],
     ["S", () => handleStopTimer()],
-    ["N", () => handleNextTimer({ isSkip: true })],
+    ["N", () => handleNextTimer()],
     ["F", () => handleFullScreen()],
   ]);
 
