@@ -2,6 +2,7 @@ import { Mode } from "@/models";
 import {
   useConfigState,
   useInfoState,
+  useSchemasState,
   useStatsState,
   useTimerState,
 } from "@/stores";
@@ -15,7 +16,8 @@ import {
 } from "../../utils/time.util";
 
 const useTimer = () => {
-  const { config } = useConfigState();
+  const { currentSchemaId, findCurrentSchema } = useSchemasState();
+  const config = useConfigState((state) => state.config);
   const {
     date,
     favIcon,
@@ -30,36 +32,46 @@ const useTimer = () => {
     remainingTime,
     remainingTimeText,
     isRunning,
+    resumedTime,
     setIsRunning,
     setFinishTime,
+    setResumedTime,
     setRemainingTime,
   } = useTimerState();
   const updateDailyStats = useStatsState((stats) => stats.updateDailyStats);
 
-  const { timers, notification, behaviur } = config;
+  const { timers, notification, behaviur } =
+    currentSchemaId === "" ? config : findCurrentSchema() ?? config;
+
   const [playNotification] = useSound(notification.alarm.url, {
     volume: notification.volume,
   });
 
   // rome-ignore lint: romelint/suspicious/noExplicitAny
   const intervalRef = useRef<any>(null);
-
-  const nextRemainingTime = useMemo(() => timers[mode], [mode]);
   const calculatedToLongBreak = useMemo(
     () => behaviur.pomodorosToLongBreak * 2 - 1,
     [behaviur]
   );
+  const nextRemainingTime = useMemo(() => timers[mode], [mode, timers]);
+
+  useEffect(() => {
+    const nextTime = resumedTime === 0 ? nextRemainingTime : resumedTime;
+    setRemainingTime(nextTime);
+  }, [nextRemainingTime]);
 
   useEffect(() => {
     const then = Date.now() + secondsToMilliseconds(remainingTime);
     setFinishTime(then);
 
     intervalRef.current = setInterval(() => {
-      if (!isRunning) clearInterval(intervalRef.current);
-      else {
+      if (!isRunning) {
+        clearInterval(intervalRef.current);
+      } else {
         const secondsLeft = Math.round(
           millisecondsToSeconds(then - Date.now())
         );
+        setResumedTime(remainingTime);
         setRemainingTime(secondsLeft);
       }
 
@@ -75,13 +87,16 @@ const useTimer = () => {
     return () => clearInterval(intervalRef.current);
   }, [isRunning, timers, remainingTime]);
 
-  const handleNextTimer = () => {
-    const newMode = getNewMode();
-    const nextRemainingTime = timers[newMode];
+  const handleNextTimer = ({ isSkip }: { isSkip: boolean }) => {
+    const newMode = isSkip
+      ? mode === Mode.Pomodoro
+        ? Mode.ShortBreak
+        : Mode.Pomodoro
+      : getNewMode();
 
     setMode(newMode);
+    setResumedTime(0);
     setPomodoros(pomodoros > calculatedToLongBreak ? 1 : pomodoros + 1);
-    setRemainingTime(nextRemainingTime);
     setIsRunning(behaviur.canAutoPlay);
   };
 
@@ -102,7 +117,7 @@ const useTimer = () => {
 
   const handleEndTimer = () => {
     sendNotification();
-    handleNextTimer();
+    handleNextTimer({ isSkip: false });
   };
 
   const handleComplete = () => {

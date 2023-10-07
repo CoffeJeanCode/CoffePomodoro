@@ -7,7 +7,7 @@ interface TimerControllersProps {
   mode: string;
   isPlaying: boolean;
   handleToggleTimer: () => void;
-  handleNextTimer: () => void;
+  handleNextTimer: ({ isSkip }: { isSkip: boolean }) => void;
   handleStopTimer: () => void;
 }
 
@@ -31,7 +31,7 @@ const TimerControllers: FC<TimerControllersProps> = ({
     leftSection: <FaStepForward />,
     color,
     title: "Skip <N>",
-    onClick: () => handleNextTimer(),
+    onClick: () => handleNextTimer({ isSkip: true }),
   };
 
   const pauseButtonProps = {

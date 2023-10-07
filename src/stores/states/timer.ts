@@ -6,7 +6,8 @@ import { storeVersion } from "../config";
 
 interface TimerState extends Timer {
   setRemainingTime: (time: number) => void;
-  setFinishTime: (finishTime: number) => void;
+  setResumedTime: (time: number) => void;
+  setFinishTime: (time: number) => void;
   setIsRunning: (isRunning: boolean) => void;
   resetTimer: () => void;
 }
@@ -14,6 +15,7 @@ interface TimerState extends Timer {
 const initialState: Timer = {
   finishTime: 0,
   remainingTime: 0,
+  resumedTime: 0,
   finishTimeText: "",
   remainingTimeText: "00:00",
   isRunning: false,
@@ -28,6 +30,7 @@ export const useTimerState = create<TimerState>()(
       setFinishTime: (finishTime) =>
         set(() => ({ finishTime, finishTimeText: getEndTime(finishTime) })),
       setIsRunning: (isRunning) => set(() => ({ isRunning })),
+      setResumedTime: (resumedTime) => set(() => ({ resumedTime })),
       resetTimer: () => set(initialState),
     }),
     {
