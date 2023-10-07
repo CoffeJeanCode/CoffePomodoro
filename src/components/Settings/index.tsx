@@ -2,14 +2,7 @@ import { TimerSchema } from "@/models/schemas";
 import { ConfigurationState, useConfigState } from "@/stores";
 import { SCHEMA_KEYS } from "@/stores/constants";
 import { useSchemasState } from "@/stores/states/schema";
-import {
-  Button,
-  Container,
-  Drawer,
-  Group,
-  ScrollArea,
-  Title,
-} from "@mantine/core";
+import { Button, Drawer, Group, ScrollArea, Title } from "@mantine/core";
 import { getHotkeyHandler } from "@mantine/hooks";
 import { memo, useState } from "react";
 import { FaWrench } from "react-icons/fa";
@@ -74,7 +67,6 @@ const Settings = () => {
         position="left"
         onClose={() => setIsOpen(false)}
         scrollAreaComponent={ScrollArea.Autosize}
-        mah={"90vh"}
         onKeyDown={getHotkeyHandler([
           ["shift+k+s", handleSaveChangesSettings, { preventDefault: true }],
           ["shift+k+c", handleCancelChangesSettings, { preventDefault: true }],
@@ -87,36 +79,31 @@ const Settings = () => {
           ]) as any),
         ])}
       >
-        <Container>
-          <Title order={2} size={35}>
-            Settings
-          </Title>
-          <SchemaSettings
-            configuration={config}
-            setConfigValue={setConfigValue}
-          />
-          <TimerSettings
-            configuration={config}
-            setConfigValue={setConfigValue}
-          />
-          <BehaviurSettings
-            configuration={config}
-            setConfigValue={setConfigValue}
-          />
-          <NotificationSettings
-            configuration={config}
-            setConfigValue={setConfigValue}
-          />
+        <Title order={2} size={35}>
+          Settings
+        </Title>
+        <SchemaSettings
+          configuration={config}
+          setConfigValue={setConfigValue}
+        />
+        <TimerSettings configuration={config} setConfigValue={setConfigValue} />
+        <BehaviurSettings
+          configuration={config}
+          setConfigValue={setConfigValue}
+        />
+        <NotificationSettings
+          configuration={config}
+          setConfigValue={setConfigValue}
+        />
 
-          {isSettingsChanged && (
-            <Group>
-              <Button onClick={handleSaveChangesSettings}>Save Changes</Button>
-              <Button onClick={handleCancelChangesSettings} color="red">
-                Cancel Changes
-              </Button>
-            </Group>
-          )}
-        </Container>
+        {isSettingsChanged && (
+          <Group>
+            <Button onClick={handleSaveChangesSettings}>Save Changes</Button>
+            <Button onClick={handleCancelChangesSettings} color="red">
+              Cancel Changes
+            </Button>
+          </Group>
+        )}
       </Drawer>
     </>
   );
