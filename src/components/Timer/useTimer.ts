@@ -56,7 +56,7 @@ const useTimer = () => {
   const nextRemainingTime = useMemo(() => timers[mode], [mode, timers]);
 
   useEffect(() => {
-    const nextTime = resumedTime === 0 ? nextRemainingTime : resumedTime;
+    const nextTime = resumedTime <= 0 ? nextRemainingTime : resumedTime;
     setRemainingTime(nextTime);
   }, [nextRemainingTime]);
 
@@ -95,9 +95,9 @@ const useTimer = () => {
       : getNewMode();
 
     setMode(newMode);
-    setResumedTime(0);
     setPomodoros(pomodoros > calculatedToLongBreak ? 1 : pomodoros + 1);
     setIsRunning(behaviur.canAutoPlay);
+    setResumedTime(0);
   };
 
   const getNewMode = () =>

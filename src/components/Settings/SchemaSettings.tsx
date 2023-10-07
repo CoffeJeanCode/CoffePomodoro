@@ -1,6 +1,6 @@
 import { Configuration } from "@/models";
 import { TimerSchema } from "@/models/schemas";
-import { useSchemasState } from "@/stores";
+import { useSchemasState, useTimerState } from "@/stores";
 import { SCHEMA_KEYS } from "@/stores/constants";
 import { secondsToMinutes } from "@/utils/time.util";
 import { Box, Button, Chip, Flex, ScrollArea, Title } from "@mantine/core";
@@ -18,6 +18,7 @@ interface Props {
 const SchemaSettings: FC<Props> = ({ configuration }) => {
   const { schemas, currentSchemaId, addSchema, setCurrentSchema } =
     useSchemasState();
+  const resetForNext = useTimerState((state) => state.resetForNext);
 
   const handleAddSchema = () => {
     addSchema({
@@ -26,7 +27,10 @@ const SchemaSettings: FC<Props> = ({ configuration }) => {
     });
   };
 
-  const handleSetCurrentSchema = (id: string) => setCurrentSchema(id);
+  const handleSetCurrentSchema = (id: string) => {
+    resetForNext();
+    setCurrentSchema(id);
+  };
 
   return (
     <Box my={20}>
