@@ -58,7 +58,7 @@ const useTimer = () => {
   useEffect(() => {
     const nextTime = resumedTime <= 0 ? nextRemainingTime : resumedTime;
     setRemainingTime(nextTime);
-  }, [nextRemainingTime]);
+  }, [nextRemainingTime, resumedTime]);
 
   useEffect(() => {
     const then = Date.now() + secondsToMilliseconds(remainingTime);
