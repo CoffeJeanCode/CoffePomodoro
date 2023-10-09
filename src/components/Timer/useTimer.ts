@@ -56,9 +56,10 @@ const useTimer = () => {
   const nextRemainingTime = useMemo(() => timers[mode], [mode, timers]);
 
   useEffect(() => {
-    const nextTime = resumedTime <= 0 ? nextRemainingTime : resumedTime;
+    const nextTime =
+      resumedTime <= 0 || !currentSchemaId ? nextRemainingTime : resumedTime;
     setRemainingTime(nextTime);
-  }, [nextRemainingTime, resumedTime]);
+  }, [nextRemainingTime, resumedTime, currentSchemaId]);
 
   useEffect(() => {
     const then = Date.now() + secondsToMilliseconds(remainingTime);
@@ -82,7 +83,7 @@ const useTimer = () => {
           handleComplete();
         }
       }
-    }, 1000);
+    }, 900);
 
     return () => clearInterval(intervalRef.current);
   }, [isRunning, timers, remainingTime]);
