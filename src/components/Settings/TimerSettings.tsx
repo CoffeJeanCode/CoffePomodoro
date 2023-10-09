@@ -16,7 +16,7 @@ const TimerSettings: FC<Props> = ({ configuration, setConfigValue }) => {
   const handleUpdateTimer = (mode: Mode) => (value: number) =>
     setConfigValue(
       `timers.${mode}`,
-      import.meta.env.MODE !== "development"
+      import.meta.env.MODE === "development"
         ? Math.round(value / 2)
         : minutesToSeconds(value)
     );

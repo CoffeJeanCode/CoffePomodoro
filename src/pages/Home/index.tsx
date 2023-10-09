@@ -4,7 +4,7 @@ import Stats from "@/components/Stats";
 import Timer from "@/components/Timer";
 import { useInfoState } from "@/stores";
 import { useStatsState } from "@/stores/states/stats";
-import { isToday } from "@/utils/time.util";
+import { getEndOfWeek, isToday } from "@/utils/time.util";
 import { Center, Container, Group, Title } from "@mantine/core";
 import { useLayoutEffect } from "react";
 
@@ -22,7 +22,7 @@ const Home = () => {
 
       const nextWeek = new Date();
       nextWeek.setDate(nextWeek.getDate() + 8);
-      setEndWeek(nextWeek);
+      setEndWeek(getEndOfWeek(nextWeek, 1));
     }
   }, [date, resetInfo, resetStats]);
 
