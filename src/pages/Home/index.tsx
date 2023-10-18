@@ -2,7 +2,7 @@ import Helps from "@/components/Helps";
 import Settings from "@/components/Settings";
 import Stats from "@/components/Stats";
 import Timer from "@/components/Timer";
-import { useInfoState } from "@/stores";
+import { useInfoState, useTimerState } from "@/stores";
 import { useStatsState } from "@/stores/states/stats";
 import { getEndOfWeek, isToday } from "@/utils/time.util";
 import { Center, Container, Group, Title } from "@mantine/core";
@@ -11,12 +11,16 @@ import { useLayoutEffect } from "react";
 const Home = () => {
   const { date, endWeek, setEndWeek, resetInfo } = useInfoState();
   const resetStats = useStatsState((stats) => stats.resetStats);
+  const resetTimer = useTimerState((state) => state.resetTimer);
 
   useLayoutEffect(() => {
     const todayDate = new Date(date.raw);
     const endWeekDate = new Date(endWeek);
 
-    if (!isToday(todayDate)) resetInfo();
+    if (!isToday(todayDate)) {
+      resetTimer();
+      resetInfo();
+    }
     if (todayDate > endWeekDate) {
       resetStats();
 
