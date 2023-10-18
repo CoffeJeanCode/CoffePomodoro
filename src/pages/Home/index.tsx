@@ -5,7 +5,7 @@ import Timer from "@/components/Timer";
 import { useInfoState, useTimerState } from "@/stores";
 import { useStatsState } from "@/stores/states/stats";
 import { getEndOfWeek, isToday } from "@/utils/time.util";
-import { Center, Container, Group, Title } from "@mantine/core";
+import { Center, Container, Flex, Title } from "@mantine/core";
 import { useLayoutEffect } from "react";
 
 const Home = () => {
@@ -32,15 +32,19 @@ const Home = () => {
 
   return (
     <Container>
-      <Center style={{ flexDirection: "column" }}>
-        <Title order={1} c="white" my={10}>
+      <Center
+        style={{
+          flexDirection: "column",
+        }}
+      >
+        <Title order={1} c="white" my={10} size={46}>
           Coffe Pomodoro
         </Title>
-        <Group mb={20}>
+        <Flex mt={10} mb={40} gap={15}>
           <Settings />
           <Stats />
           <Helps />
-        </Group>
+        </Flex>
         <Timer />
       </Center>
     </Container>
