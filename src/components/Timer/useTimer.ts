@@ -56,10 +56,17 @@ const useTimer = () => {
   const nextRemainingTime = useMemo(() => timers[mode], [mode, timers]);
 
   useEffect(() => {
-    const nextTime =
-      resumedTime <= 0 || !currentSchemaId ? nextRemainingTime : resumedTime;
-    setRemainingTime(nextTime);
-  }, [nextRemainingTime, resumedTime, currentSchemaId]);
+    const isSchemaSelected = !!currentSchemaId;
+    const hasResumedTime = resumedTime > 0;
+
+    const newTime = hasResumedTime ? resumedTime : nextRemainingTime;
+
+    setRemainingTime(newTime);
+
+    if (isSchemaSelected && hasResumedTime) {
+      setResumedTime(0);
+    }
+  }, [nextRemainingTime, currentSchemaId]);
 
   useEffect(() => {
     const then = Date.now() + secondsToMilliseconds(remainingTime);
@@ -72,8 +79,8 @@ const useTimer = () => {
         const secondsLeft = Math.round(
           millisecondsToSeconds(then - Date.now())
         );
-        setResumedTime(remainingTime);
         setRemainingTime(secondsLeft);
+        setResumedTime(secondsLeft);
       }
 
       if (remainingTime <= 1) {
@@ -86,7 +93,7 @@ const useTimer = () => {
     }, 900);
 
     return () => clearInterval(intervalRef.current);
-  }, [isRunning, timers, remainingTime]);
+  }, [isRunning, timers, remainingTime, resumedTime]);
 
   const handleNextTimer = ({ isSkip }: { isSkip: boolean }) => {
     const newMode = isSkip
