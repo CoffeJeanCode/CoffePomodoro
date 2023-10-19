@@ -1,5 +1,6 @@
 import Helps from "@/components/Helps";
 import Info from "@/components/Info";
+import QuickMenu from "@/components/QuickMenu";
 import Settings from "@/components/Settings";
 import Stats from "@/components/Stats";
 import Timer from "@/components/Timer";
@@ -32,24 +33,27 @@ const Home = () => {
   }, [date, resetInfo, resetStats]);
 
   return (
-    <Container mah={"100vh"} style={{ overflow: "hidden" }}>
-      <Center
-        style={{
-          flexDirection: "column",
-        }}
-      >
-        <Title order={1} c="white" my={10} size={46}>
-          Coffe Pomodoro
-        </Title>
-        <Flex mt={10} mb={40} gap={15}>
-          <Settings />
-          <Stats />
-          <Helps />
-        </Flex>
-        <Timer />
-      </Center>
-      <Info />
-    </Container>
+    <>
+      <Container mah={"100vh"} style={{ overflow: "hidden" }}>
+        <Center
+          style={{
+            flexDirection: "column",
+          }}
+        >
+          <Title order={1} c="white" my={10} size={46}>
+            Coffe Pomodoro
+          </Title>
+          <Flex mt={10} mb={40} gap={15}>
+            <Settings />
+            <Stats />
+            <Helps />
+          </Flex>
+          <Timer />
+        </Center>
+        <Info />
+      </Container>
+      <QuickMenu />
+    </>
   );
 };
 

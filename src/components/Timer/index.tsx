@@ -63,6 +63,7 @@ const Timer = () => {
             left: 0,
             display: "grid",
             placeItems: "center",
+            zIndex: 2,
           }
         : {},
     [isFullScreen]
