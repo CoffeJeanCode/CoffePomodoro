@@ -47,7 +47,9 @@ const QuickMenu = () => {
           <Menu.Item
             key={schema.id}
             leftSection={<RiTimerLine />}
-            onClick={() => setCurrentSchema(schema.id)}
+            onClick={() =>
+              setCurrentSchema(schema.id === currentSchemaId ? "" : schema.id)
+            }
             bg={schema.id === currentSchemaId ? "blue" : ""}
           >
             {schema.title}
