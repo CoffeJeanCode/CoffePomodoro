@@ -1,4 +1,5 @@
 import Helps from "@/components/Helps";
+import Info from "@/components/Info";
 import Settings from "@/components/Settings";
 import Stats from "@/components/Stats";
 import Timer from "@/components/Timer";
@@ -31,7 +32,7 @@ const Home = () => {
   }, [date, resetInfo, resetStats]);
 
   return (
-    <Container>
+    <Container mah={"100vh"} style={{ overflow: "hidden" }}>
       <Center
         style={{
           flexDirection: "column",
@@ -47,6 +48,7 @@ const Home = () => {
         </Flex>
         <Timer />
       </Center>
+      <Info />
     </Container>
   );
 };

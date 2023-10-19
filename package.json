@@ -12,14 +12,16 @@
     "format": "rome format src/"
   },
   "dependencies": {
+    "@mantine/carousel": "^7.1.3",
     "@mantine/core": "^7.1.0",
     "@mantine/hooks": "^7.1.0",
     "chart.js": "4.0.1",
+    "embla-carousel-react": "^8.0.0-rc14",
     "framer-motion": "7.2.1",
     "ramda": "0.28.0",
     "react": "18.2.0",
-    "react-dom": "18.2.0",
     "react-chartjs-2": "5.0.1",
+    "react-dom": "18.2.0",
     "react-icons": "4.4.0",
     "use-sound": "4.0.1",
     "wouter": "2.8.0-alpha.2",
