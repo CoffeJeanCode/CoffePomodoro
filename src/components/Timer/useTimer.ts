@@ -45,6 +45,7 @@ const useTimer = () => {
 
   const [playNotification] = useSound(notification.alarm.url, {
     volume: notification.volume,
+    soundEnabled: true,
   });
 
   // rome-ignore lint: romelint/suspicious/noExplicitAny
@@ -66,7 +67,7 @@ const useTimer = () => {
     if (isSchemaSelected && hasResumedTime) {
       setResumedTime(0);
     }
-  }, [nextRemainingTime, currentSchemaId]);
+  }, [timers, nextRemainingTime, currentSchemaId]);
 
   useEffect(() => {
     const then = Date.now() + secondsToMilliseconds(remainingTime);
