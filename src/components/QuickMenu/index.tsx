@@ -6,7 +6,7 @@ import { RiTimerLine } from "react-icons/ri";
 
 const QuickMenu = () => {
   const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
-  const [opened, { open, close, toggle }] = useDisclosure(false);
+  const [opened, { open, close }] = useDisclosure(false);
   const { schemas, setCurrentSchema, currentSchemaId } = useSchemasState();
   useEffect(() => {
     const handleQuickMenu = (evt: MouseEvent) => {
