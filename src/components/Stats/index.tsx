@@ -44,7 +44,7 @@ const Stats = () => {
         size={400}
         onClose={() => setIsOpen(false)}
       >
-        <Container>
+        <Container h="100%">
           <Flex justify="center" align="center" gap="md">
             <Title order={2} size={35}>
               Stats
@@ -60,7 +60,7 @@ const Stats = () => {
             onChange={(value: StatType) => setStatType(value)}
           />
           <Line
-            height={60}
+            height={70}
             options={{
               normalized: true,
               scales: {

@@ -69,7 +69,7 @@ const Timer = () => {
     [isFullScreen]
   );
   return (
-    <Container>
+    <Container px={0}>
       <Box
         style={(theme) => ({
           minWidth: "min(300, 30vw)",
