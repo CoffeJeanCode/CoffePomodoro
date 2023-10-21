@@ -57,7 +57,7 @@ const Stats = () => {
               { label: "Time", value: StatType.Time },
             ]}
             value={statType}
-            onChange={(value: StatType) => setStatType(value)}
+            onChange={(value: string) => setStatType(value as StatType)}
           />
           <Line
             height={70}
