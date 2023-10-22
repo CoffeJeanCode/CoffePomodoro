@@ -29,7 +29,7 @@ const SchemaSettings: FC<Props> = ({ configuration }) => {
 
   const handleSetCurrentSchema = (id: string) => {
     resetForNext();
-    setCurrentSchema(id);
+    setCurrentSchema(id as string);
   };
 
   return (

@@ -44,8 +44,11 @@ const NotificationSettings: FC<Props> = ({ configuration, setConfigValue }) => {
             <Select
               value={configuration.notification.alarm.title}
               data={keys(ALARMS)}
-              onChange={(title: AlarmTitle) => {
-                setConfigValue("notification.alarm", ALARMS[title]);
+              onChange={(title) => {
+                setConfigValue(
+                  "notification.alarm",
+                  ALARMS[title as AlarmTitle]
+                );
               }}
             />
             <Box my={5}>
