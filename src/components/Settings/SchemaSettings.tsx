@@ -38,7 +38,7 @@ const SchemaSettings: FC<Props> = ({ configuration }) => {
         Schemas
       </Title>
       <Chip.Group
-        onChange={(value: string) => handleSetCurrentSchema(value)}
+        onChange={(value) => handleSetCurrentSchema(value as string)}
         value={currentSchemaId}
       >
         {schemas.length > 0 && (
