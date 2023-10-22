@@ -18,17 +18,20 @@ const Home = () => {
   useLayoutEffect(() => {
     const todayDate = new Date(date.raw);
     const endWeekDate = new Date(endWeek);
-
+    console.log(
+      todayDate.getTime() > endWeekDate.getTime(),
+      todayDate,
+      endWeekDate
+    );
     if (!isToday(todayDate)) {
       resetTimer();
       resetInfo();
     }
-    if (todayDate > endWeekDate) {
+    if (todayDate.getTime() > endWeekDate.getTime()) {
       resetStats();
 
-      const nextWeek = new Date();
-      nextWeek.setDate(nextWeek.getDate() + 8);
-      setEndWeek(getEndOfWeek(nextWeek, 1));
+      const expireDate = new Date().setDate(new Date().getDate() + 8);
+      setEndWeek(getEndOfWeek(new Date(expireDate), 1));
     }
   }, [date, resetInfo, resetStats]);
 
