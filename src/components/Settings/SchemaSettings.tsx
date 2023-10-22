@@ -29,7 +29,7 @@ const SchemaSettings: FC<Props> = ({ configuration }) => {
 
   const handleSetCurrentSchema = (id: string) => {
     resetForNext();
-    setCurrentSchema(id as string);
+    setCurrentSchema(id);
   };
 
   return (
@@ -37,7 +37,10 @@ const SchemaSettings: FC<Props> = ({ configuration }) => {
       <Title order={3} size={25}>
         Schemas
       </Title>
-      <Chip.Group onChange={handleSetCurrentSchema} value={currentSchemaId}>
+      <Chip.Group
+        onChange={(value: string) => handleSetCurrentSchema(value)}
+        value={currentSchemaId}
+      >
         {schemas.length > 0 && (
           <ScrollArea maw="100%" w={400} offsetScrollbars>
             <Flex my={10} gap={10}>
