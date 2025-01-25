@@ -1,4 +1,4 @@
-import { Configuration } from "./config";
+import type { Configuration } from "./config";
 
 export interface TimerSchema extends Configuration {
 	id: string;

@@ -1,13 +1,12 @@
-import { TimerSchema } from "@/models/schemas";
+import type { TimerSchema } from "@/models/schemas";
 import { Box, NumberInput, Switch, Title } from "@mantine/core";
 
-import { FC } from "react";
-import { Configuration } from "../../models";
+import type { FC } from "react";
+import type { Configuration } from "../../models";
 
 interface Props {
 	configuration: Configuration | TimerSchema;
-	// rome-ignore lint: romelint/suspicious/noExplicitAny
-	setConfigValue: (path: string, value: any) => void;
+	setConfigValue: (path: string, value: string | number | boolean) => void;
 }
 
 const BehaviurSettings: FC<Props> = ({ configuration, setConfigValue }) => {
@@ -22,7 +21,9 @@ const BehaviurSettings: FC<Props> = ({ configuration, setConfigValue }) => {
 				offLabel="OFF"
 				size="md"
 				checked={configuration.behaviur.canAutoPlay}
-				onChange={(event) => setConfigValue("behaviur.canAutoPlay", event.currentTarget.checked)}
+				onChange={(event) =>
+					setConfigValue("behaviur.canAutoPlay", event.currentTarget.checked)
+				}
 			/>
 
 			<Title order={3} size={25}>
@@ -33,7 +34,9 @@ const BehaviurSettings: FC<Props> = ({ configuration, setConfigValue }) => {
 				size="xs"
 				min={2}
 				value={configuration.behaviur.pomodorosToLongBreak}
-				onChange={(value) => setConfigValue("behaviur.pomodorosToLongBreak", value)}
+				onChange={(value) =>
+					setConfigValue("behaviur.pomodorosToLongBreak", value)
+				}
 			/>
 		</Box>
 	);

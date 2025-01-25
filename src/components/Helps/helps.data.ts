@@ -1,5 +1,13 @@
 export const helps = {
-	breaks: ["Short Nap", "Clean Up", "Meditate", "Posture", "Go outside", "Stretches", "Mini Exersise"],
+	breaks: [
+		"Short Nap",
+		"Clean Up",
+		"Meditate",
+		"Posture",
+		"Go outside",
+		"Stretches",
+		"Mini Exersise",
+	],
 	hotkeys: {
 		main: [
 			{ key: "Space", action: "Toggle timer" },
