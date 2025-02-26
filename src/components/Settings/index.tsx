@@ -3,7 +3,7 @@ import { type ConfigurationState, useConfigState } from "@/stores";
 import { SCHEMA_KEYS } from "@/stores/constants";
 import { useSchemasState } from "@/stores/states/schema";
 import { Button, Drawer, Group, ScrollArea, Title } from "@mantine/core";
-import { getHotkeyHandler } from "@mantine/hooks";
+import { getHotkeyHandler, useHotkeys } from "@mantine/hooks";
 import { memo, useState } from "react";
 import { FaWrench } from "react-icons/fa";
 import { useConfiguration } from "../../hooks/useConfiguracion";
@@ -30,15 +30,15 @@ const Settings = () => {
 	const isSchemaSelected = currentSchemaId !== "";
 	const currentConfig = isSchemaSelected
 		? {
-				config: currentSchema,
-				setConfiguration: updateCurrentSchema,
-				resetConfiguration: resetConfiguration,
-			}
+			config: currentSchema,
+			setConfiguration: updateCurrentSchema,
+			resetConfiguration: resetConfiguration,
+		}
 		: {
-				config: configState,
-				setConfiguration: setConfiguration,
-				resetConfiguration: resetConfiguration,
-			};
+			config: configState,
+			setConfiguration: setConfiguration,
+			resetConfiguration: resetConfiguration,
+		};
 
 	const {
 		config,
@@ -56,6 +56,12 @@ const Settings = () => {
 
 	const handleCancelChangesSettings = () => cancelConfiguration();
 
+
+	useHotkeys([
+		["ctrl+,", () => setIsOpen((prev) => !prev)]
+	])
+
+
 	return (
 		<>
 			<Button leftSection={<FaWrench />} onClick={() => setIsOpen(true)}>
@@ -65,6 +71,7 @@ const Settings = () => {
 			<Drawer
 				opened={isOpen}
 				position="left"
+				size="md"
 				onClose={() => setIsOpen(false)}
 				scrollAreaComponent={ScrollArea.Autosize}
 				onKeyDown={getHotkeyHandler([
@@ -82,22 +89,27 @@ const Settings = () => {
 				<Title order={2} size={35}>
 					Settings
 				</Title>
-				<SchemaSettings
-					configuration={config}
-					setConfigValue={setConfigValue}
-				/>
-				<TimerSettings configuration={config} setConfigValue={setConfigValue} />
-				<BehaviurSettings
-					configuration={config}
-					setConfigValue={setConfigValue}
-				/>
-				<NotificationSettings
-					configuration={config}
-					setConfigValue={setConfigValue}
-				/>
+				<Group gap="lg">
+					<SchemaSettings
+						configuration={config}
+						setConfigValue={setConfigValue}
+					/>
+					<TimerSettings
+						configuration={config}
+						setConfigValue={setConfigValue}
+					/>
+					<BehaviurSettings
+						configuration={config}
+						setConfigValue={setConfigValue}
+					/>
+					<NotificationSettings
+						configuration={config}
+						setConfigValue={setConfigValue}
+					/>
+				</Group>
 
 				{isSettingsChanged && (
-					<Group>
+					<Group mt="md">
 						<Button onClick={handleSaveChangesSettings}>Save Changes</Button>
 						<Button onClick={handleCancelChangesSettings} color="red">
 							Cancel Changes
