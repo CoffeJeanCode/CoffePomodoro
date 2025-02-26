@@ -7,9 +7,9 @@
 		"dev": "vite",
 		"build": "tsc && vite build",
 		"preview": "vite preview",
-		"lint": "rome check src/",
-		"lint:fix": "rome check --apply ./src",
-		"format": "rome format src/"
+		"lint": "biome check src/",
+		"lint:fix": "biome check --fix ./src",
+		"format": "biome format src/"
 	},
 	"dependencies": {
 		"@mantine/carousel": "^7.1.3",

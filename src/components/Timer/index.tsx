@@ -55,16 +55,16 @@ const Timer = () => {
 		() =>
 			isFullScreen
 				? {
-						width: "100vw",
-						height: "100vh",
-						borderRadius: 0,
-						position: "absolute",
-						top: 0,
-						left: 0,
-						display: "grid",
-						placeItems: "center",
-						zIndex: 2,
-					}
+					width: "100vw",
+					height: "100vh",
+					borderRadius: 0,
+					position: "absolute",
+					top: 0,
+					left: 0,
+					display: "grid",
+					placeItems: "center",
+					zIndex: 2,
+				}
 				: {},
 		[isFullScreen],
 	);

@@ -18,11 +18,7 @@ const Home = () => {
 	useLayoutEffect(() => {
 		const todayDate = new Date(date.raw);
 		const endWeekDate = new Date(endWeek);
-		console.log(
-			todayDate.getTime() > endWeekDate.getTime(),
-			todayDate,
-			endWeekDate,
-		);
+
 		if (!isToday(todayDate)) {
 			resetTimer();
 			resetInfo();
@@ -37,7 +33,7 @@ const Home = () => {
 
 	return (
 		<>
-			<Container mah={"100vh"} style={{ overflow: "hidden" }}>
+			<Container h="100vh" style={{ overflow: "hidden" }}>
 				<Center
 					style={{
 						flexDirection: "column",

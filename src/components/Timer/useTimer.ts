@@ -154,7 +154,6 @@ const useTimer = () => {
 			lang: "en",
 			body: notificationBody,
 			icon: favIcon,
-			vibrate: [100, 200, 300],
 		});
 	};
 
