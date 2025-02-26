@@ -2,9 +2,7 @@ import type { Configuration } from "@/models";
 import type { TimerSchema } from "@/models/schemas";
 import { useSchemasState, useTimerState } from "@/stores";
 import { SCHEMA_KEYS } from "@/stores/constants";
-import { secondsToMinutes } from "@/utils/time.util";
 import { Box, Button, Chip, Flex, ScrollArea, Title } from "@mantine/core";
-import { values } from "ramda";
 import type { FC } from "react";
 import { FaPlus } from "react-icons/fa";
 import SchemaSettingItem from "./components/SchemaSettingItem";
@@ -23,7 +21,7 @@ const SchemaSettings: FC<Props> = ({ configuration }) => {
 	const handleAddSchema = () => {
 		addSchema({
 			...configuration,
-			title: values(configuration.timers).map(secondsToMinutes).join(" "),
+			title: "New Schema",
 		});
 	};
 
@@ -33,7 +31,7 @@ const SchemaSettings: FC<Props> = ({ configuration }) => {
 	};
 
 	return (
-		<Box my={20}>
+		<Box>
 			<Title order={3} size={25}>
 				Schemas
 			</Title>

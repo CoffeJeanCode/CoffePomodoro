@@ -1,9 +1,11 @@
 import type { TimerSchema } from "@/models/schemas";
-import { Box, Group, Title } from "@mantine/core";
+import { Box, Container, Divider, Flex, Group, NumberInput, Progress, Text, Title } from "@mantine/core";
 
+import { values } from "ramda";
 import type { FC } from "react";
 import { type Configuration, Mode } from "../../models";
 import { minutesToSeconds, secondsToMinutes } from "../../utils/time.util";
+import SessionViewer from "./components/SessionViewer";
 import { SliderSettings } from "./components/SliderSettings";
 
 interface Props {
@@ -13,88 +15,65 @@ interface Props {
 }
 
 const TimerSettings: FC<Props> = ({ configuration, setConfigValue }) => {
-	const handleUpdateTimer = (mode: Mode) => (value: number) =>
+	const handleUpdateTimer = (mode: Mode, value: number) => {
 		setConfigValue(
 			`timers.${mode}`,
 			import.meta.env.MODE === "development"
 				? Math.round(value / 2)
 				: minutesToSeconds(value),
 		);
+	};
 
 	return (
-		<Box my={20}>
+		<Box>
 			<Title order={3} size={25}>
 				Timers
 			</Title>
-			<Group>
-				<SliderSettings
-					title="Work Timer"
+			<Group mt="md" gap="lg" align="center" justify="center" grow>
+				<NumberInput
+					label="Work Timer"
+					size="xs"
 					min={10}
 					max={60}
-					marks={[
-						{
-							value: 25,
-							label: "25",
-						},
-						{
-							value: 40,
-							label: "40",
-						},
-						{
-							value: 60,
-							label: "60",
-						},
-					]}
 					value={secondsToMinutes(configuration.timers[Mode.Pomodoro])}
-					onChange={handleUpdateTimer(Mode.Pomodoro)}
+					onChange={(value) => handleUpdateTimer(Mode.Pomodoro, Number(value))}
 				/>
-				<SliderSettings
-					title="Short Break Timer"
-					min={3}
+				<NumberInput
+					label="Short Break Timer"
+					size="xs"
+					min={2}
 					max={10}
-					marks={[
-						{
-							value: 5,
-							label: "5",
-						},
-						{
-							value: 7,
-							label: "7",
-						},
-						{
-							value: 10,
-							label: "10",
-						},
-					]}
 					value={secondsToMinutes(configuration.timers[Mode.ShortBreak])}
-					onChange={handleUpdateTimer(Mode.ShortBreak)}
+					onChange={(value) =>
+						handleUpdateTimer(Mode.ShortBreak, Number(value))
+					}
 				/>
-				<SliderSettings
-					title="Long Break Timer"
+				<NumberInput
+					label="Long Break Timer"
+					size="xs"
 					min={5}
 					max={20}
-					marks={[
-						{
-							value: 5,
-							label: "5",
-						},
-						{
-							value: 10,
-							label: "10",
-						},
-						{
-							value: 15,
-							label: "15",
-						},
-						{
-							value: 20,
-							label: "20",
-						},
-					]}
 					value={secondsToMinutes(configuration.timers[Mode.LongBreak])}
-					onChange={handleUpdateTimer(Mode.LongBreak)}
+					onChange={(value) => handleUpdateTimer(Mode.LongBreak, Number(value))}
 				/>
 			</Group>
+
+			<Divider mt="lg"></Divider>
+
+			<Container fluid my="md">
+				<NumberInput
+					label="Pomodoros Sessions"
+					size="xs"
+					min={2}
+					value={configuration.behaviur.pomodorosToLongBreak}
+					onChange={(value) =>
+						setConfigValue("behaviur.pomodorosToLongBreak", value)
+					}
+				/>
+			</Container>
+
+			<Title order={4}>Session Preview</Title>
+			<SessionViewer configuration={configuration} />
 		</Box>
 	);
 };

@@ -1,5 +1,6 @@
 import type { TimerSchema } from "@/models/schemas";
 import { useSchemasState } from "@/stores/states/schema";
+import { secondsToMinutes } from "@/utils/time.util";
 import { Button, Chip, CloseButton, Flex, Input, Text } from "@mantine/core";
 import { getHotkeyHandler } from "@mantine/hooks";
 import { type FC, useState } from "react";
@@ -37,7 +38,7 @@ const SchemaSettingItem: FC<SchemaSettingItemProps> = ({ schema }) => {
 				justify="space-between"
 				align="center"
 				w="100%"
-				title={`${timers["pomodoro"]} min ${timers["short break"]} min ${timers["long break"]} min `}
+				title={`${secondsToMinutes(timers["pomodoro"])} min ${secondsToMinutes(timers["short break"])} min ${secondsToMinutes(timers["long break"])} min `}
 			>
 				{isEditing ? (
 					<Input
@@ -48,6 +49,7 @@ const SchemaSettingItem: FC<SchemaSettingItemProps> = ({ schema }) => {
 						variant="unstyled"
 						onChange={(evt) => setTitle(evt.target.value)}
 						onKeyDown={getHotkeyHandler([["enter", handleUpdateTitle]])}
+						autoCapitalize="on"
 						autoFocus
 					/>
 				) : (

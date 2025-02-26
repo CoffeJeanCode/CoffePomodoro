@@ -30,7 +30,7 @@ const NotificationSettings: FC<Props> = ({ configuration, setConfigValue }) => {
 	});
 
 	return (
-		<Box my={20}>
+		<Box>
 			<Title order={3} size={25}>
 				Notification
 			</Title>
