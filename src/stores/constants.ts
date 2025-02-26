@@ -3,7 +3,7 @@ import Micellaneus from "../assets/Miscellaneus.mp3";
 import Rise from "../assets/Rise.mp3";
 import Shake from "../assets/Shake.mp3";
 
-export const SCHEMA_KEYS = "qwertyuiop".split("");
+export const SCHEMA_KEYS = "1234567890".split("").map(key => `digit${key}`);
 export const DAYS = [
 	"Sunday",
 	"Monday",
