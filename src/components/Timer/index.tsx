@@ -15,7 +15,7 @@ import TimerControllers from "./TimerControllers";
 import TimerInfo from "./TimerInfo";
 import TimerMode from "./TimerMode";
 import TimerText from "./TimerText";
-import useTimer from "./useTimer";
+import useTimer from "./hooks/useTimer";
 
 const Timer = () => {
 	const {

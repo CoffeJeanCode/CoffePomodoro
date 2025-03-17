@@ -13,7 +13,7 @@ import {
 	getToday,
 	millisecondsToSeconds,
 	secondsToMilliseconds,
-} from "../../utils/time.util";
+} from "@/utils/time.util";
 
 const useTimer = () => {
 	const { currentSchemaId, findCurrentSchema } = useSchemasState();
@@ -57,16 +57,12 @@ const useTimer = () => {
 	const nextRemainingTime = useMemo(() => timers[mode], [mode, timers]);
 
 	useEffect(() => {
-		const isSchemaSelected = !!currentSchemaId;
 		const hasResumedTime = resumedTime > 0;
 
 		const newTime = hasResumedTime ? resumedTime : nextRemainingTime;
 
 		setRemainingTime(newTime);
 
-		if (isSchemaSelected && hasResumedTime) {
-			setResumedTime(0);
-		}
 	}, [timers, nextRemainingTime, currentSchemaId]);
 
 	useEffect(() => {
