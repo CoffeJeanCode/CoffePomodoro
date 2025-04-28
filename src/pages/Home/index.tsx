@@ -1,14 +1,16 @@
-import Helps from "@/components/Helps";
-import Info from "@/components/Info";
-import QuickMenu from "@/components/QuickMenu";
-import Settings from "@/components/Settings";
-import Stats from "@/components/Stats";
-import Timer from "@/components/Timer";
+import { useLayoutEffect, lazy, Suspense } from "react";
+
 import { useInfoState, useTimerState } from "@/stores";
 import { useStatsState } from "@/stores/states/stats";
 import { getEndOfWeek, isToday } from "@/utils/time.util";
-import { Center, Container, Flex, Title } from "@mantine/core";
-import { useLayoutEffect } from "react";
+import { Center, Container, Flex, Loader, Title } from "@mantine/core";
+
+const Helps = lazy(() => import("@/components/Helps"));
+const Info = lazy(() => import("@/components/Info"));
+const QuickMenu = lazy(() => import("@/components/QuickMenu"));
+const Settings = lazy(() => import("@/components/Settings"));
+const Stats = lazy(() => import("@/components/Stats"));
+const Timer = lazy(() => import("@/components/Timer"));
 
 const Home = () => {
 	const { date, endWeek, setEndWeek, resetInfo } = useInfoState();
@@ -32,7 +34,12 @@ const Home = () => {
 	}, [date, resetInfo, resetStats]);
 
 	return (
-		<>
+		<Suspense
+			fallback={
+				<Center h="100vh">
+					<Loader color="red" size="xl" />
+				</Center>
+			}>
 			<Container h="100vh" style={{ overflow: "hidden" }}>
 				<Center
 					style={{
@@ -52,7 +59,7 @@ const Home = () => {
 				<Info />
 			</Container>
 			<QuickMenu />
-		</>
+		</Suspense>
 	);
 };
 
