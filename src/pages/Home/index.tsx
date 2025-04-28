@@ -6,7 +6,6 @@ import { getEndOfWeek, isToday } from "@/utils/time.util";
 import { Center, Container, Flex, Loader, Title } from "@mantine/core";
 
 const Helps = lazy(() => import("@/components/Helps"));
-const Info = lazy(() => import("@/components/Info"));
 const QuickMenu = lazy(() => import("@/components/QuickMenu"));
 const Settings = lazy(() => import("@/components/Settings"));
 const Stats = lazy(() => import("@/components/Stats"));
@@ -56,7 +55,6 @@ const Home = () => {
 					</Flex>
 					<Timer />
 				</Center>
-				<Info />
 			</Container>
 			<QuickMenu />
 		</Suspense>
