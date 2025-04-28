@@ -56,11 +56,9 @@ const Settings = () => {
 
 	const handleCancelChangesSettings = () => cancelConfiguration();
 
-
 	useHotkeys([
 		["ctrl+,", () => setIsOpen((prev) => !prev)]
 	])
-
 
 	return (
 		<>

@@ -43,14 +43,13 @@ const SessionViewer: React.FC<Props> = ({ configuration }) => {
 
 	return (
 		<>
-			{" "}
 			<Progress.Root size="20" radius={"md"} mt="md">
 				{progressValues.map(({ value, color }, index) => (
 					<Progress.Section
-						key={index}
+						key={`${index}-${value}`}
 						value={value}
 						color={color}
-					></Progress.Section>
+					/>
 				))}
 			</Progress.Root>
 		</>
