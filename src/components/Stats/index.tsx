@@ -10,7 +10,7 @@ import {
 	Title,
 } from "@mantine/core";
 import { Chart, registerables } from "chart.js";
-import { keys, map } from "ramda";
+import { clamp, keys, map } from "ramda";
 import { useState } from "react";
 import { Line } from "react-chartjs-2";
 import { FaChartBar } from "react-icons/fa";
@@ -41,7 +41,7 @@ const Stats = () => {
 			<Drawer
 				opened={isOpen}
 				position="bottom"
-				size={400}
+				size={450}
 				onClose={() => setIsOpen(false)}
 			>
 				<Container h="100%">
@@ -60,7 +60,7 @@ const Stats = () => {
 						onChange={(value: string) => setStatType(value as StatType)}
 					/>
 					<Line
-						height={70}
+						height={75}
 						options={{
 							normalized: true,
 							scales: {

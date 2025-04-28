@@ -1,21 +1,21 @@
+import { Mode } from "@/models";
 import { useInfoState, useTimerState } from "@/stores";
 import { Text, Title } from "@mantine/core";
 import { type FC, memo } from "react";
 
 const TimerInfo: FC = () => {
-	const { sessions } = useInfoState();
+	const { sessions, mode } = useInfoState();
 	const { finishTimeText, isRunning } = useTimerState();
 
 	return (
 		<>
-			<Text c="white" fw="600" size="xl">
+			<Text c="white" fw="700" size="xl">
 				Session #{sessions}
 			</Text>
-			{isRunning && (
-				<Title order={5} size="h5" my={10} c="white">
-					Timer finish at {finishTimeText}
-				</Title>
-			)}
+
+			<Text size="md" fw="500" my={10} c={isRunning ? "white" : (mode === Mode.Pomodoro ? "pink.2" : "green.2")}>
+				Timer finish at {finishTimeText}
+			</Text>
 		</>
 	);
 };
