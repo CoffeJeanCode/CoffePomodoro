@@ -89,9 +89,8 @@ const Stats = () => {
 						dx: 0,
 						dy: -10,
 						pointerEvents: "none",
-						filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.1))"
 					},
-					title: (d: PlotData) => `${d.day}: ${d.sessions} Sessions (${secondsToMinutes(d.time)} Min)`,
+					title: (d: PlotData) => `${d.day}: ${d.sessions} Sessions (${d.time} Min)`,
 				}),
 				Plot.lineY(plotData, {
 					x: "day",
