@@ -13,6 +13,12 @@ import { useEffect, useRef, useState } from "react";
 import { FaChartBar } from "react-icons/fa";
 import * as Plot from "@observablehq/plot";
 
+type PlotData = {
+	day: string;
+	sessions: number;
+	time: number;
+}
+
 const Stats = () => {
 	const [isOpen, setIsOpen] = useState(false);
 	const { stats } = useStatsState();
@@ -21,10 +27,10 @@ const Stats = () => {
 	const chartRef = useRef<HTMLDivElement | null>(null);
 	const plotRef = useRef<any>(null);
 
-	const plotData = keys(stats).sort().map((day) => ({
-		day,
+	const plotData: PlotData[] = keys(stats).sort().map((day) => ({
+		day: day.toString(),
 		sessions: stats[day].sessions,
-		time: secondsToMinutes(stats[day].time) // Adding random noise for better visibility
+		time: secondsToMinutes(stats[day].time)
 	}));
 
 	// Cleanup plot instance
@@ -78,11 +84,11 @@ const Stats = () => {
 						pointerEvents: "none",
 						filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.1))"
 					},
-					title: d => `${d.day}: ${d.sessions} Sessions`
+					title: (d: PlotData) => `${d.day}: ${d.sessions} Sessions`
 				}),
 				Plot.lineY(plotData, {
 					x: "day",
-					y: d => (d.time),
+					y: (d: PlotData) => (d.time),
 					curve: "natural",
 					stroke: colors.blue[6],
 					strokeWidth: 3,
