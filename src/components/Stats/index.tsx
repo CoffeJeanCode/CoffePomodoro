@@ -8,7 +8,7 @@ import {
 	Title,
 	useMantineTheme,
 } from "@mantine/core";
-import { keys, map } from "ramda";
+import { keys } from "ramda";
 import { useEffect, useRef, useState } from "react";
 import { FaChartBar } from "react-icons/fa";
 import * as Plot from "@observablehq/plot";
@@ -27,13 +27,12 @@ const Stats = () => {
 	const chartRef = useRef<HTMLDivElement | null>(null);
 	const plotRef = useRef<any>(null);
 
-	const plotData: PlotData[] = keys(stats).sort().map((day) => ({
+	const plotData: PlotData[] = keys(stats).map((day, index) => ({
 		day: day.toString(),
 		sessions: stats[day].sessions,
 		time: secondsToMinutes(stats[day].time)
 	}));
 
-	// Cleanup plot instance
 	const cleanupPlot = () => {
 		if (plotRef.current) {
 			plotRef.current.remove();
@@ -41,30 +40,38 @@ const Stats = () => {
 		}
 	};
 
-	// Create chart
 	const createChart = () => {
 		if (!chartRef.current || plotData.length === 0) return;
 
 		cleanupPlot();
+
+		const maxSessions = Math.max(...plotData.map(x => x.sessions));
+		const minSessions = Math.min(...plotData.map(x => x.sessions));
+		const maxTime = Math.max(...plotData.map(x => x.time));
+		const minTime = Math.min(...plotData.map(x => x.time));
+
+		const normalizedTime = (d: PlotData) => (d.time - minTime) / (maxTime - minTime) * (maxSessions - minSessions) + minSessions;
 
 		const plot = Plot.plot({
 			width: chartRef.current.clientWidth,
 			height: 300,
 			marginTop: 30,
 			marginLeft: 60,
-			marginBottom: 80,
+			marginBottom: 60,
 			style: {
 				fontSize: "13px",
 				fontFamily: "-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif"
 			},
 			x: {
-				tickRotate: -45,
-				label: "Days"
+				label: "Days",
+				ariaLabel: "Days of the Week",
+				domain: plotData.map(d => d.day),
+				tickFormat: (d: string) => d.charAt(0).toUpperCase() + d.slice(1, 3),
 			},
 			y: {
 				grid: true,
 				nice: true,
-				label: "Sessions & Time"
+				label: "Productivity"
 			},
 			marks: [
 				Plot.barY(plotData, {
@@ -84,16 +91,15 @@ const Stats = () => {
 						pointerEvents: "none",
 						filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.1))"
 					},
-					title: (d: PlotData) => `${d.day}: ${d.sessions} Sessions`
+					title: (d: PlotData) => `${d.day}: ${d.sessions} Sessions (${secondsToMinutes(d.time)} Min)`,
 				}),
 				Plot.lineY(plotData, {
 					x: "day",
-					y: (d: PlotData) => (d.time),
+					y: normalizedTime,
 					curve: "natural",
 					stroke: colors.blue[6],
 					strokeWidth: 3,
 					marker: "dot",
-					// title: d => `${d.day}: ${d.time} min`
 				})
 			]
 		});
