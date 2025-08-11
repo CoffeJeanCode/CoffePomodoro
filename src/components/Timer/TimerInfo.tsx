@@ -13,7 +13,7 @@ const TimerInfo: FC = () => {
 				Session #{sessions}
 			</Text>
 
-			<Text size="md" fw="500" my={10} c={isRunning ? "white" : (mode === Mode.Pomodoro ? "pink.2" : "green.2")}>
+			<Text c="white" fw="500" size="lg" my={10} opacity={isRunning ? 1 : 0} style={{ transition: "opacity 0.2s ease-in" }}>
 				Timer finish at {finishTimeText}
 			</Text>
 		</>
