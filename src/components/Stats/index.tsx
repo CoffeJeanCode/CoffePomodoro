@@ -23,8 +23,8 @@ const Stats = () => {
 
 	const plotData = keys(stats).sort().map((day) => ({
 		day,
-		sessions: stats[day].sessions + Math.floor(Math.random() * 10),
-		time: secondsToMinutes(stats[day].time) + Math.floor(Math.random() * 10) // Adding random noise for better visibility
+		sessions: stats[day].sessions,
+		time: secondsToMinutes(stats[day].time) // Adding random noise for better visibility
 	}));
 
 	// Cleanup plot instance
