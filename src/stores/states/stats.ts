@@ -18,15 +18,6 @@ const initialState: Stats = {
 		[String(Weekday.Saturday)]: { sessions: 0, time: 0 },
 		[String(Weekday.Sunday)]: { sessions: 0, time: 0 },
 	},
-	prevWeekStats: {
-		[String(Weekday.Monday)]: { sessions: 0, time: 0 },
-		[String(Weekday.Tuesday)]: { sessions: 0, time: 0 },
-		[String(Weekday.Wednesday)]: { sessions: 0, time: 0 },
-		[String(Weekday.Thursday)]: { sessions: 0, time: 0 },
-		[String(Weekday.Friday)]: { sessions: 0, time: 0 },
-		[String(Weekday.Saturday)]: { sessions: 0, time: 0 },
-		[String(Weekday.Sunday)]: { sessions: 0, time: 0 },
-	},
 };
 
 export const useStatsState = create<StatsState>()(

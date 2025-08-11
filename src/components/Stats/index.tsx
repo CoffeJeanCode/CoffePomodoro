@@ -1,4 +1,3 @@
-import { StatType } from "@/models/stats";
 import { useStatsState } from "@/stores/states/stats";
 import { secondsToMinutes } from "@/utils/time.util";
 import {
@@ -6,32 +5,112 @@ import {
 	Container,
 	Drawer,
 	Flex,
-	SegmentedControl,
 	Title,
+	useMantineTheme,
 } from "@mantine/core";
-import { Chart, registerables } from "chart.js";
-import { clamp, keys, map } from "ramda";
-import { useState } from "react";
-import { Line } from "react-chartjs-2";
+import { keys, map } from "ramda";
+import { useEffect, useRef, useState } from "react";
 import { FaChartBar } from "react-icons/fa";
-
-Chart.register(...registerables);
-
-const chartCommons = { borderWidth: 1, fill: true, tension: 0.4 };
+import * as Plot from "@observablehq/plot";
 
 const Stats = () => {
 	const [isOpen, setIsOpen] = useState(false);
-	const { stats, prevWeekStats } = useStatsState();
-	const [statType, setStatType] = useState(StatType.Sessions);
+	const { stats } = useStatsState();
+	const { colors } = useMantineTheme();
 
-	const labels = keys(stats);
-	const data = map((weekday) => stats[weekday][statType], labels);
-	const prevWeekData = map(
-		(weekday) => prevWeekStats[weekday][statType],
-		labels,
-	);
+	const chartRef = useRef<HTMLDivElement | null>(null);
+	const plotRef = useRef<any>(null);
 
-	const label = statType === StatType.Sessions ? "# Sessions" : "# Minutes";
+	const plotData = keys(stats).sort().map((day) => ({
+		day,
+		sessions: stats[day].sessions + Math.floor(Math.random() * 10),
+		time: secondsToMinutes(stats[day].time) + Math.floor(Math.random() * 10) // Adding random noise for better visibility
+	}));
+
+	// Cleanup plot instance
+	const cleanupPlot = () => {
+		if (plotRef.current) {
+			plotRef.current.remove();
+			plotRef.current = null;
+		}
+	};
+
+	// Create chart
+	const createChart = () => {
+		if (!chartRef.current || plotData.length === 0) return;
+
+		cleanupPlot();
+
+		const plot = Plot.plot({
+			width: chartRef.current.clientWidth,
+			height: 300,
+			marginTop: 30,
+			marginLeft: 60,
+			marginBottom: 80,
+			style: {
+				fontSize: "13px",
+				fontFamily: "-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif"
+			},
+			x: {
+				tickRotate: -45,
+				label: "Days"
+			},
+			y: {
+				grid: true,
+				nice: true,
+				label: "Sessions & Time"
+			},
+			marks: [
+				Plot.barY(plotData, {
+					x: "day",
+					y: "sessions",
+					fill: colors.red[6],
+					rx: 6,
+					tip: {
+						fill: colors.dark[7],
+						stroke: colors.dark[4],
+						strokeWidth: 1,
+						textAnchor: "middle",
+						fontSize: "16px",
+						fontWeight: 500,
+						dx: 0,
+						dy: -10,
+						pointerEvents: "none",
+						filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.1))"
+					},
+					title: d => `${d.day}: ${d.sessions} Sessions`
+				}),
+				Plot.lineY(plotData, {
+					x: "day",
+					y: d => (d.time),
+					curve: "natural",
+					stroke: colors.blue[6],
+					strokeWidth: 3,
+					marker: "dot",
+					// title: d => `${d.day}: ${d.time} min`
+				})
+			]
+		});
+
+		chartRef.current.appendChild(plot);
+		plotRef.current = plot;
+	};
+
+	// Handle drawer open/close
+	useEffect(() => {
+		if (!isOpen) {
+			cleanupPlot();
+			return;
+		}
+
+		// Delay chart creation to allow drawer animation
+		const timeout = setTimeout(createChart, 100);
+
+		return () => {
+			clearTimeout(timeout);
+			cleanupPlot();
+		};
+	}, [isOpen, plotData, colors]);
 
 	return (
 		<>
@@ -50,50 +129,7 @@ const Stats = () => {
 							Stats
 						</Title>
 					</Flex>
-					<SegmentedControl
-						my={10}
-						data={[
-							{ label: "Sessions", value: StatType.Sessions },
-							{ label: "Time", value: StatType.Time },
-						]}
-						value={statType}
-						onChange={(value: string) => setStatType(value as StatType)}
-					/>
-					<Line
-						height={75}
-						options={{
-							normalized: true,
-							scales: {
-								y: {
-									min: 0,
-								},
-							},
-						}}
-						data={{
-							labels,
-							datasets: [
-								{
-									label,
-									data:
-										statType === StatType.Sessions
-											? data
-											: data.map(secondsToMinutes),
-									borderColor: "rgb(255, 99, 132)",
-									...chartCommons,
-								},
-								{
-									label: `Prev. Week ${label}`,
-									data:
-										statType === StatType.Sessions
-											? prevWeekData
-											: prevWeekData.map(secondsToMinutes),
-									borderColor: "rgb(153, 102, 255)",
-									borderDash: [8, 4],
-									...chartCommons,
-								},
-							],
-						}}
-					/>
+					<article ref={chartRef} style={{ width: "100%" }} />
 				</Container>
 			</Drawer>
 		</>

@@ -24,5 +24,4 @@ export interface WeeklyStats {
 
 export interface Stats {
 	stats: WeeklyStats;
-	prevWeekStats: WeeklyStats;
 }
