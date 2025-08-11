@@ -35,10 +35,8 @@ export const useStatsState = create<StatsState>()(
 					},
 				})),
 			resetStats: () => {
-				const prevWeekStats = get().stats;
 				set({
 					...initialState,
-					prevWeekStats,
 				});
 			},
 		}),
