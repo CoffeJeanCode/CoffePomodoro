@@ -10,11 +10,12 @@ import {
 } from "@mantine/core";
 import { useDocumentTitle, useFavicon, useHotkeys } from "@mantine/hooks";
 import { memo, useEffect, useMemo, useState } from "react";
-import { RiFullscreenFill } from "react-icons/ri";
+import { RiFullscreenFill, RiPictureInPictureFill } from "react-icons/ri";
 import TimerControllers from "./TimerControllers";
 import TimerInfo from "./TimerInfo";
 import TimerMode from "./TimerMode";
 import TimerText from "./TimerText";
+import usePictureInPicture from "./hooks/usePictureInPicture";
 import useTimer from "./hooks/useTimer";
 
 const Timer = () => {
@@ -28,6 +29,12 @@ const Timer = () => {
 	const { mode, favIcon, setFavIcon } = useInfoState();
 	const [isFullScreen, setIsFullScreen] = useState(false);
 
+	const { handlePictureInPicture, isPiPOpen } = usePictureInPicture({
+		handleToggleTimer,
+		handleStopTimer,
+		handleNextTimer,
+	});
+
 	useEffect(() => {
 		setFavIcon(mode === Mode.Pomodoro ? FavIcon.work : FavIcon.break);
 	}, [mode]);
@@ -39,6 +46,7 @@ const Timer = () => {
 		["S", () => handleStopTimer()],
 		["N", () => handleNextTimer({ isSkip: true })],
 		["F", () => handleFullScreen()],
+		["shift+I", () => handlePictureInPicture()],
 	]);
 
 	const handleFullScreen = async () => {
@@ -86,6 +94,15 @@ const Timer = () => {
 				<Center style={{ flexDirection: "column" }}>
 					<Group>
 						<TimerMode />
+						<Button
+							size="xs"
+							title="Picture-in-Picture <P>"
+							color={mode === Mode.Pomodoro ? "red.8" : "green.8"}
+							onClick={handlePictureInPicture}
+							variant={isPiPOpen ? "filled" : "light"}
+						>
+							<RiPictureInPictureFill />
+						</Button>
 						<Button
 							size="xs"
 							title="Full Screen <F>"
