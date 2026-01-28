@@ -104,13 +104,14 @@ const useTimer = () => {
 		setIsRunning(behaviur.canAutoPlay);
 		setResumedTime(0);
 	};
+	
 
 	const getNewMode = () =>
-		pomodoros % (calculatedToLongBreak + 1) === 0
-			? Mode.LongBreak
-			: mode === Mode.Pomodoro
-				? Mode.ShortBreak
-				: Mode.Pomodoro;
+        pomodoros % (calculatedToLongBreak + 1) === calculatedToLongBreak
+            ? Mode.LongBreak
+            : mode === Mode.Pomodoro
+                ? Mode.ShortBreak
+                : Mode.Pomodoro;
 
 	const handleToggleTimer = () => setIsRunning(!isRunning);
 

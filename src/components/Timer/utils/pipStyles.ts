@@ -101,10 +101,16 @@ export const getPiPStyles = (colors: PiPColors) => `
     .finish-text {
         font-size: clamp(10px, 2.9vw, 13px);
         font-weight: 600;
-        opacity: 0.88;
         font-variant-numeric: tabular-nums;
         white-space: nowrap;
         letter-spacing: 0.4px;
+        transition: opacity 0.2s ease-in;
+    }
+    .finish-text.visible {
+        opacity: 0.88;
+    }
+    .finish-text.hidden {
+        opacity: 0;
     }
 
     .controls {

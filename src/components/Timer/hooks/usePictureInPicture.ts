@@ -55,8 +55,10 @@ const usePictureInPicture = ({
         if (timeEl) timeEl.textContent = timerState.remainingTimeText;
 
         const finishEl = doc.getElementById('finish-text');
-        if (finishEl) finishEl.textContent = timerState.finishTimeText; // Just the time (e.g. "12:45")
-
+        if (finishEl) {
+            finishEl.textContent = timerState.finishTimeText ? `Timer finish at ${timerState.finishTimeText}` : "";
+            finishEl.className = timerState.isRunning ? "finish-text visible" : "finish-text hidden";
+        }
         const modeEl = doc.getElementById('mode-text');
         if (modeEl) modeEl.textContent = mode;
 
@@ -118,7 +120,7 @@ const usePictureInPicture = ({
 
                     <div class="timer-container">
                         <div id="time-text" class="time-text">${timerState.remainingTimeText}</div>
-						<div id="finish-text" class="finish-text">${timerState.finishTimeText}</div>
+						<div id="finish-text" class="finish-text ${timerState.isRunning ? "visible" : "hidden"}">${timerState.finishTimeText ? `Timer finish at ${timerState.finishTimeText}` : ""}</div>
                     </div>
 
                     <div id="controls-area" class="controls">
