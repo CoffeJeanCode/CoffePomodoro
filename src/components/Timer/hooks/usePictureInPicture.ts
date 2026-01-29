@@ -105,7 +105,7 @@ const usePictureInPicture = ({
 
         try {
             const pipWin = await (window as any).documentPictureInPicture.requestWindow({
-                width: 300, height: 320,
+                width: 280, height: 100,
             });
 
             pipWindowRef.current = pipWin;

@@ -2,23 +2,20 @@ import { FavIcon, Mode } from "@/models/info";
 import { useInfoState } from "@/stores";
 import {
 	Box,
-	Button,
 	Center,
 	Container,
-	Group,
 	Stack,
 	type MantineStyleProp,
-	lighten,
 } from "@mantine/core";
 import { useDocumentTitle, useFavicon, useHotkeys } from "@mantine/hooks";
 import { memo, useEffect, useMemo, useState } from "react";
-import { RiFullscreenFill, RiPictureInPictureFill } from "react-icons/ri";
 import TimerControllers from "./TimerControllers";
 import TimerInfo from "./TimerInfo";
 import TimerMode from "./TimerMode";
 import TimerText from "./TimerText";
 import usePictureInPicture from "./hooks/usePictureInPicture";
 import useTimer from "./hooks/useTimer";
+import TimerViewControls from "./TimerViewControls";
 
 const Timer = () => {
 	const {
@@ -105,37 +102,11 @@ const Timer = () => {
 							isPlaying={isRunning}
 						/>
 						<TimerInfo />
-						<Group
-							gap="sm"
-							style={(theme) => ({
-								width: "100%",
-								justifyContent: "center",
-							})}
-						>
-							<Button
-								size="sm"
-								variant="subtle"
-								title="Picture-in-Picture (Shift+I)"
-								color="gray.0"
-								onClick={handlePictureInPicture}
-								style={(theme) => ({
-									...(isPiPOpen && {
-										backgroundColor: lighten(theme.colors.gray[0], 0.2),
-									}),
-								})}
-							>
-								<RiPictureInPictureFill size={18} />
-							</Button>
-							<Button
-								size="sm"
-								variant="subtle"
-								title="Full Screen (F)"
-								color="gray.0"
-								onClick={handleFullScreen}
-							>
-								<RiFullscreenFill size={18} />
-							</Button>
-						</Group>
+						<TimerViewControls
+							handlePictureInPicture={handlePictureInPicture}
+							handleFullScreen={handleFullScreen}
+							isPiPOpen={isPiPOpen}
+						/>
 					</Stack>
 				</Center>
 			</Box>
