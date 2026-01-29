@@ -6,7 +6,9 @@ import {
 	Center,
 	Container,
 	Group,
+	Stack,
 	type MantineStyleProp,
+	lighten,
 } from "@mantine/core";
 import { useDocumentTitle, useFavicon, useHotkeys } from "@mantine/hooks";
 import { memo, useEffect, useMemo, useState } from "react";
@@ -92,35 +94,49 @@ const Timer = () => {
 				})}
 			>
 				<Center style={{ flexDirection: "column" }}>
-					<Group>
+					<Stack gap="md" style={{ width: "100%", alignItems: "center" }}>
 						<TimerMode />
-						<Button
-							size="xs"
-							title="Picture-in-Picture <P>"
-							color={mode === Mode.Pomodoro ? "red.8" : "green.8"}
-							onClick={handlePictureInPicture}
-							variant={isPiPOpen ? "filled" : "light"}
+						<TimerText />
+						<TimerControllers
+							mode={mode}
+							handleNextTimer={handleNextTimer}
+							handleStopTimer={handleStopTimer}
+							handleToggleTimer={handleToggleTimer}
+							isPlaying={isRunning}
+						/>
+						<TimerInfo />
+						<Group
+							gap="sm"
+							style={(theme) => ({
+								width: "100%",
+								justifyContent: "center",
+							})}
 						>
-							<RiPictureInPictureFill />
-						</Button>
-						<Button
-							size="xs"
-							title="Full Screen <F>"
-							color={mode === Mode.Pomodoro ? "red.8" : "green.8"}
-							onClick={handleFullScreen}
-						>
-							<RiFullscreenFill />
-						</Button>
-					</Group>
-					<TimerText />
-					<TimerControllers
-						mode={mode}
-						handleNextTimer={handleNextTimer}
-						handleStopTimer={handleStopTimer}
-						handleToggleTimer={handleToggleTimer}
-						isPlaying={isRunning}
-					/>
-					<TimerInfo />
+							<Button
+								size="sm"
+								variant="subtle"
+								title="Picture-in-Picture (Shift+I)"
+								color="gray.0"
+								onClick={handlePictureInPicture}
+								style={(theme) => ({
+									...(isPiPOpen && {
+										backgroundColor: lighten(theme.colors.gray[0], 0.2),
+									}),
+								})}
+							>
+								<RiPictureInPictureFill size={18} />
+							</Button>
+							<Button
+								size="sm"
+								variant="subtle"
+								title="Full Screen (F)"
+								color="gray.0"
+								onClick={handleFullScreen}
+							>
+								<RiFullscreenFill size={18} />
+							</Button>
+						</Group>
+					</Stack>
 				</Center>
 			</Box>
 		</Container>

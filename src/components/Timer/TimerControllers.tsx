@@ -49,7 +49,7 @@ const TimerControllers: FC<TimerControllersProps> = ({
 	};
 
 	return (
-		<Group my={10}>
+		<Group gap="sm">
 			{!isPlaying ? (
 				<>
 					<Button {...playButtonProps}>Play</Button>

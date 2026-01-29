@@ -12,6 +12,7 @@ const SessionViewer: React.FC<Props> = ({ configuration }) => {
 	const { timers, behaviur } = configuration;
 	const { pomodorosToLongBreak } = behaviur;
 
+	// Sequence: P, S, P, S, ..., P, L (N pomodoros, N-1 short breaks, 1 long break after last P)
 	const sessionBlocks = [];
 	for (let i = 0; i < pomodorosToLongBreak; i++) {
 		sessionBlocks.push({
@@ -19,17 +20,15 @@ const SessionViewer: React.FC<Props> = ({ configuration }) => {
 			color: "blue.8",
 			label: "Work",
 		});
+		const isLastPomodoro = i === pomodorosToLongBreak - 1;
 		sessionBlocks.push({
-			value: timers[Mode.ShortBreak],
-			color: "blue.6",
-			label: "Short Break",
+			value: isLastPomodoro
+				? timers[Mode.LongBreak]
+				: timers[Mode.ShortBreak],
+			color: isLastPomodoro ? "blue.4" : "blue.6",
+			label: isLastPomodoro ? "Long Break" : "Short Break",
 		});
 	}
-	sessionBlocks.push({
-		value: timers[Mode.LongBreak],
-		color: "blue.4",
-		label: "Long Break",
-	});
 
 	const totalTime = sessionBlocks.reduce(
 		(acc, session) => acc + session.value,
