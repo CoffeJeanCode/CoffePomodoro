@@ -50,10 +50,7 @@ const useTimer = () => {
 
 	// biome-ignore lint: romelint/suspicious/noExplicitAny
 	const intervalRef = useRef<any>(null);
-	const calculatedToLongBreak = useMemo(
-		() => behaviur.pomodorosToLongBreak * 2 - 1,
-		[behaviur],
-	);
+	const { pomodorosToLongBreak } = behaviur;
 	const nextRemainingTime = useMemo(() => timers[mode], [mode, timers]);
 
 	useEffect(() => {
@@ -92,6 +89,15 @@ const useTimer = () => {
 		return () => clearInterval(intervalRef.current);
 	}, [isRunning, timers, remainingTime, resumedTime]);
 
+	const getNewMode = () => {
+		if (mode === Mode.Pomodoro) {
+			return pomodoros === pomodorosToLongBreak
+				? Mode.LongBreak
+				: Mode.ShortBreak;
+		}
+		return Mode.Pomodoro;
+	};
+
 	const handleNextTimer = ({ isSkip }: { isSkip: boolean }) => {
 		const newMode = isSkip
 			? mode === Mode.Pomodoro
@@ -100,18 +106,13 @@ const useTimer = () => {
 			: getNewMode();
 
 		setMode(newMode);
-		setPomodoros(pomodoros > calculatedToLongBreak ? 1 : pomodoros + 1);
+		// Only update pomodoros when finishing a pomodoro; reset after long break
+		if (mode === Mode.Pomodoro) {
+			setPomodoros(newMode === Mode.LongBreak ? 1 : pomodoros + 1);
+		}
 		setIsRunning(behaviur.canAutoPlay);
 		setResumedTime(0);
 	};
-	
-
-	const getNewMode = () =>
-        pomodoros % (calculatedToLongBreak + 1) === calculatedToLongBreak
-            ? Mode.LongBreak
-            : mode === Mode.Pomodoro
-                ? Mode.ShortBreak
-                : Mode.Pomodoro;
 
 	const handleToggleTimer = () => setIsRunning(!isRunning);
 
