@@ -2,9 +2,10 @@ import { Mode } from "@/models";
 import { Button, Group } from "@mantine/core";
 import { type FC, memo } from "react";
 import { FaPause, FaPlay, FaStepForward, FaStop } from "react-icons/fa";
+import { getColorModeKey } from "./utils/timer";
 
 interface TimerControllersProps {
-	mode: string;
+	mode: Mode;
 	isPlaying: boolean;
 	handleToggleTimer: () => void;
 	handleNextTimer: ({ isSkip }: { isSkip: boolean }) => void;
@@ -18,7 +19,7 @@ const TimerControllers: FC<TimerControllersProps> = ({
 	handleNextTimer,
 	handleStopTimer,
 }) => {
-	const color = mode === Mode.Pomodoro ? "red.9" : "green.9";
+	const color = getColorModeKey(mode, 9);
 
 	const playButtonProps = {
 		leftSection: isPlaying ? <FaPause /> : <FaPlay />,

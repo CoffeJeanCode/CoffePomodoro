@@ -1,17 +1,17 @@
-import { Mode } from "@/models";
 import { useInfoState } from "@/stores";
 import { Badge } from "@mantine/core";
 import { type FC, memo } from "react";
+import { getColorMode } from "./utils/timer";
 
 const TimerMode: FC = () => {
 	const mode = useInfoState((info) => info.mode);
+	const base = getColorMode(mode);
 
 	return (
 		<Badge
 			size="lg"
 			style={(theme) => ({
-				background:
-					mode === Mode.Pomodoro ? theme.colors.red[5] : theme.colors.green[5],
+				background: theme.colors[base][5],
 				color: theme.colors.gray[0],
 				userSelect: "none",
 			})}

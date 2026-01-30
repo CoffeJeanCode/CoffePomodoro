@@ -2,6 +2,7 @@ import { Mode } from "@/models/info";
 import type { Timer } from "@/models/timer";
 import { useInfoState, useTimerState } from "@/stores";
 import { useEffect, useRef, useState } from "react";
+import { getModeHexColors } from "../utils/timer";
 import { getPiPStyles } from "../utils/pipStyles";
 
 interface UsePictureInPictureProps {
@@ -35,16 +36,7 @@ const usePictureInPicture = ({
     const [pipWindow, setPipWindow] = useState<Window | null>(null);
     const pipWindowRef = useRef<Window | null>(null);
 
-    const getThemeColors = () => {
-        const isPomodoro = mode === Mode.Pomodoro;
-        return {
-            bgGradient: isPomodoro 
-                ? "linear-gradient(135deg, #e03131 0%, #c92a2a 100%)" 
-                : "linear-gradient(135deg, #2f9e44 0%, #2b8a3e 100%)",
-            btnMain: isPomodoro ? "#c92a2a" : "#2b8a3e",
-            btnMainHover: isPomodoro ? "#b02525" : "#267a37"
-        };
-    };
+    const getThemeColors = () => getModeHexColors(mode);
 
     const updatePiPContent = () => {
         const doc = pipWindowRef.current?.document;

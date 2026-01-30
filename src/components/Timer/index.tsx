@@ -1,11 +1,13 @@
 import { FavIcon, Mode } from "@/models/info";
 import { useInfoState } from "@/stores";
+import { getColorMode } from "./utils/timer";
 import {
 	Box,
 	Center,
 	Container,
 	Stack,
 	type MantineStyleProp,
+	type MantineTheme,
 } from "@mantine/core";
 import { useDocumentTitle, useFavicon, useHotkeys } from "@mantine/hooks";
 import { memo, useEffect, useMemo, useState } from "react";
@@ -78,17 +80,17 @@ const Timer = () => {
 	return (
 		<Container px={0}>
 			<Box
-				style={(theme) => ({
-					minWidth: "min(300, 30vw)",
-					background:
-						mode === Mode.Pomodoro
-							? theme.colors.red[8]
-							: theme.colors.green[8],
-					padding: `${theme.spacing.lg} calc(${theme.spacing.xl} * 2)`,
-					borderRadius: theme.spacing.md,
-					transition: "all 500ms ease-in-out",
-					...fullScreenStyle,
-				})}
+				style={(theme: MantineTheme) => {
+					const base = getColorMode(mode);
+					return {
+						minWidth: "min(300, 30vw)",
+						background: theme.colors[base][8],
+						padding: `${theme.spacing.lg} calc(${theme.spacing.xl} * 2)`,
+						borderRadius: theme.spacing.md,
+						transition: "all 500ms ease-in-out",
+						...fullScreenStyle,
+					};
+				}}
 			>
 				<Center style={{ flexDirection: "column" }}>
 					<Stack gap="md" style={{ width: "100%", alignItems: "center" }}>
@@ -103,6 +105,7 @@ const Timer = () => {
 						/>
 						<TimerInfo />
 						<TimerViewControls
+							mode={mode}
 							handlePictureInPicture={handlePictureInPicture}
 							handleFullScreen={handleFullScreen}
 							isPiPOpen={isPiPOpen}
