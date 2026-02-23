@@ -152,6 +152,9 @@ const useTimer = () => {
 			lang: "en",
 			body: notificationBody,
 			icon: favIcon,
+			data: {
+				url: "/",
+			},
 		});
 	};
 
