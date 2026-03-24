@@ -42,7 +42,7 @@ const TimerViewControls: FC<TimerViewControlsProps> = ({
 			<Button
 				size="sm"
 				variant="subtle"
-				title="Full Screen (F)"
+				title="Full screen (F)"
 				color="gray.0"
 				onClick={handleFullScreen}
 			>

@@ -7,9 +7,9 @@ const TimerInfo: FC = () => {
 	const { finishTimeText, isRunning } = useTimerState();
 
 	return (
-		<>
-			<Text c="white" fw="700" size="xl">
-				Session #{sessions}
+		<Box style={{ width: "100%", textAlign: "center" }}>
+			<Text c="white" fw="700" size="xl" ta="center">
+				Session #: {sessions}
 			</Text>
 
 			<Box
@@ -19,21 +19,23 @@ const TimerInfo: FC = () => {
 					marginTop: isRunning ? 10 : 0,
 					transition:
 						"max-height 0.35s ease-in-out, margin-top 0.35s ease-in-out",
+					textAlign: "center",
 				}}
 			>
 				<Text
 					c="white"
 					fw="500"
 					size="lg"
+					ta="center"
 					style={{
 						opacity: isRunning ? 1 : 0,
 						transition: "opacity 0.3s ease-in-out",
 					}}
 				>
-					Timer finish at {finishTimeText}
+					Finish at {finishTimeText}
 				</Text>
 			</Box>
-		</>
+		</Box>
 	);
 };
 
