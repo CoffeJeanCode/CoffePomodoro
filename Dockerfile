@@ -1,11 +1,15 @@
-FROM node:22-alpine
+FROM oven/bun:1.0.12-slim
 
-RUN apk --no-cache add git
+RUN apt-get update  \
+  && apt-get install -y \
+  git \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
 COPY package.json .
 
-RUN npm install --force
+RUN bun install
 
 COPY . .

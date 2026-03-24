@@ -1,6 +1,6 @@
 services:
   app:
-    command: npm run dev
+    command: bun run dev
     build: .
     ports:
       - "5321:5173"
