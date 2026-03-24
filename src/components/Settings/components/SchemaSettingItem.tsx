@@ -38,7 +38,7 @@ const SchemaSettingItem: FC<SchemaSettingItemProps> = ({ schema }) => {
 				justify="space-between"
 				align="center"
 				w="100%"
-				title={`${secondsToMinutes(timers["pomodoro"])} min ${secondsToMinutes(timers["short break"])} min ${secondsToMinutes(timers["long break"])} min `}
+				title={`${secondsToMinutes(timers.pomodoro)} min ${secondsToMinutes(timers["short break"])} min ${secondsToMinutes(timers["long break"])} min `}
 			>
 				{isEditing ? (
 					<Input

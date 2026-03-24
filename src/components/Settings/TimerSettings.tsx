@@ -68,7 +68,7 @@ const TimerSettings: FC<Props> = ({ configuration, setConfigValue }) => {
 				/>
 			</Group>
 
-			<Divider mt="lg"></Divider>
+			<Divider mt="lg" />
 
 			<Container fluid my="md">
 				<NumberInput
