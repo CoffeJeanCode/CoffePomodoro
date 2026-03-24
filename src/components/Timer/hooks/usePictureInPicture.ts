@@ -1,7 +1,7 @@
 import { Mode } from "@/models/info";
 import type { Timer } from "@/models/timer";
 import { useInfoState, useTimerState } from "@/stores";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
 	mountOrUpdatePiPControls,
 	syncPiPTheme,
@@ -28,7 +28,7 @@ const usePictureInPicture = ({
 	sessionAdjustStepMinutes,
 	skipCountsSessionMinProgressPercent,
 }: UsePictureInPictureProps) => {
-	const { mode, sessions } = useInfoState();
+	const { mode } = useInfoState();
 
 	const adjustRef = useRef(handleAdjustSessionByMinutes);
 	adjustRef.current = handleAdjustSessionByMinutes;
@@ -48,7 +48,7 @@ const usePictureInPicture = ({
 	const [pipWindow, setPipWindow] = useState<Window | null>(null);
 	const pipWindowRef = useRef<Window | null>(null);
 
-	const updatePiPContent = () => {
+	const updatePiPContent = useCallback(() => {
 		const doc = pipWindowRef.current?.document;
 		if (!doc) return;
 
@@ -70,7 +70,12 @@ const usePictureInPicture = ({
 		updatePiPAdjustButtonTitles(doc, sessionAdjustStepMinutes);
 
 		syncPiPTheme(doc, mode, getPiPStyles(getModeHexColors(mode)));
-	};
+	}, [
+		mode,
+		sessionAdjustStepMinutes,
+		skipCountsSessionMinProgressPercent,
+		timerState,
+	]);
 
 	const handlePictureInPicture = async () => {
 		if (!("documentPictureInPicture" in window)) return;
@@ -124,15 +129,7 @@ const usePictureInPicture = ({
 
 	useEffect(() => {
 		if (pipWindowRef.current) updatePiPContent();
-	}, [
-		timerState.remainingTimeText,
-		timerState.finishTimeText,
-		timerState.isRunning,
-		mode,
-		sessions,
-		sessionAdjustStepMinutes,
-		skipCountsSessionMinProgressPercent,
-	]);
+	}, [updatePiPContent]);
 
 	return { pipWindow, handlePictureInPicture, isPiPOpen: !!pipWindow };
 };

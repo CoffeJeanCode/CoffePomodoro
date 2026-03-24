@@ -41,6 +41,7 @@ const Timer = () => {
 		handleNextTimer,
 		handleAdjustSessionByMinutes,
 		sessionAdjustStepMinutes,
+		skipCountsSessionMinProgressPercent,
 	});
 
 	useTimerDocumentAndHotkeys({
