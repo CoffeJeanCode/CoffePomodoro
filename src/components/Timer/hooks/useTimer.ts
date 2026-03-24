@@ -9,11 +9,9 @@ import {
 import { showNotification } from "@/utils/notification.utils";
 import { useEffect, useMemo, useRef } from "react";
 import useSound from "use-sound";
-import {
-	getToday,
-	millisecondsToSeconds,
-	secondsToMilliseconds,
-} from "@/utils/time.util";
+import { getToday, minutesToSeconds } from "@/utils/time.util";
+import { resolveActiveConfiguration } from "./timer/resolveActiveConfiguration";
+import { useTimerTick } from "./useTimerTick";
 
 const useTimer = () => {
 	const { currentSchemaId, findCurrentSchema } = useSchemasState();
@@ -33,25 +31,55 @@ const useTimer = () => {
 		remainingTimeText,
 		isRunning,
 		resumedTime,
+		sessionSegmentTotalSeconds,
 		setIsRunning,
 		setFinishTime,
 		setResumedTime,
 		setRemainingTime,
+		setSessionSegmentTotalSeconds,
 	} = useTimerState();
 	const updateDailyStats = useStatsState((stats) => stats.updateDailyStats);
 
-	const { timers, notification, behaviur } =
-		currentSchemaId === "" ? config : (findCurrentSchema() ?? config);
+	const active = resolveActiveConfiguration(
+		config,
+		currentSchemaId,
+		findCurrentSchema,
+	);
+	const { timers, notification, behavior } = active;
+
+	const sessionAdjustStepMinutes = Math.min(
+		30,
+		Math.max(1, behavior.sessionAdjustStepMinutes ?? 5),
+	);
+	const skipCountsSessionMinProgressPercent = Math.min(
+		100,
+		Math.max(0, behavior.skipCountsSessionMinProgressPercent ?? 100),
+	);
+	const skipCountsSessionMinProgressFraction =
+		skipCountsSessionMinProgressPercent / 100;
+
+	function recordPomodoroSessionStats() {
+		setSessions(sessions + 1);
+		updateDailyStats(getToday(date.raw), {
+			sessions,
+			time: timers[Mode.Pomodoro],
+		});
+	}
 
 	const [playNotification] = useSound(notification.alarm.url, {
 		volume: notification.volume,
 		soundEnabled: true,
 	});
 
-	// biome-ignore lint: romelint/suspicious/noExplicitAny
-	const intervalRef = useRef<any>(null);
-	const { pomodorosToLongBreak } = behaviur;
+	const { pomodorosToLongBreak } = behavior;
 	const nextRemainingTime = useMemo(() => timers[mode], [mode, timers]);
+
+	const sessionProgressPercent = useMemo(() => {
+		const total = sessionSegmentTotalSeconds;
+		if (total <= 0) return 0;
+		const raw = ((total - remainingTime) / total) * 100;
+		return Math.min(100, Math.max(0, Math.round(raw)));
+	}, [sessionSegmentTotalSeconds, remainingTime]);
 
 	useEffect(() => {
 		const hasResumedTime = resumedTime > 0;
@@ -60,34 +88,20 @@ const useTimer = () => {
 
 		setRemainingTime(newTime);
 
-	}, [timers, nextRemainingTime, currentSchemaId]);
-
-	useEffect(() => {
-		const then = Date.now() + secondsToMilliseconds(remainingTime);
-		setFinishTime(then);
-
-		intervalRef.current = setInterval(() => {
-			if (!isRunning) {
-				clearInterval(intervalRef.current);
-			} else {
-				const secondsLeft = Math.round(
-					millisecondsToSeconds(then - Date.now()),
-				);
-				setRemainingTime(secondsLeft);
-				setResumedTime(secondsLeft);
-			}
-
-			if (remainingTime <= 1) {
-				clearInterval(intervalRef.current);
-				handleEndTimer();
-				if (mode === Mode.Pomodoro) {
-					handleComplete();
-				}
-			}
-		}, 900);
-
-		return () => clearInterval(intervalRef.current);
-	}, [isRunning, timers, remainingTime, resumedTime]);
+		if (!hasResumedTime) {
+			setSessionSegmentTotalSeconds(newTime);
+		} else if (sessionSegmentTotalSeconds <= 0 && newTime > 0) {
+			setSessionSegmentTotalSeconds(Math.max(newTime, nextRemainingTime));
+		}
+	}, [
+		timers,
+		nextRemainingTime,
+		currentSchemaId,
+		resumedTime,
+		sessionSegmentTotalSeconds,
+		setRemainingTime,
+		setSessionSegmentTotalSeconds,
+	]);
 
 	const getNewMode = () => {
 		if (mode === Mode.Pomodoro) {
@@ -99,6 +113,15 @@ const useTimer = () => {
 	};
 
 	const handleNextTimer = ({ isSkip }: { isSkip: boolean }) => {
+		if (isSkip && mode === Mode.Pomodoro) {
+			const total = sessionSegmentTotalSeconds;
+			const progressed =
+				total > 0 ? (total - remainingTime) / total : 0;
+			if (progressed >= skipCountsSessionMinProgressFraction) {
+				recordPomodoroSessionStats();
+			}
+		}
+
 		const newMode = isSkip
 			? mode === Mode.Pomodoro
 				? Mode.ShortBreak
@@ -106,11 +129,10 @@ const useTimer = () => {
 			: getNewMode();
 
 		setMode(newMode);
-		// Only update pomodoros when finishing a pomodoro; reset after long break
 		if (mode === Mode.Pomodoro) {
 			setPomodoros(newMode === Mode.LongBreak ? 1 : pomodoros + 1);
 		}
-		setIsRunning(behaviur.canAutoPlay);
+		setIsRunning(behavior.canAutoPlay);
 		setResumedTime(0);
 	};
 
@@ -119,7 +141,22 @@ const useTimer = () => {
 	const handleStopTimer = () => {
 		if (mode !== Mode.Pomodoro) return;
 		setRemainingTime(nextRemainingTime);
+		setSessionSegmentTotalSeconds(nextRemainingTime);
 		setIsRunning(false);
+	};
+
+	const handleAdjustSessionByMinutes = (delta: 1 | -1) => {
+		const stepSeconds = minutesToSeconds(sessionAdjustStepMinutes);
+		const deltaSeconds = delta * stepSeconds;
+		const effectiveTotal =
+			sessionSegmentTotalSeconds > 0
+				? sessionSegmentTotalSeconds
+				: Math.max(remainingTime, nextRemainingTime);
+		const nextTotal = Math.max(2, effectiveTotal + deltaSeconds);
+		const next = Math.max(2, remainingTime + deltaSeconds);
+		setSessionSegmentTotalSeconds(nextTotal);
+		setRemainingTime(next);
+		setResumedTime(next);
 	};
 
 	const handleEndTimer = () => {
@@ -128,11 +165,7 @@ const useTimer = () => {
 	};
 
 	const handleComplete = () => {
-		setSessions(sessions + 1);
-		updateDailyStats(getToday(date.raw), {
-			sessions,
-			time: timers[Mode.Pomodoro],
-		});
+		recordPomodoroSessionStats();
 	};
 
 	const sendNotification = () => {
@@ -158,14 +191,33 @@ const useTimer = () => {
 		});
 	};
 
+	const onExpireRef = useRef<() => void>(() => {});
+	onExpireRef.current = () => {
+		handleEndTimer();
+		if (mode === Mode.Pomodoro) {
+			handleComplete();
+		}
+	};
+
+	useTimerTick({
+		isRunning,
+		remainingTime,
+		setFinishTime,
+		onExpireRef,
+	});
+
 	return {
 		handleNextTimer,
 		handleStopTimer,
+		handleAdjustSessionByMinutes,
 		getNewMode,
 		handleToggleTimer,
 		isRunning,
 		remainingTime,
 		remainingTimeText,
+		sessionProgressPercent,
+		sessionAdjustStepMinutes,
+		skipCountsSessionMinProgressPercent,
 	};
 };
 
