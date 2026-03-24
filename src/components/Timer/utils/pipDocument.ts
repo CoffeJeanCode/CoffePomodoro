@@ -107,7 +107,9 @@ export function mountOrUpdatePiPControls(
 		doc.getElementById("btn-plus")?.addEventListener("click", () => {
 			handlers.onAdjust(1);
 		});
-		doc.getElementById("btn-toggle")?.addEventListener("click", handlers.onToggle);
+		doc
+			.getElementById("btn-toggle")
+			?.addEventListener("click", handlers.onToggle);
 		doc.getElementById("btn-secondary")?.addEventListener("click", () => {
 			if (controlState.showSkip) handlers.onSkip();
 			else handlers.onStop();
@@ -131,12 +133,8 @@ export function updatePiPAdjustButtonTitles(
 		sessionAdjustStepMinutes === 1
 			? "1 minute"
 			: `${sessionAdjustStepMinutes} minutes`;
-	doc.getElementById("btn-minus")?.setAttribute(
-		"title",
-		`Subtract ${stepLabel} (−)`,
-	);
-	doc.getElementById("btn-plus")?.setAttribute(
-		"title",
-		`Add ${stepLabel} (+)`,
-	);
+	doc
+		.getElementById("btn-minus")
+		?.setAttribute("title", `Subtract ${stepLabel} (−)`);
+	doc.getElementById("btn-plus")?.setAttribute("title", `Add ${stepLabel} (+)`);
 }

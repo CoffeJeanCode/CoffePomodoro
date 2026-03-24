@@ -1,5 +1,15 @@
 import type { TimerSchema } from "@/models/schemas";
-import { Box, Container, Divider, Flex, Group, NumberInput, Progress, Text, Title } from "@mantine/core";
+import {
+	Box,
+	Container,
+	Divider,
+	Flex,
+	Group,
+	NumberInput,
+	Progress,
+	Text,
+	Title,
+} from "@mantine/core";
 
 import { values } from "ramda";
 import type { FC } from "react";

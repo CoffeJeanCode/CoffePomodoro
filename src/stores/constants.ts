@@ -1,10 +1,10 @@
+import Coin from "../assets/Coin.aac";
 import Interface from "../assets/Interface.mp3";
 import Micellaneus from "../assets/Miscellaneus.mp3";
 import Rise from "../assets/Rise.mp3";
 import Shake from "../assets/Shake.mp3";
-import Coin from "../assets/Coin.aac";
 
-export const SCHEMA_KEYS = "1234567890".split("").map(key => `digit${key}`);
+export const SCHEMA_KEYS = "1234567890".split("").map((key) => `digit${key}`);
 export const DAYS = [
 	"Sunday",
 	"Monday",

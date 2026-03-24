@@ -30,15 +30,15 @@ const Settings = () => {
 	const isSchemaSelected = currentSchemaId !== "";
 	const currentConfig = isSchemaSelected
 		? {
-			config: currentSchema,
-			setConfiguration: updateCurrentSchema,
-			resetConfiguration: resetConfiguration,
-		}
+				config: currentSchema,
+				setConfiguration: updateCurrentSchema,
+				resetConfiguration: resetConfiguration,
+			}
 		: {
-			config: configState,
-			setConfiguration: setConfiguration,
-			resetConfiguration: resetConfiguration,
-		};
+				config: configState,
+				setConfiguration: setConfiguration,
+				resetConfiguration: resetConfiguration,
+			};
 
 	const {
 		config,
@@ -56,9 +56,7 @@ const Settings = () => {
 
 	const handleCancelChangesSettings = () => cancelConfiguration();
 
-	useHotkeys([
-		["ctrl+,", () => setIsOpen((prev) => !prev)]
-	])
+	useHotkeys([["ctrl+,", () => setIsOpen((prev) => !prev)]]);
 
 	return (
 		<>

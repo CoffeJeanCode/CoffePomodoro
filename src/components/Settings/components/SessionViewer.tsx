@@ -22,9 +22,7 @@ const SessionViewer: React.FC<Props> = ({ configuration }) => {
 		});
 		const isLastPomodoro = i === pomodorosToLongBreak - 1;
 		sessionBlocks.push({
-			value: isLastPomodoro
-				? timers[Mode.LongBreak]
-				: timers[Mode.ShortBreak],
+			value: isLastPomodoro ? timers[Mode.LongBreak] : timers[Mode.ShortBreak],
 			color: isLastPomodoro ? "blue.4" : "blue.6",
 			label: isLastPomodoro ? "Long Break" : "Short Break",
 		});

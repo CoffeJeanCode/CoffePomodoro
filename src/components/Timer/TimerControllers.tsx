@@ -1,9 +1,12 @@
-import { Mode } from "@/models";
+import type { Mode } from "@/models";
 import { Button, Group } from "@mantine/core";
 import { type FC, memo } from "react";
 import { FaPause, FaPlay, FaStepForward, FaStop } from "react-icons/fa";
 import { getColorModeKey } from "./utils/timer";
-import { getSkipButtonTitle, getTimerControlState } from "./utils/timerControls";
+import {
+	getSkipButtonTitle,
+	getTimerControlState,
+} from "./utils/timerControls";
 
 interface TimerControllersProps {
 	mode: Mode;

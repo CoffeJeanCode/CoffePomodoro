@@ -8,8 +8,8 @@ import {
 	updatePiPAdjustButtonTitles,
 	updatePiPTimeElements,
 } from "../utils/pipDocument";
-import { getModeHexColors } from "../utils/timer";
 import { getPiPStyles } from "../utils/pipStyles";
+import { getModeHexColors } from "../utils/timer";
 
 interface UsePictureInPictureProps {
 	handleToggleTimer: () => void;
@@ -80,11 +80,13 @@ const usePictureInPicture = ({
 		}
 
 		try {
-			const pipWin = await (window as unknown as {
-				documentPictureInPicture: {
-					requestWindow: (opts: object) => Promise<Window>;
-				};
-			}).documentPictureInPicture.requestWindow({
+			const pipWin = await (
+				window as unknown as {
+					documentPictureInPicture: {
+						requestWindow: (opts: object) => Promise<Window>;
+					};
+				}
+			).documentPictureInPicture.requestWindow({
 				width: 360,
 				height: 120,
 			});

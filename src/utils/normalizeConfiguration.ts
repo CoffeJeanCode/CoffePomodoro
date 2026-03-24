@@ -12,7 +12,9 @@ export const defaultTimers: Timers = {
 
 export const defaultNotification: Notification = {
 	alarm: ALARMS.Micellaneus,
-	desktopNotification: typeof Notification !== "undefined" && Notification.permission === "granted",
+	desktopNotification:
+		typeof Notification !== "undefined" &&
+		Notification.permission === "granted",
 	volume: 0.5,
 };
 
@@ -23,16 +25,13 @@ export const defaultBehavior: Behavior = {
 	skipCountsSessionMinProgressPercent: 100,
 };
 
-export function normalizeBehavior(
-	raw?: Partial<Behavior> | null,
-): Behavior {
+export function normalizeBehavior(raw?: Partial<Behavior> | null): Behavior {
 	return {
 		canAutoPlay: raw?.canAutoPlay ?? defaultBehavior.canAutoPlay,
 		pomodorosToLongBreak:
 			raw?.pomodorosToLongBreak ?? defaultBehavior.pomodorosToLongBreak,
 		sessionAdjustStepMinutes:
-			raw?.sessionAdjustStepMinutes ??
-			defaultBehavior.sessionAdjustStepMinutes,
+			raw?.sessionAdjustStepMinutes ?? defaultBehavior.sessionAdjustStepMinutes,
 		skipCountsSessionMinProgressPercent:
 			raw?.skipCountsSessionMinProgressPercent ??
 			defaultBehavior.skipCountsSessionMinProgressPercent,
@@ -61,7 +60,9 @@ type PersistedTimerSchema = Partial<TimerSchema> &
 		behaviur?: Partial<Behavior>;
 	};
 
-export function normalizeTimerSchema(schema: PersistedTimerSchema): TimerSchema {
+export function normalizeTimerSchema(
+	schema: PersistedTimerSchema,
+): TimerSchema {
 	const legacy = (schema as { behaviur?: Partial<Behavior> }).behaviur;
 	return {
 		id: schema.id,

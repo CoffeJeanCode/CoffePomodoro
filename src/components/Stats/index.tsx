@@ -8,16 +8,16 @@ import {
 	Title,
 	useMantineTheme,
 } from "@mantine/core";
+import * as Plot from "@observablehq/plot";
 import { keys } from "ramda";
 import { useEffect, useRef, useState } from "react";
 import { FaChartBar } from "react-icons/fa";
-import * as Plot from "@observablehq/plot";
 
 type PlotData = {
 	day: string;
 	sessions: number;
 	time: number;
-}
+};
 
 const Stats = () => {
 	const [isOpen, setIsOpen] = useState(false);
@@ -30,7 +30,7 @@ const Stats = () => {
 	const plotData: PlotData[] = keys(stats).map((day, index) => ({
 		day: day.toString(),
 		sessions: stats[day].sessions,
-		time: secondsToMinutes(stats[day].time)
+		time: secondsToMinutes(stats[day].time),
 	}));
 
 	const cleanupPlot = () => {
@@ -45,12 +45,14 @@ const Stats = () => {
 
 		cleanupPlot();
 
-		const maxSessions = Math.max(...plotData.map(x => x.sessions));
-		const minSessions = Math.min(...plotData.map(x => x.sessions));
-		const maxTime = Math.max(...plotData.map(x => x.time));
-		const minTime = Math.min(...plotData.map(x => x.time));
+		const maxSessions = Math.max(...plotData.map((x) => x.sessions));
+		const minSessions = Math.min(...plotData.map((x) => x.sessions));
+		const maxTime = Math.max(...plotData.map((x) => x.time));
+		const minTime = Math.min(...plotData.map((x) => x.time));
 
-		const normalizedTime = (d: PlotData) => (d.time - minTime) / (maxTime - minTime) * (maxSessions - minSessions) + minSessions;
+		const normalizedTime = (d: PlotData) =>
+			((d.time - minTime) / (maxTime - minTime)) * (maxSessions - minSessions) +
+			minSessions;
 
 		const plot = Plot.plot({
 			width: chartRef.current.clientWidth,
@@ -60,18 +62,19 @@ const Stats = () => {
 			marginBottom: 60,
 			style: {
 				fontSize: "13px",
-				fontFamily: "-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif"
+				fontFamily:
+					"-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif",
 			},
 			x: {
 				label: "Days",
 				ariaLabel: "Days of the Week",
-				domain: plotData.map(d => d.day),
+				domain: plotData.map((d) => d.day),
 				tickFormat: (d: string) => d.charAt(0).toUpperCase() + d.slice(1, 3),
 			},
 			y: {
 				grid: true,
 				nice: true,
-				label: "Productivity"
+				label: "Productivity",
 			},
 			marks: [
 				Plot.barY(plotData, {
@@ -90,7 +93,8 @@ const Stats = () => {
 						dy: -10,
 						pointerEvents: "none",
 					},
-					title: (d: PlotData) => `${d.day}: ${d.sessions} Sessions (${d.time} Min)`,
+					title: (d: PlotData) =>
+						`${d.day}: ${d.sessions} Sessions (${d.time} Min)`,
 				}),
 				Plot.lineY(plotData, {
 					x: "day",
@@ -99,8 +103,8 @@ const Stats = () => {
 					stroke: colors.blue[6],
 					strokeWidth: 3,
 					marker: "dot",
-				})
-			]
+				}),
+			],
 		});
 
 		chartRef.current.appendChild(plot);

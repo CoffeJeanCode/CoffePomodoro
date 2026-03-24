@@ -7,9 +7,9 @@ import {
 	useTimerState,
 } from "@/stores";
 import { showNotification } from "@/utils/notification.utils";
+import { getToday, minutesToSeconds } from "@/utils/time.util";
 import { useEffect, useMemo, useRef } from "react";
 import useSound from "use-sound";
-import { getToday, minutesToSeconds } from "@/utils/time.util";
 import { resolveActiveConfiguration } from "./timer/resolveActiveConfiguration";
 import { useTimerTick } from "./useTimerTick";
 
@@ -115,8 +115,7 @@ const useTimer = () => {
 	const handleNextTimer = ({ isSkip }: { isSkip: boolean }) => {
 		if (isSkip && mode === Mode.Pomodoro) {
 			const total = sessionSegmentTotalSeconds;
-			const progressed =
-				total > 0 ? (total - remainingTime) / total : 0;
+			const progressed = total > 0 ? (total - remainingTime) / total : 0;
 			if (progressed >= skipCountsSessionMinProgressFraction) {
 				recordPomodoroSessionStats();
 			}

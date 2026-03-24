@@ -27,9 +27,8 @@ export const getColorMode = (mode: Mode): "red" | "green" | "blue" => {
 /** Mantine color prop e.g. "red.8" for buttons, backgrounds. */
 export const getColorModeKey = (
 	mode: Mode,
-	shade: number = 8,
-): `${"red" | "green" | "blue"}.${number}` =>
-	`${getColorMode(mode)}.${shade}`;
+	shade = 8,
+): `${"red" | "green" | "blue"}.${number}` => `${getColorMode(mode)}.${shade}`;
 
 /** Hex colors for PiP / raw CSS (gradients, buttons). Mantine-aligned. */
 const MODE_HEX: Record<

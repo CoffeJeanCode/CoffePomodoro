@@ -1,4 +1,4 @@
-import { useLayoutEffect, lazy, Suspense } from "react";
+import { Suspense, lazy, useLayoutEffect } from "react";
 
 import { useInfoState, useTimerState } from "@/stores";
 import { useStatsState } from "@/stores/states/stats";
@@ -38,7 +38,8 @@ const Home = () => {
 				<Center h="100vh">
 					<Loader color="red" size="xl" />
 				</Center>
-			}>
+			}
+		>
 			<Container h="100vh" style={{ overflow: "hidden" }}>
 				<Center
 					style={{

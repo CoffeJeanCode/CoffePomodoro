@@ -1,22 +1,22 @@
 import { useInfoState } from "@/stores";
-import { getColorMode } from "./utils/timer";
 import {
 	Box,
 	Center,
 	Container,
-	Stack,
 	type MantineTheme,
+	Stack,
 } from "@mantine/core";
 import { memo, useRef } from "react";
 import TimerControllers from "./TimerControllers";
 import TimerHeader from "./TimerHeader";
 import TimerInfo from "./TimerInfo";
 import TimerText from "./TimerText";
+import TimerViewControls from "./TimerViewControls";
 import usePictureInPicture from "./hooks/usePictureInPicture";
 import useTimer from "./hooks/useTimer";
 import { useTimerDocumentAndHotkeys } from "./hooks/useTimerDocumentAndHotkeys";
 import { useTimerFullscreen } from "./hooks/useTimerFullscreen";
-import TimerViewControls from "./TimerViewControls";
+import { getColorMode } from "./utils/timer";
 
 const Timer = () => {
 	const {
@@ -104,10 +104,13 @@ const Timer = () => {
               `
 							: baseColor,
 
-						padding: isFullScreen ? 0 : `${theme.spacing.lg} calc(${theme.spacing.xl} * 2)`,
+						padding: isFullScreen
+							? 0
+							: `${theme.spacing.lg} calc(${theme.spacing.xl} * 2)`,
 						borderRadius: isFullScreen ? 0 : theme.spacing.md,
 						// Smoothly animate the background as the math updates every second
-						transition: "background 1s cubic-bezier(0.4, 0, 0.2, 1), all 400ms ease",
+						transition:
+							"background 1s cubic-bezier(0.4, 0, 0.2, 1), all 400ms ease",
 					};
 				}}
 			>
@@ -156,23 +159,36 @@ const Timer = () => {
 								gap: "1.5rem",
 
 								// Advanced Frosted Glass Styling
-								background: isFullScreen ? "rgba(255, 255, 255, 0.05)" : "transparent",
-								backdropFilter: isFullScreen ? "blur(24px) saturate(150%)" : "none",
-								WebkitBackdropFilter: isFullScreen ? "blur(24px) saturate(150%)" : "none",
+								background: isFullScreen
+									? "rgba(255, 255, 255, 0.05)"
+									: "transparent",
+								backdropFilter: isFullScreen
+									? "blur(24px) saturate(150%)"
+									: "none",
+								WebkitBackdropFilter: isFullScreen
+									? "blur(24px) saturate(150%)"
+									: "none",
 
 								// Luminous Border Edge
-								border: isFullScreen ? "1px solid rgba(255, 255, 255, 0.15)" : "none",
-								borderTop: isFullScreen ? "1px solid rgba(255, 255, 255, 0.3)" : "none",
-								borderLeft: isFullScreen ? "1px solid rgba(255, 255, 255, 0.2)" : "none",
+								border: isFullScreen
+									? "1px solid rgba(255, 255, 255, 0.15)"
+									: "none",
+								borderTop: isFullScreen
+									? "1px solid rgba(255, 255, 255, 0.3)"
+									: "none",
+								borderLeft: isFullScreen
+									? "1px solid rgba(255, 255, 255, 0.2)"
+									: "none",
 								borderRadius: isFullScreen ? "2.5rem" : "0",
 								padding: isFullScreen ? "3.5rem 5rem" : "0",
 
 								// Active Breathing Shadow
-								boxShadow: isFullScreen && isRunning
-									? "0 20px 50px rgba(0,0,0,0.5), inset 0 0 40px rgba(255,255,255,0.08)"
-									: isFullScreen
-										? "0 10px 30px rgba(0,0,0,0.3)"
-										: "none",
+								boxShadow:
+									isFullScreen && isRunning
+										? "0 20px 50px rgba(0,0,0,0.5), inset 0 0 40px rgba(255,255,255,0.08)"
+										: isFullScreen
+											? "0 10px 30px rgba(0,0,0,0.3)"
+											: "none",
 
 								transition: "all 500ms cubic-bezier(0.34, 1.56, 0.64, 1)", // Springy pop effect
 							}}
@@ -208,10 +224,12 @@ const Timer = () => {
 						</Box>
 
 						{/* View Controls */}
-						<Box style={{
-							opacity: isFullScreen ? 0.4 : 1,
-							transition: "opacity 300ms ease",
-						}}>
+						<Box
+							style={{
+								opacity: isFullScreen ? 0.4 : 1,
+								transition: "opacity 300ms ease",
+							}}
+						>
 							<TimerViewControls
 								mode={mode}
 								handlePictureInPicture={handlePictureInPicture}
