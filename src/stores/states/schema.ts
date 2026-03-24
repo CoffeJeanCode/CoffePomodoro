@@ -1,6 +1,7 @@
 import { Mode } from "@/models";
 import type { Schemas, TimerSchema } from "@/models/schemas";
 import { createId } from "@/utils/extra.utils";
+import { normalizeTimerSchema } from "@/utils/normalizeConfiguration";
 import { minutesToSeconds } from "@/utils/time.util";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
@@ -16,9 +17,8 @@ export interface SchemasState extends Schemas {
 	updateCurrentSchema: (updatedSchema: TimerSchema) => void;
 }
 
-const defaultSchemas: TimerSchema[] = [
+const defaultSchemasRaw: Omit<TimerSchema, "id">[] = [
 	{
-		id: createId(),
 		title: "Work Session",
 		timers: {
 			[Mode.Pomodoro]: minutesToSeconds(25),
@@ -30,13 +30,14 @@ const defaultSchemas: TimerSchema[] = [
 			desktopNotification: true,
 			volume: 70,
 		},
-		behaviur: {
+		behavior: {
 			canAutoPlay: true,
 			pomodorosToLongBreak: 4,
+			sessionAdjustStepMinutes: 5,
+			skipCountsSessionMinProgressPercent: 100,
 		},
 	},
 	{
-		id: createId(),
 		title: "Reading",
 		timers: {
 			[Mode.Pomodoro]: minutesToSeconds(30),
@@ -48,13 +49,14 @@ const defaultSchemas: TimerSchema[] = [
 			desktopNotification: true,
 			volume: 50,
 		},
-		behaviur: {
+		behavior: {
 			canAutoPlay: false,
 			pomodorosToLongBreak: 3,
+			sessionAdjustStepMinutes: 5,
+			skipCountsSessionMinProgressPercent: 100,
 		},
 	},
 	{
-		id: createId(),
 		title: "Study",
 		timers: {
 			[Mode.Pomodoro]: minutesToSeconds(45),
@@ -66,12 +68,19 @@ const defaultSchemas: TimerSchema[] = [
 			desktopNotification: false,
 			volume: 30,
 		},
-		behaviur: {
+		behavior: {
 			canAutoPlay: true,
 			pomodorosToLongBreak: 5,
+			sessionAdjustStepMinutes: 5,
+			skipCountsSessionMinProgressPercent: 100,
 		},
 	},
 ];
+
+const defaultSchemas: TimerSchema[] = defaultSchemasRaw.map((s) =>
+	normalizeTimerSchema({ ...s, id: createId() }),
+);
+
 export const useSchemasState = create<SchemasState>()(
 	persist(
 		(set, get) => ({
@@ -79,13 +88,18 @@ export const useSchemasState = create<SchemasState>()(
 			currentSchemaId: "",
 			addSchema: (schema) => {
 				set(() => ({
-					schemas: [{ ...schema, id: createId() }, ...get().schemas],
+					schemas: [
+						normalizeTimerSchema({ ...schema, id: createId() }),
+						...get().schemas,
+					],
 				}));
 			},
 			updateSchema: (id, updatedSchema) => {
 				set(() => ({
 					schemas: get().schemas.map((schema) =>
-						schema.id === id ? { ...schema, ...updatedSchema } : schema,
+						schema.id === id
+							? normalizeTimerSchema({ ...schema, ...updatedSchema })
+							: schema,
 					),
 				}));
 			},
@@ -108,6 +122,16 @@ export const useSchemasState = create<SchemasState>()(
 		{
 			name: "schemas",
 			version: storeVersion,
+			merge: (persisted, current) => {
+				const p = (persisted ?? {}) as Partial<SchemasState>;
+				const raw = p.schemas ?? current.schemas;
+				return {
+					...current,
+					...p,
+					schemas: raw.map((s) => normalizeTimerSchema(s as TimerSchema)),
+					currentSchemaId: p.currentSchemaId ?? current.currentSchemaId,
+				};
+			},
 		},
 	),
 );

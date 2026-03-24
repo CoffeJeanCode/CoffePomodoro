@@ -62,12 +62,12 @@ const TimerSettings: FC<Props> = ({ configuration, setConfigValue }) => {
 
 			<Container fluid my="md">
 				<NumberInput
-					label="Pomodoros Sessions"
+					label="Pomodoros per long break"
 					size="xs"
 					min={2}
-					value={configuration.behaviur.pomodorosToLongBreak}
+					value={configuration.behavior.pomodorosToLongBreak}
 					onChange={(value) =>
-						setConfigValue("behaviur.pomodorosToLongBreak", value)
+						setConfigValue("behavior.pomodorosToLongBreak", value)
 					}
 				/>
 			</Container>

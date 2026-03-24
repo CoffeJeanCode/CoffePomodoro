@@ -7,7 +7,7 @@ import { getHotkeyHandler, useHotkeys } from "@mantine/hooks";
 import { memo, useState } from "react";
 import { FaWrench } from "react-icons/fa";
 import { useConfiguration } from "../../hooks/useConfiguracion";
-import BehaviurSettings from "./BehaviurSettings";
+import BehaviorSettings from "./BehaviorSettings";
 import NotificationSettings from "./NotificationSettings";
 import SchemaSettings from "./SchemaSettings";
 import TimerSettings from "./TimerSettings";
@@ -96,7 +96,7 @@ const Settings = () => {
 						configuration={config}
 						setConfigValue={setConfigValue}
 					/>
-					<BehaviurSettings
+					<BehaviorSettings
 						configuration={config}
 						setConfigValue={setConfigValue}
 					/>

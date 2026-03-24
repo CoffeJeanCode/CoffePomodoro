@@ -9,8 +9,8 @@ interface Props {
 }
 
 const SessionViewer: React.FC<Props> = ({ configuration }) => {
-	const { timers, behaviur } = configuration;
-	const { pomodorosToLongBreak } = behaviur;
+	const { timers, behavior } = configuration;
+	const { pomodorosToLongBreak } = behavior;
 
 	// Sequence: P, S, P, S, ..., P, L (N pomodoros, N-1 short breaks, 1 long break after last P)
 	const sessionBlocks = [];
