@@ -3,10 +3,12 @@ import { Button, Group } from "@mantine/core";
 import { type FC, memo } from "react";
 import { FaPause, FaPlay, FaStepForward, FaStop } from "react-icons/fa";
 import { getColorModeKey } from "./utils/timer";
+import { getSkipButtonTitle, getTimerControlState } from "./utils/timerControls";
 
 interface TimerControllersProps {
 	mode: Mode;
 	isPlaying: boolean;
+	skipCountsSessionMinProgressPercent: number;
 	handleToggleTimer: () => void;
 	handleNextTimer: ({ isSkip }: { isSkip: boolean }) => void;
 	handleStopTimer: () => void;
@@ -15,11 +17,13 @@ interface TimerControllersProps {
 const TimerControllers: FC<TimerControllersProps> = ({
 	mode,
 	isPlaying,
+	skipCountsSessionMinProgressPercent,
 	handleToggleTimer,
 	handleNextTimer,
 	handleStopTimer,
 }) => {
 	const color = getColorModeKey(mode, 9);
+	const { isPaused, showSkip } = getTimerControlState(mode, isPlaying);
 
 	const playButtonProps = {
 		leftSection: isPlaying ? <FaPause /> : <FaPlay />,
@@ -31,7 +35,7 @@ const TimerControllers: FC<TimerControllersProps> = ({
 	const skipButtonProps = {
 		leftSection: <FaStepForward />,
 		color,
-		title: "Skip <N>",
+		title: getSkipButtonTitle(mode, skipCountsSessionMinProgressPercent),
 		onClick: () => handleNextTimer({ isSkip: true }),
 	};
 
@@ -51,7 +55,7 @@ const TimerControllers: FC<TimerControllersProps> = ({
 
 	return (
 		<Group gap="sm">
-			{!isPlaying ? (
+			{isPaused ? (
 				<>
 					<Button {...playButtonProps}>Play</Button>
 					<Button {...skipButtonProps}>Skip</Button>
@@ -59,7 +63,7 @@ const TimerControllers: FC<TimerControllersProps> = ({
 			) : (
 				<>
 					<Button {...pauseButtonProps}>Pause</Button>
-					{mode === Mode.ShortBreak || mode === Mode.LongBreak ? (
+					{showSkip ? (
 						<Button {...skipButtonProps}>Skip</Button>
 					) : (
 						<Button {...stopButtonProps}>Stop</Button>
