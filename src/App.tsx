@@ -1,7 +1,6 @@
 import { Center, Loader, MantineProvider } from "@mantine/core";
 import "@mantine/core/styles.css";
 import { Suspense, lazy } from "react";
-import { Route } from "wouter";
 
 const Home = lazy(() => import("./pages/Home"));
 
@@ -15,7 +14,7 @@ const App = () => {
 					</Center>
 				}
 			>
-				<Route path="/" component={Home} />
+				<Home />
 			</Suspense>
 		</MantineProvider>
 	);
