@@ -94,9 +94,7 @@ const useTimer = () => {
 			setSessionSegmentTotalSeconds(Math.max(newTime, nextRemainingTime));
 		}
 	}, [
-		timers,
 		nextRemainingTime,
-		currentSchemaId,
 		resumedTime,
 		sessionSegmentTotalSeconds,
 		setRemainingTime,

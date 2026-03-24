@@ -10,7 +10,7 @@ import {
 } from "@mantine/core";
 import * as Plot from "@observablehq/plot";
 import { keys } from "ramda";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { FaChartBar } from "react-icons/fa";
 
 type PlotData = {
@@ -25,7 +25,7 @@ const Stats = () => {
 	const { colors } = useMantineTheme();
 
 	const chartRef = useRef<HTMLDivElement | null>(null);
-	const plotRef = useRef<any>(null);
+	const plotRef = useRef<(SVGSVGElement | HTMLElement) | null>(null);
 
 	const plotData: PlotData[] = keys(stats).map((day, index) => ({
 		day: day.toString(),
@@ -33,14 +33,14 @@ const Stats = () => {
 		time: secondsToMinutes(stats[day].time),
 	}));
 
-	const cleanupPlot = () => {
+	const cleanupPlot = useCallback(() => {
 		if (plotRef.current) {
 			plotRef.current.remove();
 			plotRef.current = null;
 		}
-	};
+	}, []);
 
-	const createChart = () => {
+	const createChart = useCallback(() => {
 		if (!chartRef.current || plotData.length === 0) return;
 
 		cleanupPlot();
@@ -109,7 +109,7 @@ const Stats = () => {
 
 		chartRef.current.appendChild(plot);
 		plotRef.current = plot;
-	};
+	}, [cleanupPlot, colors, plotData]);
 
 	// Handle drawer open/close
 	useEffect(() => {
@@ -125,7 +125,7 @@ const Stats = () => {
 			clearTimeout(timeout);
 			cleanupPlot();
 		};
-	}, [isOpen, plotData, colors]);
+	}, [isOpen, createChart, cleanupPlot]);
 
 	return (
 		<>

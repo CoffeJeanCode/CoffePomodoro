@@ -30,7 +30,7 @@ const Home = () => {
 			const expireDate = new Date().setDate(new Date().getDate() + 8);
 			setEndWeek(getEndOfWeek(new Date(expireDate), 1));
 		}
-	}, [date, resetInfo, resetStats]);
+	}, [date, endWeek, resetTimer, resetInfo, resetStats, setEndWeek]);
 
 	return (
 		<Suspense

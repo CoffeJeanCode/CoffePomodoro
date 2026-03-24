@@ -30,8 +30,6 @@ export function useTimerTick({
 	useEffect(() => {
 		if (!isRunning) return;
 
-		let intervalId: ReturnType<typeof setInterval> | undefined;
-
 		const tick = () => {
 			const { finishTime, setRemainingTime, setResumedTime } =
 				useTimerState.getState();
@@ -41,15 +39,15 @@ export function useTimerTick({
 			);
 			setRemainingTime(left);
 			setResumedTime(left);
-			if (left <= 1 && intervalId !== undefined) {
+			if (left <= 1) {
 				clearInterval(intervalId);
 				onExpireRef.current();
 			}
 		};
 
-		intervalId = setInterval(tick, 250);
+		const intervalId = setInterval(tick, 250);
 		return () => {
-			if (intervalId !== undefined) clearInterval(intervalId);
+			clearInterval(intervalId);
 		};
-	}, [isRunning]);
+	}, [isRunning, onExpireRef]);
 }

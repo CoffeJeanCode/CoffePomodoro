@@ -27,7 +27,7 @@ const QuickMenu = () => {
 			document.body.removeEventListener("contextmenu", handleQuickMenu);
 			document.body.removeEventListener("click", handleBodyClick);
 		};
-	}, []);
+	}, [open, close]);
 
 	return (
 		<Menu
