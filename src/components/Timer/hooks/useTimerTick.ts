@@ -3,7 +3,7 @@ import {
 	millisecondsToSeconds,
 	secondsToMilliseconds,
 } from "@/utils/time.util";
-import { type MutableRefObject, useEffect } from "react";
+import { type MutableRefObject, useEffect, useRef } from "react";
 
 interface UseTimerTickParams {
 	isRunning: boolean;
@@ -13,8 +13,9 @@ interface UseTimerTickParams {
 }
 
 /**
- * Keeps finish time aligned with remaining seconds, ticks countdown while running
- * using wall clock vs `finishTime` so the interval is not recreated every second.
+ * Ticks the countdown while running using wall clock vs `finishTime`.
+ * finishTime is anchored once when the timer starts/resumes so that
+ * pausing and resuming does not skip or drift time.
  */
 export function useTimerTick({
 	isRunning,
@@ -22,13 +23,18 @@ export function useTimerTick({
 	setFinishTime,
 	onExpireRef,
 }: UseTimerTickParams) {
-	useEffect(() => {
-		const then = Date.now() + secondsToMilliseconds(remainingTime);
-		setFinishTime(then);
-	}, [remainingTime, setFinishTime]);
+	// Track remainingTime in a ref so the interval effect can read the
+	// current value on play/resume without it becoming a dependency.
+	const remainingRef = useRef(remainingTime);
+	remainingRef.current = remainingTime;
 
 	useEffect(() => {
 		if (!isRunning) return;
+
+		// Anchor finishTime to the exact remaining seconds at the moment
+		// play/resume is pressed. This prevents the timer from jumping
+		// forward by however long it was paused.
+		setFinishTime(Date.now() + secondsToMilliseconds(remainingRef.current));
 
 		const tick = () => {
 			const { finishTime, setRemainingTime, setResumedTime } =
@@ -49,5 +55,5 @@ export function useTimerTick({
 		return () => {
 			clearInterval(intervalId);
 		};
-	}, [isRunning, onExpireRef]);
+	}, [isRunning, onExpireRef, setFinishTime]);
 }
