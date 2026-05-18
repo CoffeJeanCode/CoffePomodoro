@@ -3,7 +3,7 @@ import {
 	formatCycleHorizonMessage,
 	getCycleEndTimeDisplay,
 } from "@/utils/temporalHorizon";
-import { Box, Text } from "@mantine/core";
+import { Box, Button, Text } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { type FC, memo, useMemo } from "react";
 import styles from "./styles/Timer.module.css";
@@ -23,6 +23,9 @@ interface TimerProgressRingProps {
 	finishTimeText?: string;
 	finishTime?: number;
 	remainingTimeSeconds?: number;
+	/** Double-click ring center to edit intention mid-session */
+	canEditIntention?: boolean;
+	onEditIntention?: () => void;
 }
 
 const TimerProgressRing: FC<TimerProgressRingProps> = ({
@@ -37,6 +40,8 @@ const TimerProgressRing: FC<TimerProgressRingProps> = ({
 	finishTimeText = "",
 	finishTime = 0,
 	remainingTimeSeconds = 0,
+	canEditIntention = false,
+	onEditIntention,
 }) => {
 	const isMobile = useMediaQuery("(max-width: 30rem)");
 	const intentionMode = Boolean(centerLabel);
@@ -87,7 +92,7 @@ const TimerProgressRing: FC<TimerProgressRingProps> = ({
 	const showIntentionInRing =
 		abstractSession && !intentionMode && intentionText.length > 0;
 	const showPhaseLabel = !abstractSession && !intentionMode;
-	const showSideHorizon = abstractSession && !intentionMode && endTimeDisplay;
+	const showBottomHorizon = abstractSession && !intentionMode && endTimeDisplay;
 
 	return (
 		<Box
@@ -105,7 +110,9 @@ const TimerProgressRing: FC<TimerProgressRingProps> = ({
 				aria-valuemin={0}
 				aria-valuemax={100}
 				aria-label={
-					showSideHorizon ? `${horizonAria}. Session progress` : "Session progress"
+					showBottomHorizon
+						? `${horizonAria}. Session progress`
+						: "Session progress"
 				}
 				style={{ width: size, height: size }}
 			>
@@ -170,41 +177,51 @@ const TimerProgressRing: FC<TimerProgressRingProps> = ({
 
 				<Box
 					className={`${styles.ringCore} ${isRunning ? styles.ringCoreRunning : ""}`}
-					style={{
-						width: coreSize,
-						height: coreSize,
-						pointerEvents: "none",
-					}}
+					style={{ width: coreSize, height: coreSize }}
 				>
-					{showPhaseLabel && (
-						<Text
-							className={styles.ringCenterLabel}
-							aria-hidden
-							style={{
-								fontSize: large
-									? "1rem"
-									: compact || isMobile
-										? "0.8rem"
-										: "0.9rem",
-							}}
-						>
-							{getProgressLabel(sessionProgressPercent)}
-						</Text>
-					)}
-					{showIntentionInRing && (
-						<Text className={styles.ringIntention} lineClamp={3}>
-							{intentionText}
-						</Text>
-					)}
-					{intentionMode && centerLabel && (
-						<Text className={styles.ringCenterLabel} px={8} size="xs">
-							{centerLabel}
-						</Text>
-					)}
+					<Box className={styles.ringCoreInner}>
+						{showPhaseLabel && (
+							<Text
+								className={styles.ringCenterLabel}
+								aria-hidden
+								style={{
+									fontSize: large
+										? "1rem"
+										: compact || isMobile
+											? "0.8rem"
+											: "0.9rem",
+								}}
+							>
+								{getProgressLabel(sessionProgressPercent)}
+							</Text>
+						)}
+						{showIntentionInRing && (
+							<Text className={styles.ringIntention} lineClamp={3}>
+								{intentionText}
+							</Text>
+						)}
+						{canEditIntention && (
+							<Button
+								type="button"
+								variant="subtle"
+								color="gray"
+								size="xs"
+								className={styles.ringEditIntention}
+								onClick={() => onEditIntention?.()}
+							>
+								Edit intention
+							</Button>
+						)}
+						{intentionMode && centerLabel && (
+							<Text className={styles.ringCenterLabel} px={8} size="xs">
+								{centerLabel}
+							</Text>
+						)}
+					</Box>
 				</Box>
 			</Box>
 
-			{showSideHorizon && (
+			{showBottomHorizon && (
 				<Box className={styles.cycleHorizon} aria-hidden>
 					<Text className={styles.cycleHorizonCaption}>
 						{isRunning ? "ends" : "would end"}

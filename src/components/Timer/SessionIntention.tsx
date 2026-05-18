@@ -1,15 +1,41 @@
-import { Button, Stack, Textarea } from "@mantine/core";
-import { type FC, memo, useState } from "react";
+import { Button, Group, Stack, Textarea } from "@mantine/core";
+import { type FC, memo, useEffect, useState } from "react";
 
 interface SessionIntentionProps {
 	onConfirm: (intention: string) => void;
+	initialValue?: string;
+	submitLabel?: string;
+	onCancel?: () => void;
+	centered?: boolean;
 }
 
-const SessionIntention: FC<SessionIntentionProps> = ({ onConfirm }) => {
-	const [value, setValue] = useState("");
+const SessionIntention: FC<SessionIntentionProps> = ({
+	onConfirm,
+	initialValue = "",
+	submitLabel = "Begin focus",
+	onCancel,
+	centered = false,
+}) => {
+	const [value, setValue] = useState(initialValue);
+
+	useEffect(() => {
+		setValue(initialValue);
+	}, [initialValue]);
+
+	const submit = () => {
+		const trimmed = value.trim();
+		if (!trimmed) return;
+		onConfirm(trimmed);
+	};
 
 	return (
-		<Stack gap="xs" w="100%" maw={260}>
+		<Stack
+			gap="xs"
+			w="100%"
+			maw={260}
+			mx={centered ? "auto" : undefined}
+			align={centered ? "center" : "stretch"}
+		>
 			<Textarea
 				value={value}
 				onChange={(e) => setValue(e.currentTarget.value)}
@@ -21,6 +47,11 @@ const SessionIntention: FC<SessionIntentionProps> = ({ onConfirm }) => {
 				size="sm"
 				autoFocus
 				onKeyDown={(e) => {
+					if (e.key === "Escape" && onCancel) {
+						e.preventDefault();
+						onCancel();
+						return;
+					}
 					if (e.key !== "Enter" || e.shiftKey) return;
 					const trimmed = value.trim();
 					if (!trimmed) return;
@@ -28,16 +59,23 @@ const SessionIntention: FC<SessionIntentionProps> = ({ onConfirm }) => {
 					onConfirm(trimmed);
 				}}
 			/>
-			<Button
-				fullWidth
-				color="red"
-				variant="light"
-				size="sm"
-				disabled={!value.trim()}
-				onClick={() => onConfirm(value.trim())}
-			>
-				Begin focus
-			</Button>
+			<Group gap="xs" grow={!onCancel} justify={centered ? "center" : undefined}>
+				{onCancel && (
+					<Button variant="subtle" color="gray" size="sm" onClick={onCancel}>
+						Cancel
+					</Button>
+				)}
+				<Button
+					fullWidth={!onCancel}
+					color="red"
+					variant="light"
+					size="sm"
+					disabled={!value.trim()}
+					onClick={submit}
+				>
+					{submitLabel}
+				</Button>
+			</Group>
 		</Stack>
 	);
 };

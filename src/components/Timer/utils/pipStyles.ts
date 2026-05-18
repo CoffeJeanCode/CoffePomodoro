@@ -54,7 +54,7 @@ export const getPiPStyles = (colors: PiPColors) => `
     #pip-root {
         position: relative;
         display: flex;
-        flex-direction: column;
+        flex-direction: row;
         align-items: center;
         justify-content: center;
         width: 100%;
@@ -93,9 +93,6 @@ export const getPiPStyles = (colors: PiPColors) => `
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        width: 100%;
-        flex: 1;
-        min-height: 0;
         gap: clamp(4px, 1.2vmin, 8px);
     }
 
@@ -178,18 +175,17 @@ export const getPiPStyles = (colors: PiPColors) => `
         position: relative;
         z-index: 1;
         display: flex;
-        flex-direction: row;
+        flex-direction: column;
         flex-wrap: nowrap;
         align-items: center;
         justify-content: center;
         gap: clamp(4px, 1.2vmin, 8px);
-        width: 100%;
         flex-shrink: 0;
     }
 
     .controls-center {
         display: flex;
-        flex-direction: row;
+        flex-direction: column;
         align-items: center;
         justify-content: center;
         gap: clamp(4px, 1.2vmin, 8px);
@@ -256,9 +252,5 @@ export const getPiPStyles = (colors: PiPColors) => `
         fill: currentColor;
     }
 
-    @media (max-width: 200px) {
-        .controls {
-            flex-wrap: wrap;
-        }
-    }
+
 `;

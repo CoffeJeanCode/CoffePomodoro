@@ -47,6 +47,7 @@ const Timer = () => {
 
 	const [sessionIntention, setSessionIntention] = useState("");
 	const [intentionConfirmed, setIntentionConfirmed] = useState(false);
+	const [isEditingIntention, setIsEditingIntention] = useState(false);
 	const [phaseOpacity, setPhaseOpacity] = useState(1);
 	const prevModeRef = useRef(mode);
 
@@ -101,9 +102,16 @@ const Timer = () => {
 	});
 
 	const handleConfirmIntention = (intention: string) => {
+		const isFirstIntention = !intentionConfirmed;
 		setSessionIntention(intention);
 		setIntentionConfirmed(true);
-		handleToggleTimer();
+		setIsEditingIntention(false);
+		if (isFirstIntention) handleToggleTimer();
+	};
+
+	const handleEditIntention = () => {
+		if (!abstractSession || !intentionConfirmed) return;
+		setIsEditingIntention(true);
 	};
 
 	const ambient = buildAmbientBackground(mode, progressPercent);
@@ -155,14 +163,33 @@ const Timer = () => {
 									needsIntention ? "What will you focus on?" : undefined
 								}
 								sessionIntention={
-									abstractSession ? sessionIntention : undefined
+									abstractSession && !isEditingIntention
+										? sessionIntention
+										: undefined
 								}
+								canEditIntention={
+									abstractSession && intentionConfirmed && !isEditingIntention
+								}
+								onEditIntention={handleEditIntention}
 							/>
 						)}
 
-						<Box className={styles.timerActions}>
-							{needsIntention ? (
-								<SessionIntention onConfirm={handleConfirmIntention} />
+						<Box
+							className={`${styles.timerActions} ${isEditingIntention ? styles.timerActionsCentered : ""}`}
+						>
+							{needsIntention || isEditingIntention ? (
+								<SessionIntention
+									centered={isEditingIntention}
+									key={isEditingIntention ? "edit" : "new"}
+									initialValue={isEditingIntention ? sessionIntention : ""}
+									submitLabel={isEditingIntention ? "Save" : "Begin focus"}
+									onConfirm={handleConfirmIntention}
+									onCancel={
+										isEditingIntention
+											? () => setIsEditingIntention(false)
+											: undefined
+									}
+								/>
 							) : awaitingCycleAck ? (
 								<SessionComplete
 									onContinue={acknowledgeCycleAndContinue}

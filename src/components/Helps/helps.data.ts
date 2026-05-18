@@ -7,6 +7,7 @@ export const helps = {
 				"Focus without urgency — the timer shows no numbers, only a gentle ring",
 				"Set an intention before each session instead of chasing countdowns",
 				"End time sits quietly beside the ring — no countdown in the center",
+				"Use Edit intention in the ring center to update your focus mid-session",
 			],
 		},
 		{
