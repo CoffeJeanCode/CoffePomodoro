@@ -3,6 +3,7 @@ import { Mode } from "./info";
 type Alarm = {
 	title: string;
 	url: string;
+	type?: "alarm" | "soundscape";
 };
 
 export interface Timers {

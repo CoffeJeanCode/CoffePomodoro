@@ -7,9 +7,12 @@ export const calculateWeeklyTotal = (weeklyStats: WeeklyStats): DailyStats =>
 			return {
 				sessions: acc.sessions + Number(weeklyStats[key].sessions),
 				time: acc.time + Number(weeklyStats[key].time),
+				completed: acc.completed + Number(weeklyStats[key].completed ?? 0),
+				skipped: acc.skipped + Number(weeklyStats[key].skipped ?? 0),
+				avgDuration: acc.avgDuration,
 			};
 		},
-		{ sessions: 0, time: 0 },
+		{ sessions: 0, time: 0, completed: 0, skipped: 0, avgDuration: 0 },
 		keys(weeklyStats),
 	);
 

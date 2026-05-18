@@ -1,0 +1,20 @@
+# event hooks: event -> { enabled, actions }
+hooks:
+  before_handoff:
+    enabled: true
+    actions:
+      - refresh_brief
+  after_state_change:
+    enabled: true
+    actions:
+      - refresh_brief
+      - sync
+  after_proposal_apply:
+    enabled: true
+    actions:
+      - refresh_brief
+      - sync
+  before_mcp_response:
+    enabled: true
+    actions:
+      - ensure_brief_fresh

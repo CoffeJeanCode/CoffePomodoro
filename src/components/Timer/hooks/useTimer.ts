@@ -6,9 +6,12 @@ import {
 	useStatsState,
 	useTimerState,
 } from "@/stores";
-import { showNotification } from "@/utils/notification.utils";
-import { getToday, minutesToSeconds } from "@/utils/time.util";
-import { useEffect, useMemo, useRef } from "react";
+import {
+	getToday,
+	minutesToSeconds,
+	secondsToMilliseconds,
+} from "@/utils/time.util";
+import { useEffect, useMemo, useRef, useState } from "react";
 import useSound from "use-sound";
 import { resolveActiveConfiguration } from "./timer/resolveActiveConfiguration";
 import { useTimerTick } from "./useTimerTick";
@@ -29,6 +32,8 @@ const useTimer = () => {
 	const {
 		remainingTime,
 		remainingTimeText,
+		finishTime,
+		finishTimeText,
 		isRunning,
 		resumedTime,
 		sessionSegmentTotalSeconds,
@@ -39,6 +44,8 @@ const useTimer = () => {
 		setSessionSegmentTotalSeconds,
 	} = useTimerState();
 	const updateDailyStats = useStatsState((stats) => stats.updateDailyStats);
+	const updateStreak = useStatsState((stats) => stats.updateStreak);
+	const [awaitingCycleAck, setAwaitingCycleAck] = useState(false);
 
 	const active = resolveActiveConfiguration(
 		config,
@@ -58,18 +65,54 @@ const useTimer = () => {
 	const skipCountsSessionMinProgressFraction =
 		skipCountsSessionMinProgressPercent / 100;
 
-	function recordPomodoroSessionStats() {
+	function recordPomodoroSessionStats(isCompleted: boolean) {
+		const elapsedTime = sessionSegmentTotalSeconds - remainingTime;
 		setSessions(sessions + 1);
-		updateDailyStats(getToday(date.raw), {
-			sessions,
-			time: timers[Mode.Pomodoro],
-		});
+		updateDailyStats(
+			getToday(date.raw),
+			{
+				sessions: 1,
+				time: elapsedTime,
+				completed: isCompleted ? 1 : 0,
+				skipped: isCompleted ? 0 : 1,
+				avgDuration: elapsedTime,
+			},
+			isCompleted,
+		);
+		updateStreak(date.raw);
 	}
 
-	const [playNotification] = useSound(notification.alarm.url, {
-		volume: notification.volume,
-		soundEnabled: true,
-	});
+	const [playNotification, { stop: stopNotification }] = useSound(
+		notification.alarm.url,
+		{
+			volume: notification.volume,
+			soundEnabled: true,
+		},
+	);
+
+	const sendNotification = () => {
+		if (notification.volume > 0) {
+			const isSoundscape =
+				(notification.alarm as { type?: string }).type === "soundscape";
+			if (isSoundscape) {
+				const audio = new Audio(notification.alarm.url);
+				audio.volume = 0;
+				audio.loop = true;
+				audio.play();
+				let vol = 0;
+				const fadeIn = setInterval(() => {
+					vol += notification.volume / 50;
+					if (vol >= notification.volume) {
+						vol = notification.volume;
+						clearInterval(fadeIn);
+					}
+					audio.volume = Math.min(vol, notification.volume);
+				}, 100);
+			} else {
+				playNotification();
+			}
+		}
+	};
 
 	const { pomodorosToLongBreak } = behavior;
 	const nextRemainingTime = useMemo(() => timers[mode], [mode, timers]);
@@ -80,6 +123,14 @@ const useTimer = () => {
 		const raw = ((total - remainingTime) / total) * 100;
 		return Math.min(100, Math.max(0, Math.round(raw)));
 	}, [sessionSegmentTotalSeconds, remainingTime]);
+
+	const breakProgressPercent = useMemo(() => {
+		if (mode === Mode.Pomodoro) return 0;
+		const total = sessionSegmentTotalSeconds;
+		if (total <= 0) return 0;
+		const raw = ((total - remainingTime) / total) * 100;
+		return Math.min(100, Math.max(0, raw));
+	}, [mode, sessionSegmentTotalSeconds, remainingTime]);
 
 	useEffect(() => {
 		const hasResumedTime = resumedTime > 0;
@@ -115,7 +166,7 @@ const useTimer = () => {
 			const total = sessionSegmentTotalSeconds;
 			const progressed = total > 0 ? (total - remainingTime) / total : 0;
 			if (progressed >= skipCountsSessionMinProgressFraction) {
-				recordPomodoroSessionStats();
+				recordPomodoroSessionStats(false);
 			}
 		}
 
@@ -129,17 +180,25 @@ const useTimer = () => {
 		if (mode === Mode.Pomodoro) {
 			setPomodoros(newMode === Mode.LongBreak ? 1 : pomodoros + 1);
 		}
-		setIsRunning(behavior.canAutoPlay);
+		setIsRunning(false);
 		setResumedTime(0);
 	};
 
 	const handleToggleTimer = () => setIsRunning(!isRunning);
 
 	const handleStopTimer = () => {
-		if (mode !== Mode.Pomodoro) return;
+		if (mode !== Mode.Pomodoro) {
+			handleNextTimer({ isSkip: true });
+			return;
+		}
 		setRemainingTime(nextRemainingTime);
 		setSessionSegmentTotalSeconds(nextRemainingTime);
 		setIsRunning(false);
+	};
+
+	const handleSkipBreak = () => {
+		if (mode === Mode.Pomodoro) return;
+		handleNextTimer({ isSkip: true });
 	};
 
 	const handleAdjustSessionByMinutes = (delta: 1 | -1) => {
@@ -154,46 +213,39 @@ const useTimer = () => {
 		setSessionSegmentTotalSeconds(nextTotal);
 		setRemainingTime(next);
 		setResumedTime(next);
+		if (isRunning) {
+			setFinishTime(Date.now() + secondsToMilliseconds(next));
+		}
 	};
 
 	const handleEndTimer = () => {
+		if (mode === Mode.Pomodoro) {
+			handleComplete();
+			sendNotification();
+			setIsRunning(false);
+			setAwaitingCycleAck(true);
+			return;
+		}
 		sendNotification();
 		handleNextTimer({ isSkip: false });
 	};
 
-	const handleComplete = () => {
-		recordPomodoroSessionStats();
+	const acknowledgeCycleAndContinue = () => {
+		setAwaitingCycleAck(false);
+		handleNextTimer({ isSkip: false });
 	};
 
-	const sendNotification = () => {
-		playNotification();
+	const dismissCycleAck = () => {
+		setAwaitingCycleAck(false);
+	};
 
-		if (!notification.desktopNotification) return;
-
-		const notificationBody =
-			mode === Mode.Pomodoro
-				? "Well done! Work mode complete. Take a break and recharge!"
-				: mode === Mode.ShortBreak
-					? "Break's over! Time to get back in action!"
-					: mode === Mode.LongBreak
-						? "You rocked the break! Let's get back to work."
-						: "Timer finish";
-		showNotification("Timer has finished", notification.desktopNotification, {
-			lang: "en",
-			body: notificationBody,
-			icon: favIcon,
-			data: {
-				url: "/",
-			},
-		});
+	const handleComplete = () => {
+		recordPomodoroSessionStats(true);
 	};
 
 	const onExpireRef = useRef<() => void>(() => {});
 	onExpireRef.current = () => {
 		handleEndTimer();
-		if (mode === Mode.Pomodoro) {
-			handleComplete();
-		}
 	};
 
 	useTimerTick({
@@ -206,15 +258,23 @@ const useTimer = () => {
 	return {
 		handleNextTimer,
 		handleStopTimer,
+		handleSkipBreak,
 		handleAdjustSessionByMinutes,
 		getNewMode,
 		handleToggleTimer,
+		acknowledgeCycleAndContinue,
+		dismissCycleAck,
 		isRunning,
 		remainingTime,
 		remainingTimeText,
+		finishTime,
+		finishTimeText,
 		sessionProgressPercent,
+		breakProgressPercent,
 		sessionAdjustStepMinutes,
 		skipCountsSessionMinProgressPercent,
+		sessionSegmentTotalSeconds,
+		awaitingCycleAck,
 	};
 };
 

@@ -1,0 +1,40 @@
+# Key source directories (CoffePomodoro SPA)
+directories:
+  - path: src/
+    purpose: React application source (components, pages, stores, hooks, utils, models)
+  - path: src/main.tsx
+    purpose: Vite entry; mounts App
+  - path: src/App.tsx
+    purpose: MantineProvider (dark), lazy-loads Home
+  - path: src/pages/
+    purpose: Top-level routes; Home orchestrates Timer, Settings, Stats, Helps, QuickMenu
+  - path: src/components/Timer/
+    purpose: Core Pomodoro UI, tick loop, fullscreen, PiP, hotkeys, gradient progress
+  - path: src/components/Settings/
+    purpose: Modal settings (Timer, Notifications, Behavior, Schemas tabs)
+  - path: src/components/Stats/
+    purpose: Weekly charts (Chart.js / Observable Plot)
+  - path: src/components/Helps/
+    purpose: Keyboard shortcuts modal
+  - path: src/components/QuickMenu/
+    purpose: Floating mode switcher (Pomodoro / breaks)
+  - path: src/stores/states/
+    purpose: Five Zustand stores (timer, config, info, stats, schema) with persist + migrations
+  - path: src/stores/config.ts
+    purpose: Default configuration and schema presets
+  - path: src/models/
+    purpose: TypeScript interfaces (config, timer, info, stats, schemas); barrel at index.ts
+  - path: src/utils/
+    purpose: time, stats, notifications, normalizeConfiguration, forms helpers
+  - path: src/hooks/
+    purpose: useConfiguration — draft/save/cancel pattern for Settings modal
+  - path: src/assets/
+    purpose: Alarm audio files (use-sound)
+  - path: public/
+    purpose: Static favicons and assets
+  - path: .knogg/
+    purpose: Knogg vault — agent context (not app runtime data)
+  - path: vite.config.ts
+    purpose: Vite + React plugin; @ alias to src/
+  - path: biome.json
+    purpose: Lint and format rules (Biome)

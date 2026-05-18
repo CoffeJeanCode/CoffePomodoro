@@ -18,6 +18,18 @@ export const defaultNotification: Notification = {
 	volume: 0.5,
 };
 
+const alarmByTitle = new Map(
+	Object.values(ALARMS).map((alarm) => [alarm.title, alarm]),
+);
+
+/** Maps persisted alarm choice to a bundled asset (drops removed/missing files). */
+export function normalizeAlarm(
+	alarm: Notification["alarm"] | undefined,
+): Notification["alarm"] {
+	if (!alarm?.title) return defaultNotification.alarm;
+	return alarmByTitle.get(alarm.title) ?? defaultNotification.alarm;
+}
+
 export const defaultBehavior: Behavior = {
 	canAutoPlay: false,
 	pomodorosToLongBreak: 4,
@@ -50,7 +62,11 @@ export function normalizeConfiguration(
 	const behaviorSource = p.behavior ?? p.behaviur;
 	return {
 		timers: { ...defaultTimers, ...p.timers },
-		notification: { ...defaultNotification, ...p.notification },
+		notification: {
+			...defaultNotification,
+			...p.notification,
+			alarm: normalizeAlarm(p.notification?.alarm),
+		},
 		behavior: normalizeBehavior(behaviorSource),
 	};
 }
@@ -68,7 +84,11 @@ export function normalizeTimerSchema(
 		id: schema.id,
 		title: schema.title,
 		timers: { ...defaultTimers, ...schema.timers },
-		notification: { ...defaultNotification, ...schema.notification },
+		notification: {
+			...defaultNotification,
+			...schema.notification,
+			alarm: normalizeAlarm(schema.notification?.alarm),
+		},
 		behavior: normalizeBehavior(schema.behavior ?? legacy),
 	};
 }

@@ -1,0 +1,89 @@
+id: PROP-0002
+status: applied
+target: plans/master_plan.yml
+reason: Añadir tareas específicas para los 3 stages de evolución mindfulness
+created: 2026-05-18
+patch:
+  stages_append:
+  - goal: Eliminar gamificación (rachas, conteos acumulados) y modificar inicio automático. Requerir intención escrita de un solo vistazo antes de iniciar, añadir fricción intencional entre ciclos.
+    name: 'Stage 1: Desintoxicación de Métricas y Fricción Intencional'
+    status: todo
+    tasks:
+    - desc: Ocultar contador de sesiones/pomodoros acumulados del header. Guardar internamente pero no mostrar.
+      id: S1-T1
+      owner: cursor
+      status: todo
+    - desc: 'Reemplazar botón ''Start'' por flujo de ''Intención'': textarea minimalista para escribir objetivo (1 línea, placeholder ''¿Qué vas a hacer?''). Confirmar para iniciar.'
+      id: S1-T2
+      owner: cursor
+      status: todo
+    - desc: Eliminar auto-start entre ciclos (Pomodoro → Break). Forzar clic consciente para cada transición.
+      id: S1-T3
+      owner: cursor
+      status: todo
+    - desc: 'Añadir ''fricción de cierre'': al completar sesión, mostrar resumen breve (tiempo fokusado) antes de ofrecer siguiente ciclo. Botón ''Continuar'' vs ''Terminar''.'
+      id: S1-T4
+      owner: opencode
+      status: todo
+    - desc: Eliminar notificaciones de escritorio automáticas. Solo sonido suave opcional al completar.
+      id: S1-T5
+      owner: opencode
+      status: todo
+    - desc: No hay números visibles de progreso/éxito durante sesión. Cada inicio requiere intención explícita. Transiciones manuales obligatorias.
+      id: S1-DOD
+      status: todo
+  - goal: Eliminar reloj de cuenta regresiva tradicional (urgencia visual). Reemplazar números por representaciones visuales abstractas de baja carga cognitiva (anillos de progreso lento, transiciones de color ambiente).
+    name: 'Stage 2: Abstracción Temporal y Jerarquía Visual'
+    status: todo
+    tasks:
+    - desc: Reemplazar TimerText (24:59) por indicador de progreso circular/anel continuo. Progreso suave, sin segundos visibles.
+      id: S2-T1
+      owner: cursor
+      status: todo
+    - desc: 'Implementar ''ambient mode'': fondo cambia gradualmente de color según progreso (inicio: frío/calmado → final: más cálido). Sin números.'
+      id: S2-T2
+      owner: cursor
+      status: todo
+    - desc: Ocultar tiempo restante exacto. Mostrar solo 'Faltan minutos' (redondeado) o indicador visual/simple.
+      id: S2-T3
+      owner: cursor
+      status: todo
+    - desc: Quitar barra de progreso tradicional. Usar elemento decorativo continuo (ej. línea suave que completa alrededor del timer).
+      id: S2-T4
+      owner: opencode
+      status: todo
+    - desc: 'TimerControllers: simplificar. Solo Play/Pause (iconos suaves) y Stop. EliminarSkip visible durante sesión.'
+      id: S2-T5
+      owner: opencode
+      status: todo
+    - desc: El usuario no percibe presión de tiempo. Puede mantener会话 sin mirar reloj. Progreso perceptible pero no cuantificado.
+      id: S2-DOD
+      status: todo
+  - goal: Rediseñar estados de pausa y alarmas. Cambiar alarmas invasivas por paisajes sonoros de escalado suave. Pantalla de descanso minimalista para desconexión real.
+    name: 'Stage 3: Transiciones Orgánicas y Aburrimiento Profundo'
+    status: todo
+    tasks:
+    - desc: 'Reemplazar alarma sonora por ''soundscape'': nature sounds, rain, waves. Fade in gradual (5s), sin beep. Opcional en settings.'
+      id: S3-T1
+      owner: opencode
+      status: todo
+    - desc: 'Pantalla de Break: interfaz minimalista sin timer. Mostrar sugerencia de pausa analógica (''Camina 2 min'', ''Mira por ventana'', ''Estira'').'
+      id: S3-T2
+      owner: cursor
+      status: todo
+    - desc: 'Animación de respiración guiada (opcional): círculo que expande/contrae suavemente. Duración del break. Sin números.'
+      id: S3-T3
+      owner: opencode
+      status: todo
+    - desc: 'Modo ''Deep Rest'': durante break largo, oscurecer pantalla progresivamente. Invitar a cerrar ojos o hacer nada.'
+      id: S3-T4
+      owner: opencode
+      status: todo
+    - desc: 'Transición Pomodoro→Break: fundido suave (2s). No cambio abrupto. Sonido gradual también en reversa.'
+      id: S3-T5
+      owner: opencode
+      status: todo
+    - desc: El break se siente como descanso real, no como espera. Sonido natural, sin ansiedad de计时. La interfaz no demanda atención.
+      id: S3-DOD
+      status: todo
+project: CoffePomodoro

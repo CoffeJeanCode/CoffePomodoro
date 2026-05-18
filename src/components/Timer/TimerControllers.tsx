@@ -1,78 +1,57 @@
-import type { Mode } from "@/models";
-import { Button, Group } from "@mantine/core";
+import { Mode } from "@/models";
+import { ActionIcon, Group, Tooltip } from "@mantine/core";
 import { type FC, memo } from "react";
-import { FaPause, FaPlay, FaStepForward, FaStop } from "react-icons/fa";
-import { getColorModeKey } from "./utils/timer";
-import {
-	getSkipButtonTitle,
-	getTimerControlState,
-} from "./utils/timerControls";
+import { FaForward, FaPause, FaPlay, FaStop } from "react-icons/fa";
+import { getColorMode } from "./utils/timer";
 
 interface TimerControllersProps {
 	mode: Mode;
 	isPlaying: boolean;
-	skipCountsSessionMinProgressPercent: number;
 	handleToggleTimer: () => void;
-	handleNextTimer: ({ isSkip }: { isSkip: boolean }) => void;
 	handleStopTimer: () => void;
+	onSkipBreak?: () => void;
 }
 
 const TimerControllers: FC<TimerControllersProps> = ({
 	mode,
 	isPlaying,
-	skipCountsSessionMinProgressPercent,
 	handleToggleTimer,
-	handleNextTimer,
 	handleStopTimer,
+	onSkipBreak,
 }) => {
-	const color = getColorModeKey(mode, 9);
-	const { isPaused, showSkip } = getTimerControlState(mode, isPlaying);
-
-	const playButtonProps = {
-		leftSection: isPlaying ? <FaPause /> : <FaPlay />,
-		title: isPlaying ? "Pause <Space>" : "Play <Space>",
-		color,
-		onClick: () => handleToggleTimer(),
-	};
-
-	const skipButtonProps = {
-		leftSection: <FaStepForward />,
-		color,
-		title: getSkipButtonTitle(mode, skipCountsSessionMinProgressPercent),
-		onClick: () => handleNextTimer({ isSkip: true }),
-	};
-
-	const pauseButtonProps = {
-		leftSection: <FaPause />,
-		title: "Pause <Space>",
-		color,
-		onClick: () => handleToggleTimer(),
-	};
-
-	const stopButtonProps = {
-		leftSection: <FaStop />,
-		title: "Stop <S>",
-		color,
-		onClick: () => handleStopTimer(),
-	};
+	const color = getColorMode(mode);
+	const onBreak = mode !== Mode.Pomodoro;
 
 	return (
-		<Group gap="sm">
-			{isPaused ? (
-				<>
-					<Button {...playButtonProps}>Play</Button>
-					<Button {...skipButtonProps}>Skip</Button>
-				</>
-			) : (
-				<>
-					<Button {...pauseButtonProps}>Pause</Button>
-					{showSkip ? (
-						<Button {...skipButtonProps}>Skip</Button>
-					) : (
-						<Button {...stopButtonProps}>Stop</Button>
-					)}
-				</>
-			)}
+		<Group gap="lg" justify="center">
+			<Tooltip label={isPlaying ? "Pause" : "Start"} withArrow>
+				<ActionIcon
+					size={56}
+					radius="xl"
+					variant="light"
+					color={color}
+					onClick={handleToggleTimer}
+					aria-label={isPlaying ? "Pause" : "Start"}
+				>
+					{isPlaying ? <FaPause size={20} /> : <FaPlay size={20} />}
+				</ActionIcon>
+			</Tooltip>
+			<Tooltip
+				label={onBreak ? "Skip break (N)" : "End session"}
+				withArrow
+			>
+				<ActionIcon
+					size={44}
+					radius="xl"
+					variant="light"
+					color={onBreak ? color : "gray"}
+					onClick={onBreak ? (onSkipBreak ?? handleStopTimer) : handleStopTimer}
+					aria-label={onBreak ? "Skip break" : "End session"}
+					style={{ opacity: 0.85 }}
+				>
+					{onBreak ? <FaForward size={16} /> : <FaStop size={16} />}
+				</ActionIcon>
+			</Tooltip>
 		</Group>
 	);
 };

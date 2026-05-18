@@ -1,6 +1,7 @@
 import type { ConfigurationState } from "@/stores";
+import { configurationEquals } from "@/utils/configurationEquals";
 import { lensPath, set } from "ramda";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 export const useConfiguration = (configState: ConfigurationState) => {
 	const {
@@ -9,37 +10,40 @@ export const useConfiguration = (configState: ConfigurationState) => {
 		resetConfiguration: resetConfig,
 	} = configState;
 	const [tempConfig, setTempConfig] = useState(config);
-	const [isSettingsChanged, setIsSettingsChanged] = useState(false);
 
 	useEffect(() => {
 		setTempConfig(config);
 	}, [config]);
 
+	const isSettingsChanged = useMemo(
+		() => !configurationEquals(tempConfig, config),
+		[tempConfig, config],
+	);
+
 	const saveConfiguration = () => {
-		setIsSettingsChanged(false);
 		setConfig(tempConfig);
 	};
 
 	const cancelConfiguration = () => {
-		setIsSettingsChanged(false);
-		setConfig(config);
+		setTempConfig(config);
 	};
 
 	const resetConfiguration = () => {
 		if (resetConfig) resetConfig();
-		setIsSettingsChanged(false);
-		setTempConfig(config);
 	};
-	const setConfigValue = (
-		path: string,
-		// biome-ignore lint: romelint/suspicious/noExplicitAny
-		value: any,
-	) => {
-		setIsSettingsChanged(true);
-		setTempConfig((prevConfig) =>
-			set(lensPath(path.split(".")), value, prevConfig),
-		);
-	};
+
+	const setConfigValue = useCallback(
+		(
+			path: string,
+			// biome-ignore lint: romelint/suspicious/noExplicitAny
+			value: any,
+		) => {
+			setTempConfig((prevConfig) =>
+				set(lensPath(path.split(".")), value, prevConfig),
+			);
+		},
+		[],
+	);
 
 	return {
 		config: tempConfig,

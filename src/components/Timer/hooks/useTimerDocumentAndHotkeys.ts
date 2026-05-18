@@ -5,7 +5,6 @@ import { useEffect } from "react";
 
 interface UseTimerDocumentAndHotkeysParams {
 	mode: Mode;
-	remainingTimeText: string;
 	handleToggleTimer: () => void;
 	handleStopTimer: () => void;
 	handleNextTimer: (args: { isSkip: boolean }) => void;
@@ -14,9 +13,19 @@ interface UseTimerDocumentAndHotkeysParams {
 	handleAdjustSessionByMinutes: (delta: 1 | -1) => void;
 }
 
+const modeLabel = (mode: Mode) => {
+	switch (mode) {
+		case Mode.Pomodoro:
+			return "Focus";
+		case Mode.ShortBreak:
+			return "Break";
+		case Mode.LongBreak:
+			return "Rest";
+	}
+};
+
 export function useTimerDocumentAndHotkeys({
 	mode,
-	remainingTimeText,
 	handleToggleTimer,
 	handleStopTimer,
 	handleNextTimer,
@@ -31,11 +40,16 @@ export function useTimerDocumentAndHotkeys({
 	}, [mode, setFavIcon]);
 
 	useFavicon(favIcon);
-	useDocumentTitle(`${remainingTimeText} | ${mode.toLocaleUpperCase()}`);
+	useDocumentTitle(`Coffe Pomodoro · ${modeLabel(mode)}`);
 	useHotkeys([
 		["Space", () => handleToggleTimer()],
 		["S", () => handleStopTimer()],
-		["N", () => handleNextTimer({ isSkip: true })],
+		[
+			"N",
+			() => {
+				if (mode !== Mode.Pomodoro) handleNextTimer({ isSkip: true });
+			},
+		],
 		["F", () => void handleFullScreen()],
 		["shift+I", () => void handlePictureInPicture()],
 		["+", () => handleAdjustSessionByMinutes(1)],

@@ -8,11 +8,11 @@ const QuickMenu = () => {
 	const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
 	const [opened, { open, close }] = useDisclosure(false);
 	const { schemas, setCurrentSchema, currentSchemaId } = useSchemasState();
+
 	useEffect(() => {
 		const handleQuickMenu = (evt: MouseEvent) => {
 			evt.preventDefault();
 			open();
-
 			setMenuPosition({ top: evt.clientY, left: evt.clientX });
 		};
 
@@ -32,8 +32,9 @@ const QuickMenu = () => {
 	return (
 		<Menu
 			opened={opened}
-			width={200}
-			zIndex={3}
+			width={220}
+			zIndex={300}
+			withinPortal
 			styles={{
 				dropdown: {
 					position: "fixed",
@@ -42,19 +43,24 @@ const QuickMenu = () => {
 				},
 			}}
 		>
-			<Menu.Dropdown>
-				{schemas.map((schema) => (
-					<Menu.Item
-						key={schema.id}
-						leftSection={<RiTimerLine />}
-						onClick={() =>
-							setCurrentSchema(schema.id === currentSchemaId ? "" : schema.id)
-						}
-						bg={schema.id === currentSchemaId ? "blue" : ""}
-					>
-						{schema.title}
-					</Menu.Item>
-				))}
+			<Menu.Dropdown onClick={(e) => e.stopPropagation()}>
+				<Menu.Label>Preset</Menu.Label>
+				{schemas.map((schema) => {
+					const isActive = schema.id === currentSchemaId;
+					return (
+						<Menu.Item
+							key={schema.id}
+							leftSection={<RiTimerLine size={16} />}
+							color={isActive ? "red" : undefined}
+							variant={isActive ? "light" : "subtle"}
+							onClick={() =>
+								setCurrentSchema(schema.id === currentSchemaId ? "" : schema.id)
+							}
+						>
+							{schema.title}
+						</Menu.Item>
+					);
+				})}
 			</Menu.Dropdown>
 		</Menu>
 	);

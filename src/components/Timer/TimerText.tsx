@@ -1,5 +1,4 @@
-import { Title, Tooltip } from "@mantine/core";
-import { useMediaQuery } from "@mantine/hooks";
+import { Text, Tooltip } from "@mantine/core";
 import { type FC, memo } from "react";
 
 interface TimerTextProps {
@@ -8,33 +7,42 @@ interface TimerTextProps {
 }
 
 const TimerText: FC<TimerTextProps> = ({
-	remainingTimeText,
+	remainingTimeText: _remainingTimeText,
 	sessionProgressPercent,
 }) => {
-	const isMobile = useMediaQuery("(max-width: 30rem)");
+	const minutesLeft = Math.ceil(sessionProgressPercent / 100 * 25);
+	const progressLabel =
+		sessionProgressPercent < 25
+			? "Starting"
+			: sessionProgressPercent < 50
+				? "Flowing"
+				: sessionProgressPercent < 75
+					? "Deepening"
+					: sessionProgressPercent < 95
+						? "Winding down"
+						: "Almost done";
+
 	return (
 		<Tooltip
-			label={`Session progress: ${sessionProgressPercent}%`}
+			label={`${Math.round(sessionProgressPercent)}% complete`}
 			position="bottom"
 			withArrow
-			openDelay={400}
+			openDelay={800}
 		>
-			<span
+			<Text
 				style={{
 					display: "inline-block",
 					cursor: "default",
-					lineHeight: 1,
+					lineHeight: 1.2,
+					opacity: 0.7,
+					fontSize: "1.1rem",
+					letterSpacing: "0.1em",
+					textTransform: "lowercase",
 				}}
+				c="white"
 			>
-				<Title
-					order={3}
-					fz={isMobile ? 85 : 160}
-					style={{ userSelect: "none" }}
-					c="white"
-				>
-					{remainingTimeText}
-				</Title>
-			</span>
+				{progressLabel}
+			</Text>
 		</Tooltip>
 	);
 };

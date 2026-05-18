@@ -1,11 +1,14 @@
-import { Mode } from "@/models/info";
+import type { Mode } from "@/models/info";
 import type { Timer } from "@/models/timer";
-import { useInfoState, useTimerState } from "@/stores";
+import { useTimerState } from "@/stores";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { buildAmbientBackground } from "../utils/ambientBackground";
 import {
 	mountOrUpdatePiPControls,
 	syncPiPTheme,
 	updatePiPAdjustButtonTitles,
+	updatePiPAmbient,
+	updatePiPProgressRing,
 	updatePiPTimeElements,
 } from "../utils/pipDocument";
 import { getPiPStyles } from "../utils/pipStyles";
@@ -18,6 +21,41 @@ interface UsePictureInPictureProps {
 	handleAdjustSessionByMinutes: (delta: 1 | -1) => void;
 	sessionAdjustStepMinutes: number;
 	skipCountsSessionMinProgressPercent: number;
+	mode: Mode;
+	sessionProgressPercent: number;
+}
+
+const PIP_RING_RADIUS = 28;
+const PIP_RING_SIZE = PIP_RING_RADIUS * 2 + 8;
+
+function buildPiPMarkup(
+	timerState: Pick<Timer, "remainingTimeText" | "finishTimeText" | "isRunning">,
+): string {
+	const cx = PIP_RING_SIZE / 2;
+	const cy = PIP_RING_SIZE / 2;
+	const finishClass = timerState.isRunning ? "visible" : "hidden";
+	const finishLabel = timerState.finishTimeText
+		? `Finish ${timerState.finishTimeText}`
+		: "";
+
+	return `
+<div id="pip-root">
+  <div id="pip-ambient"></div>
+  <div class="pip-content">
+    <div class="pip-ring-wrap">
+      <svg class="pip-ring-svg" width="${PIP_RING_SIZE}" height="${PIP_RING_SIZE}" viewBox="0 0 ${PIP_RING_SIZE} ${PIP_RING_SIZE}" aria-hidden>
+        <circle class="pip-ring-track" cx="${cx}" cy="${cy}" r="${PIP_RING_RADIUS}" stroke-width="4"/>
+        <circle id="pip-ring-progress" class="pip-ring-progress" cx="${cx}" cy="${cy}" r="${PIP_RING_RADIUS}" stroke-width="4"/>
+      </svg>
+      <div class="timer-container pip-time-overlay">
+        <div id="time-text" class="time-text">${timerState.remainingTimeText}</div>
+        <div id="finish-text" class="finish-text ${finishClass}">${finishLabel}</div>
+      </div>
+    </div>
+  </div>
+  <div id="controls-area" class="controls"></div>
+</div>
+`;
 }
 
 const usePictureInPicture = ({
@@ -27,9 +65,9 @@ const usePictureInPicture = ({
 	handleAdjustSessionByMinutes,
 	sessionAdjustStepMinutes,
 	skipCountsSessionMinProgressPercent,
+	mode,
+	sessionProgressPercent,
 }: UsePictureInPictureProps) => {
-	const { mode } = useInfoState();
-
 	const adjustRef = useRef(handleAdjustSessionByMinutes);
 	adjustRef.current = handleAdjustSessionByMinutes;
 	const toggleRef = useRef(handleToggleTimer);
@@ -52,7 +90,12 @@ const usePictureInPicture = ({
 		const doc = pipWindowRef.current?.document;
 		if (!doc) return;
 
-		updatePiPTimeElements(doc, timerState);
+		const colors = getModeHexColors(mode);
+		const ambient = buildAmbientBackground(mode, sessionProgressPercent);
+
+		updatePiPTimeElements(doc, timerState, sessionProgressPercent);
+		updatePiPAmbient(doc, ambient);
+		updatePiPProgressRing(doc, sessionProgressPercent, colors.btnMain);
 
 		mountOrUpdatePiPControls(
 			doc,
@@ -68,11 +111,11 @@ const usePictureInPicture = ({
 		);
 
 		updatePiPAdjustButtonTitles(doc, sessionAdjustStepMinutes);
-
-		syncPiPTheme(doc, mode, getPiPStyles(getModeHexColors(mode)));
+		syncPiPTheme(doc, mode, getPiPStyles(colors));
 	}, [
 		mode,
 		sessionAdjustStepMinutes,
+		sessionProgressPercent,
 		skipCountsSessionMinProgressPercent,
 		timerState,
 	]);
@@ -92,24 +135,15 @@ const usePictureInPicture = ({
 					};
 				}
 			).documentPictureInPicture.requestWindow({
-				width: 360,
-				height: 120,
+				width: 280,
+				height: 320,
+				preferInitialWindowSize: true,
 			});
 
 			pipWindowRef.current = pipWin;
 			setPipWindow(pipWin);
 
-			pipWin.document.body.innerHTML = `
-                <div id="pip-root">
-                    <div class="timer-container">
-                        <div id="time-text" class="time-text">${timerState.remainingTimeText}</div>
-						<div id="finish-text" class="finish-text ${timerState.isRunning ? "visible" : "hidden"}">${timerState.finishTimeText ? `Finish at ${timerState.finishTimeText}` : ""}</div>
-                    </div>
-
-                    <div id="controls-area" class="controls">
-                        </div>
-                </div>
-            `;
+			pipWin.document.body.innerHTML = buildPiPMarkup(timerState);
 
 			const style = pipWin.document.createElement("style");
 			style.id = "pip-css";

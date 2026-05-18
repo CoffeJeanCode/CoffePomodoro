@@ -1,0 +1,19 @@
+id: PROP-0008
+status: applied
+target: state/active_context.yml
+reason: Asignar tareas de UI consistency a cursor
+created: 2026-05-18
+patch:
+  focus:
+    stage: 'Stage 4: UI Consistency'
+    status: in_progress
+    task: 'Cursor: Revisar y unificar toda la UI - colores, tipografía, spacing, Drawers'
+  next_actions:
+  - 'cursor: UI-T1 → Revisión visual de todos los componentes'
+  - 'cursor: UI-T2 → Estandarizar Drawers (posición y estilos)'
+  - 'cursor: UI-T3 → Unificar paleta de colores'
+  - 'cursor: UI-T4 → Renombrar Settings tab ''Alerts'' → ''Notifications'''
+  - 'cursor: UI-T5 → QuickMenu estilizar igual que resto'
+  - 'cursor: UI-T6 → Stats ajustar a paleta unificada'
+  - 'cursor: UI-T7 → Break animations revisión'
+project: CoffePomodoro

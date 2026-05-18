@@ -1,5 +1,5 @@
 import type { TimerSchema } from "@/models/schemas";
-import { Box, Group, NumberInput, Stack, Switch, Title } from "@mantine/core";
+import { Box, Group, NumberInput, Stack, Switch } from "@mantine/core";
 
 import type { FC } from "react";
 import type { Configuration } from "../../models";
@@ -13,10 +13,7 @@ const BehaviorSettings: FC<Props> = ({ configuration, setConfigValue }) => {
 	const b = configuration.behavior;
 
 	return (
-		<Box>
-			<Title order={3} size={25}>
-				Behavior
-			</Title>
+		<Box style={{ maxWidth: "100%" }}>
 			<Group gap="lg" my="xs">
 				<Switch
 					label="Auto-play next timer"

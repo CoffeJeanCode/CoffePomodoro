@@ -1,0 +1,17 @@
+id: PROP-0005
+status: applied
+target: state/active_context.yml
+reason: Actualizar contexto para asignar tareas de cursor
+created: 2026-05-18
+patch:
+  focus:
+    stage: Stage 2 + Stage 3 - UI Enhancements
+    status: in_progress
+    task: 'Cursor: S2-W1 (timer circular) + S2-W3 (ambient mode) + S3-W2 (break minimalista)'
+  next_actions:
+  - 'cursor: S2-W1 → Timer circular con progreso suave sin segundos (TimerText.tsx)'
+  - 'cursor: S2-W3 → Ambient mode: fondo cambia gradualmente según progreso (Timer.tsx)'
+  - 'cursor: S3-W2 → Break minimalista sin timer + sugerencias analógicas (BreakRestScreen.tsx)'
+  - 'opencode: S3-W1 → Soundscape con fade-in gradual (useTimer.ts)'
+  - 'opencode: S3-W3 → Transición suave 2s Pomodoro→Break'
+project: CoffePomodoro

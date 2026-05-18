@@ -1,0 +1,35 @@
+# Coding conventions for CoffePomodoro (TypeScript / React)
+guides:
+  - lang: typescript
+    formatting:
+      - "Run npm run format (Biome) before committing"
+      - Tabs for indentation; double quotes for strings (biome.json)
+      - Organize imports enabled via Biome
+    naming:
+      - Zustand hooks: useXxxState in src/stores/states/
+      - React components: PascalCase files and exports (Timer.tsx, TimerHeader.tsx)
+      - Hooks: useCamelCase (useTimer.ts, useConfiguration)
+      - "Utils: *.util.ts or descriptive camelCase (notification.utils.ts)"
+      - Models/interfaces: PascalCase in src/models/; re-export from models/index.ts
+      - CSS modules: ComponentName.module.css next to component
+    imports:
+      - Use @/ path alias for src/ (never deep relative chains across features)
+      - Lazy-load pages and heavy modals with React.lazy + Suspense
+    state:
+      - Do not merge the five persisted stores; use store-specific reset* methods
+      - Preserve storeVersion migrations when changing persist shape
+      - Settings UI must use useConfiguration draft pattern — do not mutate config store on every keystroke
+    react:
+      - Functional components only; Mantine 7 for layout and controls
+      - Prefer existing Timer/Settings patterns for new UI
+      - "Colocate feature hooks under components/<Feature>/hooks/"
+    timer:
+      - Progress from sessionSegmentTotalSeconds and remaining time
+      - Respect skipCountsSessionMinProgressPercent before counting skip toward stats
+      - Phase durations come from active schema via resolveActiveConfiguration
+    lint:
+      - "npm run lint / npm run lint:fix — Biome only, no ESLint"
+      - No automated test suite yet; manual verify with npm run dev / build
+    scope:
+      - Client-only SPA; no backend API layer
+      - localStorage via Zustand persist — avoid breaking storage keys without migration

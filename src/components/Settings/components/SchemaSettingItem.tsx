@@ -1,7 +1,7 @@
 import type { TimerSchema } from "@/models/schemas";
 import { useSchemasState } from "@/stores/states/schema";
 import { secondsToMinutes } from "@/utils/time.util";
-import { Button, Chip, CloseButton, Flex, Input, Text } from "@mantine/core";
+import { Box, Button, Chip, CloseButton, Flex, Input, Text } from "@mantine/core";
 import { getHotkeyHandler } from "@mantine/hooks";
 import { type FC, useState } from "react";
 import { FaCheck, FaEdit } from "react-icons/fa";
@@ -27,56 +27,65 @@ const SchemaSettingItem: FC<SchemaSettingItemProps> = ({ schema }) => {
 		setIsEditing(false);
 	};
 
+	const pomodoro = secondsToMinutes(timers.pomodoro);
+	const shortBreak = secondsToMinutes(timers["short break"]);
+	const longBreak = secondsToMinutes(timers["long break"]);
+
 	return (
 		<Chip
 			value={schema.id}
+			style={{ flexShrink: 0 }}
 			onClick={() =>
 				setCurrentSchema(currentSchemaId === id ? "" : currentSchemaId)
 			}
 		>
-			<Flex
-				justify="space-between"
-				align="center"
-				w="100%"
-				title={`${secondsToMinutes(timers.pomodoro)} min ${secondsToMinutes(timers["short break"])} min ${secondsToMinutes(timers["long break"])} min `}
-			>
-				{isEditing ? (
-					<Input
-						size="xs"
-						maw={80}
-						miw={35}
-						value={title}
-						variant="unstyled"
-						onChange={(evt) => setTitle(evt.target.value)}
-						onKeyDown={getHotkeyHandler([["enter", handleUpdateTitle]])}
-						autoCapitalize="on"
-						autoFocus
-					/>
-				) : (
-					<Text>{title}</Text>
-				)}
-				<Flex ml={10}>
+			<Flex direction="column" gap={2} style={{ minWidth: 100 }}>
+				<Flex justify="space-between" align="center" w="100%">
 					{isEditing ? (
-						<Button
-							variant="subtle"
-							color="gray"
-							size="compact-sm"
-							onClick={handleUpdateTitle}
-						>
-							<FaCheck />
-						</Button>
+						<Input
+							size="xs"
+							maw={80}
+							miw={35}
+							value={title}
+							variant="unstyled"
+							onChange={(evt) => setTitle(evt.target.value)}
+							onKeyDown={getHotkeyHandler([["enter", handleUpdateTitle]])}
+							autoCapitalize="on"
+							autoFocus
+						/>
 					) : (
-						<Button
-							variant="subtle"
-							color="gray"
-							size="compact-sm"
-							onClick={() => setIsEditing(true)}
-						>
-							<FaEdit />
-						</Button>
+						<Text size="sm" fw={500}>
+							{title}
+						</Text>
 					)}
-					<CloseButton onClick={handleDeleteSchema} />
+					<Flex ml={6} gap={2}>
+						{isEditing ? (
+							<Button
+								variant="subtle"
+								color="gray"
+								size="compact-sm"
+								onClick={handleUpdateTitle}
+							>
+								<FaCheck />
+							</Button>
+						) : (
+							<Button
+								variant="subtle"
+								color="gray"
+								size="compact-sm"
+								onClick={() => setIsEditing(true)}
+							>
+								<FaEdit />
+							</Button>
+						)}
+						<CloseButton onClick={handleDeleteSchema} />
+					</Flex>
 				</Flex>
+				<Box style={{ opacity: 0.6 }}>
+					<Text size="xs" c="dimmed">
+						{pomodoro}m &middot; {shortBreak}m &middot; {longBreak}m
+					</Text>
+				</Box>
 			</Flex>
 		</Chip>
 	);

@@ -1,0 +1,84 @@
+version: 1
+workspace:
+  name: CoffePomodoro
+  scope: project
+defaults:
+  generated_marker: "<!-- generated-by: knogg -->"
+  protect_human_files: true
+  default_mcp_server: knogg
+mcp_servers:
+  knogg:
+    enabled: true
+    transport: stdio
+    command: ./knogg
+    args:
+      - mcp
+    env: {}
+    description: Local knogg MCP server
+agents:
+  cursor:
+    enabled: true
+    kind: cursor
+    role: builder
+    capabilities:
+      - role:builder
+      - write:src/**
+      - read:src/**
+      - read:public/**
+      - read:.knogg/core/**
+      - read:AGENTS.md
+    profile:
+      max_next_actions: 5
+      max_decisions: 4
+    outputs:
+      mcp_config: .cursor/mcp.json
+      instructions: .cursorrules
+    mcp_servers:
+      - knogg
+
+  opencode:
+    enabled: true
+    kind: opencode
+    role: executor
+    capabilities:
+      - role:executor
+      - write:.knogg/**
+      - read:.knogg/**
+      - read:src/**
+      - read:AGENTS.md
+      - run:npm
+      - run:knogg
+      - run:docker
+      - write:package.json
+      - write:biome.json
+      - write:docker-compose.yml
+      - write:vite.config.ts
+      - write:tsconfig.json
+      - write:tsconfig.node.json
+      - write:vercel.json
+      - write:Dockerfile
+      - write:index.html
+      # Sprint BUG-B — stats (parallel with cursor; no overlap with Settings or Timer adjust files)
+      - write:src/stores/states/stats.ts
+      - write:src/components/Stats/**
+      - write:src/utils/stats.utils.ts
+      - write:src/pages/Home/index.tsx
+      - write:src/components/Timer/hooks/usePomodoroStats.ts
+    profile:
+      max_next_actions: 8
+      max_decisions: 6
+    outputs:
+      mcp_config: opencode.json
+      instructions: AGENTS.md
+    mcp_servers:
+      - knogg
+
+  codex:
+    enabled: false
+    kind: codex
+    role: builder
+    outputs:
+      mcp_config: .codex/config.toml
+      instructions: AGENTS.md
+    mcp_servers:
+      - knogg

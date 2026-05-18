@@ -1,22 +1,29 @@
-// src/components/Timer/hooks/pipStyles.ts
-// Default layout: horizontal — time (+ finish) | − play/skip + (mode = background color only)
-
 interface PiPColors {
 	bgGradient: string;
 	btnMain: string;
 	btnMainHover: string;
 }
 
+/** PiP window — matches app glass + ambient language */
 export const getPiPStyles = (colors: PiPColors) => `
     :root {
-        --bg: ${colors.bgGradient};
-        --btn-color: ${colors.btnMain};
-        --btn-hover: ${colors.btnMainHover};
-        --font-sys: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        --pip-pad: clamp(6px, 1.8vmin, 12px);
-        --btn-main-size: clamp(30px, 10vmin, 56px);
-        --btn-sub-size: clamp(26px, 8.5vmin, 44px);
-        --btn-adj-size: clamp(24px, 8vmin, 36px);
+        --pip-page-bg: #0a0e14;
+        --pip-glass-bg: rgba(255, 255, 255, 0.06);
+        --pip-glass-border: rgba(255, 255, 255, 0.14);
+        --pip-glass-border-top: rgba(255, 255, 255, 0.22);
+        --pip-glass-blur: blur(20px) saturate(150%);
+        --pip-shadow: 0 12px 36px rgba(0, 0, 0, 0.4);
+        --pip-radius: 1rem;
+        --pip-btn: ${colors.btnMain};
+        --pip-btn-hover: ${colors.btnMainHover};
+        --pip-accent: ${colors.btnMain};
+        --pip-font: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        --pip-pad: clamp(8px, 2vmin, 14px);
+        --pip-ease: cubic-bezier(0.4, 0, 0.2, 1);
+        --pip-duration: 0.45s;
+        --btn-main-size: clamp(32px, 9vmin, 48px);
+        --btn-sub-size: clamp(28px, 7.5vmin, 40px);
+        --btn-adj-size: clamp(26px, 7vmin, 36px);
     }
 
     * {
@@ -27,9 +34,12 @@ export const getPiPStyles = (colors: PiPColors) => `
     }
 
     body {
-        background: var(--bg);
-        color: white;
-        font-family: var(--font-sys);
+        background-color: var(--pip-page-bg);
+        background-image:
+            radial-gradient(ellipse 80% 50% at 50% 0%, color-mix(in srgb, var(--pip-accent) 18%, transparent) 0%, transparent 55%),
+            linear-gradient(180deg, #0c1018 0%, var(--pip-page-bg) 100%);
+        color: #f1f3f5;
+        font-family: var(--pip-font);
         height: 100vh;
         width: 100vw;
         min-height: 0;
@@ -38,84 +48,143 @@ export const getPiPStyles = (colors: PiPColors) => `
         display: flex;
         align-items: center;
         justify-content: center;
-    }
-
-    /* Horizontal strip: [ time (+ finish) ] [ − play/skip + ] */
-    #pip-root {
-        display: grid;
-        width: 100%;
-        height: 100%;
-        min-height: 0;
-        min-width: 0;
-        grid-template-columns: minmax(0, 1fr) max-content;
-        grid-template-rows: 1fr;
-        align-items: center;
-        column-gap: clamp(8px, 2.5vmin, 16px);
         padding: var(--pip-pad);
     }
 
+    #pip-root {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+        max-width: 100%;
+        max-height: 100%;
+        gap: clamp(6px, 1.5vmin, 10px);
+        padding: var(--pip-pad);
+        border-radius: var(--pip-radius);
+        background: var(--pip-glass-bg);
+        border: 1px solid var(--pip-glass-border);
+        border-top-color: var(--pip-glass-border-top);
+        box-shadow: var(--pip-shadow);
+        backdrop-filter: var(--pip-glass-blur);
+        -webkit-backdrop-filter: var(--pip-glass-blur);
+        overflow: hidden;
+        transition:
+            border-color var(--pip-duration) var(--pip-ease),
+            box-shadow var(--pip-duration) var(--pip-ease);
+    }
+
+    #pip-ambient {
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        opacity: 0.88;
+        pointer-events: none;
+        z-index: 0;
+        transition: background 1.2s var(--pip-ease);
+    }
+
+    .pip-content {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        flex: 1;
+        min-height: 0;
+        gap: clamp(4px, 1.2vmin, 8px);
+    }
+
+    .pip-ring-wrap {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        width: min-content;
+        margin-inline: auto;
+    }
+
+    .pip-time-overlay {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        pointer-events: none;
+    }
+
+    .pip-ring-svg {
+        transform: rotate(-90deg);
+    }
+
+    .pip-ring-track {
+        fill: none;
+        stroke: rgba(255, 255, 255, 0.1);
+    }
+
+    .pip-ring-progress {
+        fill: none;
+        stroke: var(--pip-accent);
+        stroke-linecap: round;
+        transition: stroke-dashoffset 1s var(--pip-ease);
+    }
+
     .timer-container {
-        grid-column: 1;
-        grid-row: 1;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
         min-width: 0;
-        min-height: 0;
-        gap: clamp(2px, 0.8vmin, 6px);
-        overflow: hidden;
+        gap: clamp(2px, 0.6vmin, 4px);
     }
 
     .time-text {
         font-variant-numeric: tabular-nums;
         font-weight: 700;
         line-height: 1;
-        text-shadow: 0 4px 14px rgba(0,0,0,0.3);
         letter-spacing: -0.02em;
-        width: 100%;
-        max-width: 100%;
-        min-width: 0;
         text-align: center;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        font-size: clamp(22px, 12vmin, 5rem);
+        font-size: clamp(1.35rem, 8vmin, 2.75rem);
+        text-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
+    }
+
+    .time-text.abstract {
+        font-size: clamp(0.8rem, 3.5vmin, 1rem);
+        font-weight: 400;
+        letter-spacing: 0.1em;
+        text-transform: lowercase;
+        opacity: 0.75;
     }
 
     .finish-text {
-        font-size: clamp(10px, 2.2vmin, 11px);
-        font-weight: 600;
-        font-variant-numeric: tabular-nums;
-        max-width: 100%;
-        min-width: 0;
+        font-size: clamp(0.6rem, 2vmin, 0.7rem);
+        font-weight: 500;
+        opacity: 0.75;
         text-align: center;
         line-height: 1.2;
-        overflow: hidden;
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        word-break: break-word;
     }
-    .finish-text.visible {
-        opacity: 0.88;
-    }
+
     .finish-text.hidden {
         display: none;
     }
 
     .controls {
-        grid-column: 2;
-        grid-row: 1;
+        position: relative;
+        z-index: 1;
         display: flex;
         flex-direction: row;
         flex-wrap: nowrap;
         align-items: center;
-        justify-content: flex-end;
-        gap: clamp(3px, 1.2vmin, 8px);
-        width: max-content;
-        min-width: min-content;
-        padding: 0;
+        justify-content: center;
+        gap: clamp(4px, 1.2vmin, 8px);
+        width: 100%;
+        flex-shrink: 0;
     }
 
     .controls-center {
@@ -123,18 +192,20 @@ export const getPiPStyles = (colors: PiPColors) => `
         flex-direction: row;
         align-items: center;
         justify-content: center;
-        gap: clamp(3px, 1.2vmin, 8px);
-        flex-shrink: 0;
+        gap: clamp(4px, 1.2vmin, 8px);
     }
 
     .btn {
-        border: none;
+        border: 1px solid var(--pip-glass-border);
         cursor: pointer;
         display: grid;
         place-items: center;
         border-radius: 50%;
         color: white;
-        transition: transform 0.12s, background-color 0.18s;
+        transition:
+            transform 0.12s var(--pip-ease),
+            background var(--pip-duration) var(--pip-ease),
+            border-color var(--pip-duration) var(--pip-ease);
         flex-shrink: 0;
     }
 
@@ -145,131 +216,49 @@ export const getPiPStyles = (colors: PiPColors) => `
     .btn-main {
         width: var(--btn-main-size);
         height: var(--btn-main-size);
-        min-width: 26px;
-        min-height: 26px;
-        background: white;
-        color: var(--btn-color);
-        box-shadow: 0 4px 12px rgba(0,0,0,0.22);
+        background: rgba(255, 255, 255, 0.14);
+        backdrop-filter: blur(8px);
+        color: white;
+        border-color: var(--pip-glass-border-top);
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+    }
+
+    .btn-main:hover {
+        background: rgba(255, 255, 255, 0.22);
     }
 
     .btn-sub {
         width: var(--btn-sub-size);
         height: var(--btn-sub-size);
-        min-width: 24px;
-        min-height: 24px;
-        background: rgba(255,255,255,0.2);
-        backdrop-filter: blur(6px);
+        background: var(--pip-glass-bg);
+        backdrop-filter: blur(8px);
+    }
+
+    .btn-sub:hover {
+        background: rgba(255, 255, 255, 0.1);
     }
 
     .btn-adjust {
         width: var(--btn-adj-size);
         height: var(--btn-adj-size);
-        min-width: 22px;
-        min-height: 22px;
-        background: rgba(255,255,255,0.14);
-        backdrop-filter: blur(4px);
-        color: rgba(255,255,255,0.78);
+        background: transparent;
+        color: rgba(255, 255, 255, 0.72);
     }
 
     .btn-adjust:hover {
-        background: rgba(255,255,255,0.24);
+        background: rgba(255, 255, 255, 0.08);
         color: white;
     }
 
     .btn svg {
-        width: 52%;
-        height: 52%;
+        width: 50%;
+        height: 50%;
         fill: currentColor;
     }
 
-    /* Very narrow: stack time / controls; ± top row, play+skip centered below */
-    @media (max-width: 220px) {
-        #pip-root {
-            grid-template-columns: 1fr;
-            grid-template-rows: auto auto;
-            row-gap: clamp(4px, 1.5vmin, 8px);
-            column-gap: 0;
-            align-items: stretch;
-        }
-
-        .timer-container {
-            grid-column: 1;
-            grid-row: 1;
-        }
-
+    @media (max-width: 200px) {
         .controls {
-            grid-column: 1;
-            grid-row: 2;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            grid-template-rows: auto auto;
-            width: 100%;
-            max-width: none;
-            column-gap: 8px;
-            row-gap: 6px;
-            justify-items: stretch;
-            align-items: center;
-        }
-
-        .pip-adj--minus {
-            grid-column: 1;
-            grid-row: 1;
-            justify-self: start;
-        }
-
-        .pip-adj--plus {
-            grid-column: 2;
-            grid-row: 1;
-            justify-self: end;
-        }
-
-        .controls-center {
-            grid-column: 1 / -1;
-            grid-row: 2;
-            justify-content: center;
-            width: 100%;
-        }
-    }
-
-    /* Taller windows — scale time up */
-    @media (min-width: 280px) and (min-height: 160px) {
-        .time-text {
-            font-size: clamp(28px, 14vmin, 7rem) !important;
-        }
-
-        .finish-text {
-            font-size: clamp(9px, 2.5vmin, 12px);
-        }
-    }
-
-    @media (min-width: 400px) and (min-height: 220px) {
-        .time-text {
-            font-size: clamp(40px, 16vmin, 9rem) !important;
-        }
-
-        .finish-text {
-            font-size: clamp(10px, 2.4vmin, 14px);
-        }
-
-        .btn-main {
-            width: clamp(40px, 11vmin, 60px);
-            height: clamp(40px, 11vmin, 60px);
-        }
-
-        .btn-sub {
-            width: clamp(34px, 9vmin, 48px);
-            height: clamp(34px, 9vmin, 48px);
-        }
-
-        .btn-adjust {
-            width: clamp(30px, 8vmin, 40px);
-            height: clamp(30px, 8vmin, 40px);
-        }
-    }
-
-    @media (min-width: 560px) and (min-height: 320px) {
-        .time-text {
-            font-size: clamp(56px, 18vmin, 12rem) !important;
+            flex-wrap: wrap;
         }
     }
 `;

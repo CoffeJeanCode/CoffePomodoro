@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "knogg": {
+      "args": [
+        "mcp"
+      ],
+      "command": "./knogg"
+    }
+  }
+}

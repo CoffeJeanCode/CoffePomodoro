@@ -1,0 +1,17 @@
+id: PROP-0001
+status: applied
+target: plans/master_plan.yml
+reason: Nuevo roadmap de evolución hacia mindfulness productivity con 3 stages focados en UX contemplativo
+created: 2026-05-18
+patch:
+  stages_append:
+  - goal: Eliminar gamificación (rachas, conteos acumulados) y modificar inicio automático. Requerir intención escrita de un solo vistazo antes de iniciar, añadir fricción intencional entre ciclos.
+    name: 'Stage 1: Desintoxicación de Métricas y Fricción Intencional'
+    status: todo
+  - goal: Eliminar reloj de cuenta regresiva tradicional (urgencia visual). Reemplazar números por representaciones visuales abstractas de baja carga cognitiva (anillos de progreso lento, transiciones de color ambiente).
+    name: 'Stage 2: Abstracción Temporal y Jerarquía Visual'
+    status: todo
+  - goal: Rediseñar estados de pausa y alarmas. Cambiar alarmas invasivas por paisajes sonoros de escalado suave. Pantalla de descanso minimalista para desconexión real.
+    name: 'Stage 3: Transiciones Orgánicas y Aburrimiento Profundo'
+    status: todo
+project: CoffePomodoro

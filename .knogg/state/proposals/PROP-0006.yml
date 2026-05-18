@@ -1,0 +1,89 @@
+id: PROP-0006
+status: applied
+target: plans/master_plan.yml
+reason: Marcar todas las tareas de Stage 2 y Stage 3 como completadas
+created: 2026-05-18
+patch:
+  stages_append:
+  - goal: Eliminar gamificación (rachas, conteos acumulados) y modificar inicio automático. Requerir intención escrita de un solo vistazo antes de iniciar, añadir fricción intencional entre ciclos.
+    name: 'Stage 1: Desintoxicación de Métricas y Fricción Intencional'
+    status: done
+    tasks:
+    - desc: 'Wave 1 - Ocultar métricas visibles: contador sesiones/pomodoros, sesiones acumuladas en header/info.'
+      id: S1-W1
+      owner: cursor
+      status: done
+    - desc: 'Wave 1 - Notificaciones automáticas: eliminar notificaciones de escritorio automáticas. Solo sonido suave opcional.'
+      id: S1-W2
+      owner: opencode
+      status: done
+    - desc: 'Wave 2 - Flujo de intención: reemplazar Start por textarea minimalista para escribir objetivo.'
+      id: S1-W3
+      owner: cursor
+      status: done
+    - desc: 'Wave 2 - Auto-start eliminación: forzar clic consciente para transición Pomodoro→Break.'
+      id: S1-W4
+      owner: opencode
+      status: done
+    - desc: 'Wave 3 - Fricción de cierre: al completar sesión, mostrar resumen breve antes de ofrecer siguiente ciclo.'
+      id: S1-W5
+      owner: opencode
+      status: done
+    - desc: 'DoD: No hay números visibles de progreso/éxito durante sesión. Cada inicio requiere intención explícita.'
+      id: S1-DOD
+      status: done
+  - goal: Eliminar reloj de cuenta regresiva tradicional (urgencia visual). Reemplazar números por representaciones visuales abstractas de baja carga cognitiva.
+    name: 'Stage 2: Abstracción Temporal y Jerarquía Visual'
+    status: done
+    tasks:
+    - desc: 'Wave 1 - Timer circular: indicador de progreso circular suave sin segundos.'
+      id: S2-W1
+      owner: opencode
+      status: done
+    - desc: 'Wave 1 - Timer decorativo continuo: línea suave que completa alrededor del timer.'
+      id: S2-W2
+      owner: opencode
+      status: done
+    - desc: 'Wave 2 - Ambient mode: fondo cambia gradualmente según progreso (frío→cálido).'
+      id: S2-W3
+      owner: opencode
+      status: done
+    - desc: 'Wave 2 - Ocultar tiempo exacto: mostrar solo indicador visual/simple.'
+      id: S2-W4
+      owner: opencode
+      status: done
+    - desc: 'Wave 3 - Simplificar controles: solo Play/Pause y Stop.'
+      id: S2-W5
+      owner: opencode
+      status: done
+    - desc: 'DoD: El usuario no percibe presión de tiempo. Progreso perceptible pero no cuantificado.'
+      id: S2-DOD
+      status: done
+  - goal: Rediseñar estados de pausa y alarmas. Cambiar alarmas invasivas por paisajes sonoros de escalado suave. Pantalla de descanso minimalista para desconexión real.
+    name: 'Stage 3: Transiciones Orgánicas y Aburrimiento Profundo'
+    status: done
+    tasks:
+    - desc: 'Wave 1 - Soundscape: reemplazar alarma por paisajes sonoros (Rain, Waves, Wind) con fade-in gradual 5s.'
+      id: S3-W1
+      owner: opencode
+      status: done
+    - desc: 'Wave 1 - Break minimalista: pantalla de descanso sin timer. Sugerencias de pausa analógica.'
+      id: S3-W2
+      owner: opencode
+      status: done
+    - desc: 'Wave 2 - Transición suave: fundido 2s Pomodoro→Break.'
+      id: S3-W3
+      owner: opencode
+      status: done
+    - desc: 'Wave 2 - Respiración guiada: animación círculo que expande/contrae.'
+      id: S3-W4
+      owner: opencode
+      status: done
+    - desc: 'Wave 3 - Deep Rest: durante break largo, oscurecer pantalla progresivamente.'
+      id: S3-W5
+      owner: opencode
+      status: done
+    - desc: 'DoD: El break se siente como descanso real, no como espera. Sonido natural, sin ansiedad de timing.'
+      id: S3-DOD
+      status: done
+project: CoffePomodoro

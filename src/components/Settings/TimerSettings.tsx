@@ -1,17 +1,12 @@
 import type { TimerSchema } from "@/models/schemas";
 import {
 	Box,
-	Container,
 	Divider,
-	Flex,
-	Group,
 	NumberInput,
-	Progress,
-	Text,
+	SimpleGrid,
+	Stack,
 	Title,
 } from "@mantine/core";
-
-import { values } from "ramda";
 import type { FC } from "react";
 import { type Configuration, Mode } from "../../models";
 import { minutesToSeconds, secondsToMinutes } from "../../utils/time.util";
@@ -35,11 +30,8 @@ const TimerSettings: FC<Props> = ({ configuration, setConfigValue }) => {
 	};
 
 	return (
-		<Box>
-			<Title order={3} size={25}>
-				Timers
-			</Title>
-			<Group mt="md" gap="lg" align="center" justify="center" grow>
+		<Box style={{ maxWidth: "100%" }}>
+			<SimpleGrid cols={1} spacing="sm">
 				<NumberInput
 					label="Work Timer"
 					size="xs"
@@ -66,21 +58,19 @@ const TimerSettings: FC<Props> = ({ configuration, setConfigValue }) => {
 					value={secondsToMinutes(configuration.timers[Mode.LongBreak])}
 					onChange={(value) => handleUpdateTimer(Mode.LongBreak, Number(value))}
 				/>
-			</Group>
+			</SimpleGrid>
 
-			<Divider mt="lg" />
+			<Divider my="md" />
 
-			<Container fluid my="md">
-				<NumberInput
-					label="Pomodoros per long break"
-					size="xs"
-					min={2}
-					value={configuration.behavior.pomodorosToLongBreak}
-					onChange={(value) =>
-						setConfigValue("behavior.pomodorosToLongBreak", value)
-					}
-				/>
-			</Container>
+			<NumberInput
+				label="Pomodoros per long break"
+				size="xs"
+				min={2}
+				value={configuration.behavior.pomodorosToLongBreak}
+				onChange={(value) =>
+					setConfigValue("behavior.pomodorosToLongBreak", value)
+				}
+			/>
 
 			<Title order={4}>Session Preview</Title>
 			<SessionViewer configuration={configuration} />

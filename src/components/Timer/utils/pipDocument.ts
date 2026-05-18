@@ -15,47 +15,74 @@ export const pipControlIcons = {
 	Plus: `<svg viewBox="0 0 24 24"><path d="M11 5h2v6h6v2h-6v6h-2v-6H5v-2h6V5z"/></svg>`,
 } as const;
 
+export function updatePiPAmbient(doc: Document, ambientBackground: string) {
+	const el = doc.getElementById("pip-ambient");
+	if (el) el.style.background = ambientBackground;
+}
+
+export function updatePiPProgressRing(
+	doc: Document,
+	sessionProgressPercent: number,
+	accentColor: string,
+) {
+	const circle = doc.getElementById("pip-ring-progress") as SVGCircleElement | null;
+	if (!circle) return;
+
+	const radius = Number(circle.getAttribute("r") ?? 0);
+	const circumference = 2 * Math.PI * radius;
+	const offset =
+		circumference - (sessionProgressPercent / 100) * circumference;
+	circle.setAttribute("stroke-dasharray", String(circumference));
+	circle.setAttribute("stroke-dashoffset", String(offset));
+	circle.setAttribute("stroke", accentColor);
+}
+
+const getProgressLabel = (percent: number): string => {
+	if (percent < 20) return "Beginning";
+	if (percent < 40) return "Focusing";
+	if (percent < 60) return "Flowing";
+	if (percent < 80) return "Deep";
+	if (percent < 95) return "Winding down";
+	return "Finishing";
+};
+
 export function updatePiPTimeElements(
 	doc: Document,
 	timerState: Pick<Timer, "remainingTimeText" | "finishTimeText" | "isRunning">,
+	sessionProgressPercent: number,
 ) {
 	const timeEl = doc.getElementById("time-text");
-	if (timeEl) timeEl.textContent = timerState.remainingTimeText;
+	if (timeEl) {
+		const label = timerState.isRunning
+			? getProgressLabel(sessionProgressPercent)
+			: timerState.remainingTimeText;
+		timeEl.textContent = label;
+		timeEl.className = timerState.isRunning ? "time-text abstract" : "time-text";
+	}
 
 	const finishEl = doc.getElementById("finish-text");
 	if (finishEl) {
-		finishEl.textContent = timerState.finishTimeText
-			? `Finish at ${timerState.finishTimeText}`
-			: "";
+		finishEl.textContent = timerState.isRunning ? "Session in progress" : "";
 		finishEl.className = timerState.isRunning
 			? "finish-text visible"
 			: "finish-text hidden";
-	}
+}
 }
 
 export function buildPiPControlsHtml(control: {
 	isPaused: boolean;
-	showSkip: boolean;
-	secondaryTitle: string;
 }): string {
 	const Icons = pipControlIcons;
-	const { isPaused, showSkip, secondaryTitle } = control;
-	const secondaryTitleAttr = secondaryTitle.replace(/"/g, "&quot;");
+	const { isPaused } = control;
 	return `
-                    <button id="btn-minus" class="btn btn-adjust pip-adj pip-adj--minus" type="button" title="">
-                        ${Icons.Minus}
-                    </button>
                     <div class="controls-center">
-                        <button id="btn-toggle" class="btn btn-main" type="button" title="${isPaused ? "Play <Space>" : "Pause <Space>"}">
+                        <button id="btn-toggle" class="btn btn-main" type="button" title="${isPaused ? "Start" : "Pause"}">
                             ${isPaused ? Icons.Play : Icons.Pause}
                         </button>
-                        <button id="btn-secondary" class="btn btn-sub" type="button" title="${secondaryTitleAttr}">
-                            ${showSkip ? Icons.Skip : Icons.Stop}
+                        <button id="btn-stop" class="btn btn-sub" type="button" title="End session">
+                            ${Icons.Stop}
                         </button>
                     </div>
-                    <button id="btn-plus" class="btn btn-adjust pip-adj pip-adj--plus" type="button" title="">
-                        ${Icons.Plus}
-                    </button>
                 `;
 }
 
@@ -85,35 +112,20 @@ export function mountOrUpdatePiPControls(
 	handlers: PiPControlHandlers,
 ) {
 	const controlState = getTimerControlState(mode, isRunning);
-	const secondaryTitle = secondaryControlTitle(
-		mode,
-		isRunning,
-		skipCountsSessionMinProgressPercent,
-	);
-	const stateKey = `${getTimerControlsDomStateKey(controlState)}|${secondaryTitle}`;
+	const stateKey = `${isRunning ? "running" : "paused"}`;
 	const controlsEl = doc.getElementById("controls-area");
 	if (!controlsEl) return;
 
 	if (controlsEl.getAttribute("data-state") !== stateKey) {
 		controlsEl.setAttribute("data-state", stateKey);
 		controlsEl.innerHTML = buildPiPControlsHtml({
-			...controlState,
-			secondaryTitle,
+			isPaused: !controlState.isPaused,
 		});
 
-		doc.getElementById("btn-minus")?.addEventListener("click", () => {
-			handlers.onAdjust(-1);
-		});
-		doc.getElementById("btn-plus")?.addEventListener("click", () => {
-			handlers.onAdjust(1);
-		});
 		doc
 			.getElementById("btn-toggle")
 			?.addEventListener("click", handlers.onToggle);
-		doc.getElementById("btn-secondary")?.addEventListener("click", () => {
-			if (controlState.showSkip) handlers.onSkip();
-			else handlers.onStop();
-		});
+		doc.getElementById("btn-stop")?.addEventListener("click", handlers.onStop);
 	}
 }
 

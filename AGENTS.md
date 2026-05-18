@@ -1,6 +1,6 @@
-# CLAUDE.md
+# AGENTS.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+Guidance for AI agents (Cursor, OpenCode) working in this repository.
 
 ## Commands
 
@@ -73,3 +73,39 @@ Three built-in presets (Work Session 25/5/15, Reading 30/7/20, Study 45/10/20). 
 - **Hotkeys**: Space (play/pause), Ctrl+, (next), Ctrl+. (stop), F (fullscreen), P (PiP)
 - **Notifications**: Desktop Notification API + `use-sound` hook with 4 preset alarm audio files in `src/assets/`
 - **Path alias**: `@` maps to `src/` (configured in `vite.config.ts`)
+
+## Structure
+
+```
+CoffePomodoro/
+├── src/
+│   ├── main.tsx, App.tsx          # Entry + Mantine shell
+│   ├── pages/Home/                # Main layout, day/week rollover
+│   ├── components/
+│   │   ├── Timer/                 # Core UI + hooks (tick, PiP, fullscreen, hotkeys)
+│   │   ├── Settings/              # Modal tabs (timer, notifications, behavior, schemas)
+│   │   ├── Stats/                 # Weekly charts
+│   │   ├── Helps/                 # Shortcuts modal
+│   │   └── QuickMenu/             # Mode switcher
+│   ├── stores/states/             # useTimerState, useConfigState, useInfoState, useStatsState, useSchemasState
+│   ├── stores/config.ts           # Defaults and built-in schema presets
+│   ├── models/                    # TypeScript interfaces (barrel: index.ts)
+│   ├── utils/                     # time, stats, notifications, normalizeConfiguration
+│   ├── hooks/useConfiguracion.ts  # Settings draft/save (useConfiguration)
+│   └── assets/                    # Alarm audio for use-sound
+├── public/                        # Favicons
+├── .knogg/                        # Knogg vault (agent context)
+├── vite.config.ts                 # @ → src/
+├── biome.json                     # Lint/format
+└── package.json                   # npm scripts
+```
+
+## Standards
+
+- **Formatting**: Biome with tabs, double quotes; run `npm run format` / `npm run lint:fix`.
+- **Imports**: Use `@/` alias; lazy-load pages and heavy modals with `React.lazy` + `Suspense`.
+- **State**: Five separate Zustand persisted stores — never merge domains; add `storeVersion` migrations when changing persist shape.
+- **Settings**: Edit through `useConfiguration` temp draft; commit with `saveConfiguration`, discard with `cancelConfiguration`.
+- **Timer**: Derive durations from active schema; use `sessionSegmentTotalSeconds` for progress; honor skip threshold before stats.
+- **UI**: Mantine 7 components, dark theme; Timer uses CSS modules + inline gradient from progress.
+- **Vault**: Read `.knogg/core/` and `knogg brief show` for focus; propose state changes via knogg MCP, do not hand-edit `active_context.yml`.

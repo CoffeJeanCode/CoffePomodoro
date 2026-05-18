@@ -5,8 +5,9 @@ import {
 	Group,
 	Select,
 	Slider,
+	Stack,
 	Switch,
-	Title,
+	Text,
 } from "@mantine/core";
 
 import { keys } from "ramda";
@@ -30,66 +31,65 @@ const NotificationSettings: FC<Props> = ({ configuration, setConfigValue }) => {
 	});
 
 	return (
-		<Box>
-			<Title order={3} size={25}>
-				Notification
-			</Title>
-			<Group>
-				<Box my={5}>
-					<Title order={4}>Alarm</Title>
-					<Group>
-						<Button onClick={() => playNotification()}>
-							<FaBell />
-						</Button>
-						<Select
-							value={configuration.notification.alarm.title}
-							data={keys(ALARMS)}
-							onChange={(title) => {
-								setConfigValue(
-									"notification.alarm",
-									ALARMS[title as AlarmTitle],
-								);
-							}}
-						/>
-						<Box my={5}>
-							<Title order={4}>Volume</Title>
-							<Slider
-								min={0.1}
-								max={1}
-								step={0.1}
-								label={(value) => `${value * 100}%`}
-								value={configuration.notification.volume}
-								onChange={(value) =>
-									setConfigValue("notification.volume", value)
-								}
-							/>
-						</Box>
-					</Group>
-				</Box>
-				<Box my={5}>
-					<Title order={4}>Desktop Notifications</Title>
-					<Switch
-						onLabel="ON"
-						offLabel="OFF"
-						size="md"
-						checked={configuration.notification.desktopNotification}
-						onChange={(evt) => {
-							const {
-								target: { checked },
-							} = evt;
-							setConfigValue("notification.desktopNotification", checked);
-							if (checked)
-								Notification.requestPermission().then((perm) => {
-									if (perm === "granted")
-										setConfigValue("notification.desktopNotification", true);
-									else
-										setConfigValue("notification.desktopNotification", false);
-								});
-						}}
-					/>
+		<Stack gap="md" style={{ maxWidth: "100%" }}>
+			<Group align="flex-end" wrap="nowrap" gap="sm">
+				<Button
+					onClick={() => playNotification()}
+					aria-label="Preview alarm"
+					flex="0 0 auto"
+				>
+					<FaBell />
+				</Button>
+				<Box style={{ flex: 1, minWidth: 0 }}>
+				<Select
+					label="Alarm"
+					w="100%"
+					value={configuration.notification.alarm.title}
+					data={keys(ALARMS)}
+					onChange={(title) => {
+						setConfigValue(
+							"notification.alarm",
+							ALARMS[title as AlarmTitle],
+						);
+					}}
+				/>
 				</Box>
 			</Group>
-		</Box>
+
+			<Box w="100%">
+				<Text size="sm" fw={500} mb={4}>
+					Volume
+				</Text>
+				<Slider
+					min={0.1}
+					max={1}
+					step={0.1}
+					label={(value) => `${value * 100}%`}
+					value={configuration.notification.volume}
+					onChange={(value) => setConfigValue("notification.volume", value)}
+				/>
+			</Box>
+
+			<Switch
+				label="Desktop notifications"
+				onLabel="ON"
+				offLabel="OFF"
+				size="md"
+				checked={configuration.notification.desktopNotification}
+				onChange={(evt) => {
+					const {
+						target: { checked },
+					} = evt;
+					setConfigValue("notification.desktopNotification", checked);
+					if (checked)
+						Notification.requestPermission().then((perm) => {
+							if (perm === "granted")
+								setConfigValue("notification.desktopNotification", true);
+							else setConfigValue("notification.desktopNotification", false);
+						});
+				}}
+			/>
+		</Stack>
 	);
 };
 

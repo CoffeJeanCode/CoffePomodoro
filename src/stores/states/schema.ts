@@ -31,7 +31,7 @@ const defaultSchemasRaw: Omit<TimerSchema, "id">[] = [
 			volume: 70,
 		},
 		behavior: {
-			canAutoPlay: true,
+			canAutoPlay: false,
 			pomodorosToLongBreak: 4,
 			sessionAdjustStepMinutes: 5,
 			skipCountsSessionMinProgressPercent: 100,
@@ -69,7 +69,7 @@ const defaultSchemasRaw: Omit<TimerSchema, "id">[] = [
 			volume: 30,
 		},
 		behavior: {
-			canAutoPlay: true,
+			canAutoPlay: false,
 			pomodorosToLongBreak: 5,
 			sessionAdjustStepMinutes: 5,
 			skipCountsSessionMinProgressPercent: 100,

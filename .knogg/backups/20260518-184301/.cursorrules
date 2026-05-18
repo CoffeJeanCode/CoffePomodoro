@@ -1,0 +1,22 @@
+<!-- generated-by: knogg -->
+# Handoff → Cursor
+
+Project: CoffePomodoro
+Stage: Stage 1 — App development
+Task: Feature work and timer/settings maintenance
+Status: in_progress
+
+## Constraints
+- React 18 + TypeScript + Vite SPA; Zustand for state, Mantine 7 for UI — keep the client-only architecture
+- Lint and format with Biome only (npm run lint / format); no ESLint/Prettier and no automated test suite yet
+- Respect five persisted Zustand stores (timer, config, info, stats, schemas) with storeVersion migrations — do not collapse or cross-wire store boundaries
+- Use @ path alias to src/; lazy-load pages and major features with React.lazy + Suspense
+- Timer logic must honor sessionSegmentTotalSeconds, progress-based skip rules, and schema-driven durations from useSchemasState
+
+## Next Actions
+- Pick a feature or bug and code it in src/
+- npm run lint && npm run build
+- knogg decision add for big design calls
+
+## Summary
+All knogg bootstrap stages done. Vault healthy. App work is Stage 1.

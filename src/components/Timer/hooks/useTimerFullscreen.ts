@@ -1,7 +1,7 @@
 import type { RefObject } from "react";
 import { useEffect, useState } from "react";
 
-/** Syncs with browser fullscreen; targets `containerRef` when entering fullscreen. */
+/** Syncs with browser fullscreen; immersive timer fills the viewport. */
 export function useTimerFullscreen(
 	containerRef: RefObject<HTMLElement | null>,
 ) {
@@ -18,7 +18,8 @@ export function useTimerFullscreen(
 
 	const handleFullScreen = async () => {
 		if (!document.fullscreenElement) {
-			await containerRef.current?.requestFullscreen();
+			const target = containerRef.current ?? document.documentElement;
+			await target.requestFullscreen();
 		} else if (document.exitFullscreen) {
 			await document.exitFullscreen();
 		}

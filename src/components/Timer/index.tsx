@@ -1,31 +1,44 @@
+import { Mode } from "@/models";
+import { GlassPanel } from "@/components/ui/GlassPanel";
 import { useInfoState } from "@/stores";
-import {
-	Box,
-	Center,
-	Container,
-	type MantineTheme,
-	Stack,
-} from "@mantine/core";
-import { memo, useRef } from "react";
+import { Box, Container } from "@mantine/core";
+import { memo, useEffect, useRef, useState } from "react";
+import BreakRestScreen from "./BreakRestScreen";
+import SessionComplete from "./SessionComplete";
+import SessionIntention from "./SessionIntention";
 import TimerControllers from "./TimerControllers";
 import TimerHeader from "./TimerHeader";
 import TimerInfo from "./TimerInfo";
-import TimerText from "./TimerText";
+import TimerProgressRing from "./TimerProgressRing";
 import TimerViewControls from "./TimerViewControls";
 import usePictureInPicture from "./hooks/usePictureInPicture";
 import useTimer from "./hooks/useTimer";
 import { useTimerDocumentAndHotkeys } from "./hooks/useTimerDocumentAndHotkeys";
 import { useTimerFullscreen } from "./hooks/useTimerFullscreen";
-import { getColorMode } from "./utils/timer";
+import styles from "./styles/Timer.module.css";
+import {
+	buildAmbientBackground,
+	buildFullscreenBackground,
+} from "./utils/ambientBackground";
+
+const isBreakMode = (mode: Mode) =>
+	mode === Mode.ShortBreak || mode === Mode.LongBreak;
 
 const Timer = () => {
 	const {
+		acknowledgeCycleAndContinue,
+		awaitingCycleAck,
+		breakProgressPercent,
+		dismissCycleAck,
 		handleAdjustSessionByMinutes,
 		handleNextTimer,
 		handleStopTimer,
+		handleSkipBreak,
 		handleToggleTimer,
+		finishTime,
+		finishTimeText,
 		isRunning,
-		remainingTimeText,
+		remainingTime,
 		sessionAdjustStepMinutes,
 		sessionProgressPercent,
 		skipCountsSessionMinProgressPercent,
@@ -33,7 +46,37 @@ const Timer = () => {
 	const { mode } = useInfoState();
 	const timerRef = useRef<HTMLDivElement>(null);
 
+	const [sessionIntention, setSessionIntention] = useState("");
+	const [intentionConfirmed, setIntentionConfirmed] = useState(false);
+	const [phaseOpacity, setPhaseOpacity] = useState(1);
+	const prevModeRef = useRef(mode);
+
+	useEffect(() => {
+		if (prevModeRef.current === mode) return;
+
+		setPhaseOpacity(0.25);
+		const fadeIn = setTimeout(() => setPhaseOpacity(1), 2000);
+
+		if (prevModeRef.current !== Mode.Pomodoro && mode === Mode.Pomodoro) {
+			setIntentionConfirmed(false);
+			setSessionIntention("");
+		}
+
+		prevModeRef.current = mode;
+		return () => clearTimeout(fadeIn);
+	}, [mode]);
+
+	const needsIntention =
+		mode === Mode.Pomodoro && !isRunning && !intentionConfirmed && !awaitingCycleAck;
+	const abstractSession =
+		mode === Mode.Pomodoro && intentionConfirmed && !awaitingCycleAck;
+	const onBreak = isBreakMode(mode);
+
 	const { isFullScreen, handleFullScreen } = useTimerFullscreen(timerRef);
+
+	const progressPercent = onBreak
+		? breakProgressPercent
+		: sessionProgressPercent;
 
 	const { handlePictureInPicture, isPiPOpen } = usePictureInPicture({
 		handleToggleTimer,
@@ -42,11 +85,12 @@ const Timer = () => {
 		handleAdjustSessionByMinutes,
 		sessionAdjustStepMinutes,
 		skipCountsSessionMinProgressPercent,
+		mode,
+		sessionProgressPercent: progressPercent,
 	});
 
 	useTimerDocumentAndHotkeys({
 		mode,
-		remainingTimeText,
 		handleToggleTimer,
 		handleStopTimer,
 		handleNextTimer,
@@ -55,191 +99,104 @@ const Timer = () => {
 		handleAdjustSessionByMinutes,
 	});
 
+	const handleConfirmIntention = (intention: string) => {
+		setSessionIntention(intention);
+		setIntentionConfirmed(true);
+		handleToggleTimer();
+	};
+
+	const ambient = buildAmbientBackground(mode, progressPercent);
+	const fullscreenBg = buildFullscreenBackground(mode, progressPercent);
+
 	return (
-		<Container px={0}>
-			<Box
-				ref={timerRef}
-				style={(theme: MantineTheme) => {
-					const base = getColorMode(mode);
-					const baseColor = theme.colors[base][8];
-
-					// --- MEGA VIBRANT PALETTE (Based on your image) ---
-					const bgDeep = "#080b14"; // Ultra dark navy/black base
-					const colorMagenta = "#ff007f"; // Neon Pink
-					const colorOrange = "#ff4500"; // Vibrant Orange
-					const colorYellow = "#ffd700"; // Bright Sun Yellow
-					const colorCyan = "#00e5ff"; // Electric Blue/Cyan
-					const colorPurple = "#8a2be2"; // Deep Violet
-
-					// --- DYNAMIC ORBIT MATH ---
-					// This makes the colors swirl in curves and figure-8s instead of straight lines
-					const p = sessionProgressPercent;
-					const swirlX1 = 50 + Math.sin(p * 0.1) * 40; // Swings left to right (10% to 90%)
-					const swirlY1 = 50 + Math.cos(p * 0.1) * 40; // Swings top to bottom
-					const swirlX2 = 50 + Math.sin(p * 0.08 + Math.PI) * 50;
-					const swirlY2 = 50 + Math.cos(p * 0.08 + Math.PI) * 50;
-
-					return {
-						minWidth: "min(300px, 30vw)",
-						display: isFullScreen ? "flex" : "block",
-						alignItems: isFullScreen ? "center" : "initial",
-						justifyContent: isFullScreen ? "center" : "initial",
-
-						// --- THE LIVING AURORA BACKGROUND ---
-						background: isFullScreen
-							? `
-                /* 1. Grain Texture */
-                url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg"><filter id="a"><feTurbulence type="fractalNoise" baseFrequency="0.75" numOctaves="3" stitchTiles="stitch" /></filter><rect width="100%" height="100%" filter="url(%23a)" opacity="0.3"/></svg>'),
-                
-                /* 2. Swirling Colors (Using dynamic math) */
-                radial-gradient(120% 120% at ${swirlX1}% ${swirlY1}%, ${colorYellow}55 0%, transparent 50%),
-                radial-gradient(150% 150% at ${swirlX2}% ${swirlY2}%, ${colorCyan}4D 0%, transparent 60%),
-                
-                /* 3. Sweeping Progress Colors */
-                radial-gradient(120% 120% at ${p}% 100%, ${colorMagenta}66 0%, transparent 60%),
-                radial-gradient(100% 100% at 100% ${p}%, ${colorOrange}55 0%, transparent 70%),
-                radial-gradient(100% 100% at 0% ${100 - p}%, ${colorPurple}66 0%, transparent 60%),
-                
-                /* 4. Deep Base */
-                ${bgDeep}
-              `
-							: baseColor,
-
-						padding: isFullScreen
-							? 0
-							: `${theme.spacing.lg} calc(${theme.spacing.xl} * 2)`,
-						borderRadius: isFullScreen ? 0 : theme.spacing.md,
-						// Smoothly animate the background as the math updates every second
-						transition:
-							"background 1s cubic-bezier(0.4, 0, 0.2, 1), all 400ms ease",
-					};
-				}}
-			>
-				<Center
-					style={{
-						flexDirection: "column",
-						width: "100%",
-						height: isFullScreen ? "100%" : "auto",
-					}}
+		<Container px={0} fluid={isFullScreen} w={isFullScreen ? "100%" : undefined}>
+			<Box ref={timerRef} w={isFullScreen ? "100%" : undefined}>
+				<GlassPanel
+					immersive={isFullScreen}
+					ambientBackground={isFullScreen ? fullscreenBg : ambient}
+					className={`${styles.timerSquare} ${onBreak ? styles.timerSquareBreak : ""} ${isFullScreen ? styles.timerFullscreen : ""}`}
+					padding={isFullScreen ? "2rem 1.5rem" : "1rem 1.25rem"}
+					innerClassName={styles.timerBody}
+					style={{ opacity: phaseOpacity }}
 				>
-					<Stack
-						gap={isFullScreen ? "xl" : "md"}
-						style={{
-							width: "100%",
-							alignItems: "center",
-							justifyContent: "center",
-						}}
-					>
-						{/* Header (Hidden in Fullscreen) */}
-						<Box
-							style={{
-								display: "grid",
-								gridTemplateRows: isFullScreen ? "0fr" : "1fr",
-								opacity: isFullScreen ? 0 : 1,
-								transition: "all 400ms ease",
-							}}
-						>
-							<Box style={{ overflow: "hidden" }}>
-								<TimerHeader
-									mode={mode}
-									sessionAdjustStepMinutes={sessionAdjustStepMinutes}
-									onAddMinute={() => handleAdjustSessionByMinutes(1)}
-									onSubtractMinute={() => handleAdjustSessionByMinutes(-1)}
-								/>
-							</Box>
+					{!awaitingCycleAck && !onBreak && (
+						<Box className={styles.timerHeader}>
+							<TimerHeader
+								mode={mode}
+								sessionAdjustStepMinutes={sessionAdjustStepMinutes}
+								onAddMinute={() => handleAdjustSessionByMinutes(1)}
+								onSubtractMinute={() => handleAdjustSessionByMinutes(-1)}
+							/>
 						</Box>
+					)}
 
-						{/* --- THE PRISMATIC GLASS CARD --- */}
-						<Box
-							style={{
-								transform: isFullScreen ? "scale(1.25)" : "scale(1)",
-								transformOrigin: "center",
-								display: "flex",
-								flexDirection: "column",
-								alignItems: "center",
-								gap: "1.5rem",
-
-								// Advanced Frosted Glass Styling
-								background: isFullScreen
-									? "rgba(255, 255, 255, 0.05)"
-									: "transparent",
-								backdropFilter: isFullScreen
-									? "blur(24px) saturate(150%)"
-									: "none",
-								WebkitBackdropFilter: isFullScreen
-									? "blur(24px) saturate(150%)"
-									: "none",
-
-								// Luminous Border Edge
-								border: isFullScreen
-									? "1px solid rgba(255, 255, 255, 0.15)"
-									: "none",
-								borderTop: isFullScreen
-									? "1px solid rgba(255, 255, 255, 0.3)"
-									: "none",
-								borderLeft: isFullScreen
-									? "1px solid rgba(255, 255, 255, 0.2)"
-									: "none",
-								borderRadius: isFullScreen ? "2.5rem" : "0",
-								padding: isFullScreen ? "3.5rem 5rem" : "0",
-
-								// Active Breathing Shadow
-								boxShadow:
-									isFullScreen && isRunning
-										? "0 20px 50px rgba(0,0,0,0.5), inset 0 0 40px rgba(255,255,255,0.08)"
-										: isFullScreen
-											? "0 10px 30px rgba(0,0,0,0.3)"
-											: "none",
-
-								transition: "all 500ms cubic-bezier(0.34, 1.56, 0.64, 1)", // Springy pop effect
-							}}
-						>
-							<TimerText
-								remainingTimeText={remainingTimeText}
+<Box
+		className={`${styles.timerStage} ${needsIntention || awaitingCycleAck ? styles.timerStageIntention : ""} ${isFullScreen && onBreak ? styles.timerStageElevated : ""}`}
+	>
+		{onBreak ? (
+			<BreakRestScreen
+				mode={mode as Mode.ShortBreak | Mode.LongBreak}
+				breakProgressPercent={breakProgressPercent}
+				large={isFullScreen}
+				onSkipBreak={handleSkipBreak}
+			/>
+						) : awaitingCycleAck ? null : (
+							<TimerProgressRing
+								mode={mode}
 								sessionProgressPercent={sessionProgressPercent}
-							/>
-							<TimerControllers
-								mode={mode}
-								skipCountsSessionMinProgressPercent={
-									skipCountsSessionMinProgressPercent
+								isRunning={isRunning}
+								large={isFullScreen && !needsIntention}
+								abstractSession={abstractSession}
+								finishTimeText={finishTimeText}
+								finishTime={finishTime}
+								remainingTimeSeconds={remainingTime}
+								centerLabel={
+									needsIntention ? "What will you focus on?" : undefined
 								}
-								handleNextTimer={handleNextTimer}
-								handleStopTimer={handleStopTimer}
-								handleToggleTimer={handleToggleTimer}
-								isPlaying={isRunning}
 							/>
-						</Box>
+						)}
 
-						{/* Info (Hidden in Fullscreen) */}
-						<Box
-							style={{
-								display: "grid",
-								gridTemplateRows: isFullScreen ? "0fr" : "1fr",
-								opacity: isFullScreen ? 0 : 1,
-								transition: "all 400ms ease",
-							}}
-						>
-							<Box style={{ overflow: "hidden" }}>
-								<TimerInfo />
+						<Box className={styles.timerActions}>
+							{needsIntention ? (
+								<SessionIntention onConfirm={handleConfirmIntention} />
+							) : awaitingCycleAck ? (
+								<SessionComplete
+									onContinue={acknowledgeCycleAndContinue}
+									onEnd={() => {
+										dismissCycleAck();
+										setIntentionConfirmed(false);
+										setSessionIntention("");
+										handleStopTimer();
+									}}
+								/>
+							) : (
+								<TimerControllers
+									mode={mode}
+									handleStopTimer={handleStopTimer}
+									handleToggleTimer={handleToggleTimer}
+									isPlaying={isRunning}
+									onSkipBreak={handleSkipBreak}
+								/>
+							)}
+						</Box>
+					</Box>
+
+					<Box
+						className={`${styles.timerFooter} ${isFullScreen ? styles.timerFullscreenFooter : ""}`}
+					>
+						{!needsIntention && (
+							<Box className={styles.timerInfoSlot}>
+								<TimerInfo sessionIntention={sessionIntention} />
 							</Box>
-						</Box>
-
-						{/* View Controls */}
-						<Box
-							style={{
-								opacity: isFullScreen ? 0.4 : 1,
-								transition: "opacity 300ms ease",
-							}}
-						>
-							<TimerViewControls
-								mode={mode}
-								handlePictureInPicture={handlePictureInPicture}
-								handleFullScreen={handleFullScreen}
-								isPiPOpen={isPiPOpen}
-							/>
-						</Box>
-					</Stack>
-				</Center>
+						)}
+						<TimerViewControls
+							mode={mode}
+							handlePictureInPicture={handlePictureInPicture}
+							handleFullScreen={handleFullScreen}
+							isPiPOpen={isPiPOpen}
+						/>
+					</Box>
+				</GlassPanel>
 			</Box>
 		</Container>
 	);

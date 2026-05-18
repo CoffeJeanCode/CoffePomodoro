@@ -1,0 +1,40 @@
+id: PROP-0007
+status: applied
+target: plans/master_plan.yml
+reason: Nueva etapa para unificación de UI
+created: 2026-05-18
+patch:
+  stages_append:
+  - goal: Unificar toda la UI con un diseño consistente y cohesivo
+    name: 'Stage 4: UI Consistency'
+    status: in_progress
+    tasks:
+    - desc: 'Revisión visual: consistencia de colores, tipografía, spacing en todos los componentes (Timer, Settings, Stats, Helps, QuickMenu)'
+      id: UI-T1
+      owner: cursor
+      status: todo
+    - desc: 'Estandarizar Drawers: posición consistente (todos left o todos right), mismos estilos de transición'
+      id: UI-T2
+      owner: cursor
+      status: todo
+    - desc: 'Unificar colores: decidir paleta principal (ej: gray/white para UI, red para acciones principales)'
+      id: UI-T3
+      owner: cursor
+      status: todo
+    - desc: 'Settings tabs: renombrar ''Alerts'' → ''Notifications'' o ''Sound'' para consistencia semántica'
+      id: UI-T4
+      owner: cursor
+      status: todo
+    - desc: 'QuickMenu: estilizar para que coincida con el resto (mismo glass effect, mismo color de activo)'
+      id: UI-T5
+      owner: cursor
+      status: todo
+    - desc: 'Stats: mantener el nuevo diseño pero asegurar que los colores y spacing coincidan con la paleta establecida'
+      id: UI-T6
+      owner: cursor
+      status: todo
+    - desc: 'Break animations: revisar que las animaciones de respiración y deep rest sean fluidas y consistentes'
+      id: UI-T7
+      owner: cursor
+      status: todo
+project: CoffePomodoro

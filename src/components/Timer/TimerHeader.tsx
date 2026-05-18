@@ -1,8 +1,9 @@
 import type { Mode } from "@/models/info";
-import { ActionIcon, Badge, Box, Group } from "@mantine/core";
+import ui from "@/styles/ui.module.css";
+import { ActionIcon, Box, Group, Text } from "@mantine/core";
 import { type FC, memo } from "react";
 import { FaMinus, FaPlus } from "react-icons/fa";
-import { getColorMode } from "./utils/timer";
+import { getColorMode, getModeHexColors } from "./utils/timer";
 
 interface TimerHeaderProps {
 	mode: Mode;
@@ -18,74 +19,41 @@ const TimerHeader: FC<TimerHeaderProps> = ({
 	onSubtractMinute,
 }) => {
 	const base = getColorMode(mode);
+	const { btnMain } = getModeHexColors(mode);
 	const stepLabel =
 		sessionAdjustStepMinutes === 1
 			? "1 minute"
 			: `${sessionAdjustStepMinutes} minutes`;
 
 	return (
-		<Group
-			justify="space-between"
-			align="center"
-			wrap="nowrap"
-			w="100%"
-			gap="xs"
-			px={4}
-			style={{ maxWidth: "100%" }}
-		>
-			<Box
-				style={{
-					width: 36,
-					display: "flex",
-					justifyContent: "flex-start",
-					flexShrink: 0,
-				}}
+		<Group justify="space-between" align="center" wrap="nowrap" w="100%" gap="xs">
+			<ActionIcon
+				size="md"
+				variant="light"
+				color="gray"
+				title={`Subtract ${stepLabel} (−)`}
+				onClick={onSubtractMinute}
+				aria-label={`Subtract ${stepLabel}`}
 			>
-				<ActionIcon
-					size="sm"
-					variant="transparent"
-					color="gray.0"
-					title={`Subtract ${stepLabel} (−)`}
-					onClick={onSubtractMinute}
-					aria-label={`Subtract ${stepLabel} from this session`}
-					style={{ opacity: 0.55 }}
-				>
-					<FaMinus size={12} />
-				</ActionIcon>
+				<FaMinus size={12} />
+			</ActionIcon>
+
+			<Box className={ui.glassInset} px="md" py={6}>
+				<Text size="sm" fw={600} tt="capitalize" style={{ color: btnMain }}>
+					{mode}
+				</Text>
 			</Box>
 
-			<Badge
-				size="lg"
-				style={(theme) => ({
-					background: theme.colors[base][5],
-					color: theme.colors.gray[0],
-					userSelect: "none",
-					flexShrink: 0,
-				})}
+			<ActionIcon
+				size="md"
+				variant="light"
+				color={base}
+				title={`Add ${stepLabel} (+)`}
+				onClick={onAddMinute}
+				aria-label={`Add ${stepLabel}`}
 			>
-				{mode.toLocaleUpperCase()}
-			</Badge>
-
-			<Box
-				style={{
-					width: 36,
-					display: "flex",
-					justifyContent: "flex-end",
-					flexShrink: 0,
-				}}
-			>
-				<ActionIcon
-					size="sm"
-					variant="transparent"
-					color="gray.0"
-					title={`Add ${stepLabel} (+)`}
-					onClick={onAddMinute}
-					aria-label={`Add ${stepLabel} to this session`}
-					style={{ opacity: 0.55 }}
-				>
-					<FaPlus size={12} />
-				</ActionIcon>
-			</Box>
+				<FaPlus size={12} />
+			</ActionIcon>
 		</Group>
 	);
 };

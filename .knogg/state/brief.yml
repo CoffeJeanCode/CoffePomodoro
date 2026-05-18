@@ -1,0 +1,39 @@
+generated_at: 2026-05-18
+project: CoffePomodoro
+focus:
+  stage: 'Stage 4: UI Consistency'
+  task: 'Cursor: Revisar y unificar toda la UI - colores, tipografía, spacing, Drawers'
+  status: in_progress
+constraints:
+- React 18 + TypeScript + Vite SPA; Zustand for state, Mantine 7 for UI — keep the client-only architecture
+- Lint and format with Biome only (npm run lint / format); no ESLint/Prettier and no automated test suite yet
+- Respect five persisted Zustand stores (timer, config, info, stats, schemas) with storeVersion migrations — do not collapse or cross-wire store boundaries
+- Use @ path alias to src/; lazy-load pages and major features with React.lazy + Suspense
+- Timer logic must honor sessionSegmentTotalSeconds, progress-based skip rules, and schema-driven durations from useSchemasState
+- Parallel sprint — claim knogg task before edit; no file overlap between in_progress tasks
+next_actions:
+- 'cursor: UI-T1 → Revisión visual de todos los componentes'
+- 'cursor: UI-T2 → Estandarizar Drawers (posición y estilos)'
+- 'cursor: UI-T3 → Unificar paleta de colores'
+- 'cursor: UI-T4 → Renombrar Settings tab ''Alerts'' → ''Notifications'''
+- 'cursor: UI-T5 → QuickMenu estilizar igual que resto'
+- 'cursor: UI-T6 → Stats ajustar a paleta unificada'
+- 'cursor: UI-T7 → Break animations revisión'
+recent_decisions:
+- id: ADR-0004
+  title: Cursor + Claude agents only
+  status: superseded
+- id: ADR-0005
+  title: Cursor builder + OpenCode executor capabilities
+  status: accepted
+- id: ADR-0006
+  title: Cursor + OpenCode agents only
+  status: accepted
+- id: ADR-0007
+  title: Parallel bug sprint BUG-A/B/C
+  status: accepted
+- id: ADR-0008
+  title: Evolución hacia Mindfulness Productivity
+  status: accepted
+handoff_summary: Cursor done S1-W1,W3 S2-W1,W3 S3-W2. Intention flow, ring progress, ambient bg, break screen, metrics hidden.
+source_hash: 1d5619f6e0de24af

@@ -1,5 +1,5 @@
 import type { Mode } from "@/models/info";
-import { Button, Group, type MantineTheme } from "@mantine/core";
+import { ActionIcon, Group, Tooltip } from "@mantine/core";
 import { type FC, memo } from "react";
 import { RiFullscreenFill, RiPictureInPictureFill } from "react-icons/ri";
 import { getColorMode } from "./utils/timer";
@@ -20,34 +20,29 @@ const TimerViewControls: FC<TimerViewControlsProps> = ({
 	const base = getColorMode(mode);
 
 	return (
-		<Group
-			gap="sm"
-			style={{
-				width: "100%",
-				justifyContent: "center",
-			}}
-		>
-			<Button
-				size="sm"
-				variant="subtle"
-				title="Picture-in-Picture (Shift+I)"
-				color="gray.0"
-				onClick={handlePictureInPicture}
-				style={(theme: MantineTheme) =>
-					isPiPOpen ? { backgroundColor: theme.colors[base][5] } : undefined
-				}
-			>
-				<RiPictureInPictureFill size={18} />
-			</Button>
-			<Button
-				size="sm"
-				variant="subtle"
-				title="Full screen (F)"
-				color="gray.0"
-				onClick={handleFullScreen}
-			>
-				<RiFullscreenFill size={18} />
-			</Button>
+		<Group gap="sm" justify="center" w="100%">
+			<Tooltip label="Picture-in-Picture (Shift+I)" withArrow>
+				<ActionIcon
+					size="lg"
+					variant="light"
+					color={isPiPOpen ? base : "gray"}
+					onClick={handlePictureInPicture}
+					aria-label="Picture in picture"
+				>
+					<RiPictureInPictureFill size={18} />
+				</ActionIcon>
+			</Tooltip>
+			<Tooltip label="Full screen (F)" withArrow>
+				<ActionIcon
+					size="lg"
+					variant="light"
+					color="gray"
+					onClick={handleFullScreen}
+					aria-label="Full screen"
+				>
+					<RiFullscreenFill size={18} />
+				</ActionIcon>
+			</Tooltip>
 		</Group>
 	);
 };
