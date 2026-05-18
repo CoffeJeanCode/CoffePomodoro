@@ -69,7 +69,8 @@ const SchemaSettings: FC<Props> = ({ configuration }) => {
 		const lb = secondsToMinutes(s.timers["long break"]);
 		return {
 			value: s.id,
-			label: `${s.title} — ${p}m · ${sb}m · ${lb}m`,
+			label: s.title,
+			description: `${p}m · ${sb}m · ${lb}m`,
 		};
 	});
 
@@ -88,11 +89,14 @@ const SchemaSettings: FC<Props> = ({ configuration }) => {
 				searchable
 				nothingFoundMessage="No presets found"
 				comboboxProps={{ withinPortal: false }}
-				styles={{
-					option: {
-						fontSize: "var(--mantine-font-size-sm)",
-					},
-				}}
+				renderOption={({ option }) => (
+					<Flex direction="column" gap={1}>
+						<Text size="sm">{option.label}</Text>
+						<Text size="xs" c="dimmed">
+							{(option as any).description}
+						</Text>
+					</Flex>
+				)}
 			/>
 
 			{current && (
@@ -102,21 +106,27 @@ const SchemaSettings: FC<Props> = ({ configuration }) => {
 					gap="xs"
 					align="center"
 					justify="space-between"
-					style={(theme) => ({
-						borderRadius: theme.radius.sm,
-						background: "var(--ui-glass-bg)",
-					})}
+				style={(theme) => ({
+					borderRadius: theme.radius.sm,
+					background: isEditing
+						? "var(--mantine-color-dark-6)"
+						: "var(--ui-glass-bg)",
+					border: isEditing
+						? "1px solid var(--mantine-color-red-8)"
+						: "1px solid transparent",
+					transition: "background 150ms, border-color 150ms",
+				})}
 				>
 					<Flex align="center" gap="xs" style={{ flex: 1, minWidth: 0 }}>
 						{isEditing ? (
 							<Input
 								size="xs"
-								maw={120}
+								maw={140}
 								value={editTitle}
-								variant="unstyled"
 								onChange={(evt) => setEditTitle(evt.target.value)}
 								onKeyDown={getHotkeyHandler([["enter", handleSaveTitle]])}
 								autoFocus
+								placeholder="Schema name"
 							/>
 						) : (
 							<Box style={{ minWidth: 0 }}>
