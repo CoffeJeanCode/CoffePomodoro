@@ -1,5 +1,6 @@
 import { FavIcon, Mode } from "@/models/info";
 import { useInfoState } from "@/stores";
+import { getModeTitle } from "@/utils/modeLabels";
 import { useDocumentTitle, useFavicon, useHotkeys } from "@mantine/hooks";
 import { useEffect } from "react";
 
@@ -12,17 +13,6 @@ interface UseTimerDocumentAndHotkeysParams {
 	handlePictureInPicture: () => void | Promise<void>;
 	handleAdjustSessionByMinutes: (delta: 1 | -1) => void;
 }
-
-const modeLabel = (mode: Mode) => {
-	switch (mode) {
-		case Mode.Pomodoro:
-			return "Focus";
-		case Mode.ShortBreak:
-			return "Break";
-		case Mode.LongBreak:
-			return "Rest";
-	}
-};
 
 export function useTimerDocumentAndHotkeys({
 	mode,
@@ -40,7 +30,7 @@ export function useTimerDocumentAndHotkeys({
 	}, [mode, setFavIcon]);
 
 	useFavicon(favIcon);
-	useDocumentTitle(`Coffe Pomodoro · ${modeLabel(mode)}`);
+	useDocumentTitle(`Coffe Pomodoro · ${getModeTitle(mode)}`);
 	useHotkeys([
 		["Space", () => handleToggleTimer()],
 		["S", () => handleStopTimer()],

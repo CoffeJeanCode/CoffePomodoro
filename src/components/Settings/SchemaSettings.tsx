@@ -2,21 +2,35 @@ import type { Configuration } from "@/models";
 import type { TimerSchema } from "@/models/schemas";
 import { useSchemasState, useTimerState } from "@/stores";
 import { SCHEMA_KEYS } from "@/stores/constants";
-import { Box, Button, Chip, ScrollArea, Title } from "@mantine/core";
+import { secondsToMinutes } from "@/utils/time.util";
+import {
+	Box,
+	Button,
+	CloseButton,
+	Flex,
+	Input,
+	Select,
+	Text,
+	Title,
+} from "@mantine/core";
+import { getHotkeyHandler } from "@mantine/hooks";
 import type { FC } from "react";
-import { FaPlus } from "react-icons/fa";
-import SchemaSettingItem from "./components/SchemaSettingItem";
+import { useState } from "react";
+import { FaCheck, FaEdit, FaPlus } from "react-icons/fa";
 
 interface Props {
 	configuration: Configuration | TimerSchema;
-	// biome-ignore lint: romelint/suspicious/noExplicitAny
 	setConfigValue: (path: string, value: any) => void;
 }
 
 const SchemaSettings: FC<Props> = ({ configuration }) => {
-	const { schemas, currentSchemaId, addSchema, setCurrentSchema } =
+	const { schemas, currentSchemaId, addSchema, setCurrentSchema, updateSchema, deleteSchema } =
 		useSchemasState();
 	const resetForNext = useTimerState((state) => state.resetForNext);
+	const [isEditing, setIsEditing] = useState(false);
+	const [editTitle, setEditTitle] = useState("");
+
+	const current = schemas.find((s) => s.id === currentSchemaId);
 
 	const handleAddSchema = () => {
 		addSchema({
@@ -25,41 +39,124 @@ const SchemaSettings: FC<Props> = ({ configuration }) => {
 		});
 	};
 
-	const handleSetCurrentSchema = (id: string) => {
+	const handleSetCurrentSchema = (id: string | null) => {
+		if (!id) return;
 		resetForNext();
 		setCurrentSchema(id);
 	};
+
+	const handleDeleteSchema = () => {
+		if (!current) return;
+		if (current.id === currentSchemaId) setCurrentSchema("");
+		deleteSchema(current.id);
+	};
+
+	const handleStartEdit = () => {
+		if (!current) return;
+		setEditTitle(current.title);
+		setIsEditing(true);
+	};
+
+	const handleSaveTitle = () => {
+		if (!current) return;
+		updateSchema(current.id, { ...current, title: editTitle });
+		setIsEditing(false);
+	};
+
+	const options = schemas.map((s) => {
+		const p = secondsToMinutes(s.timers.pomodoro);
+		const sb = secondsToMinutes(s.timers["short break"]);
+		const lb = secondsToMinutes(s.timers["long break"]);
+		return {
+			value: s.id,
+			label: `${s.title} — ${p}m · ${sb}m · ${lb}m`,
+		};
+	});
 
 	return (
 		<Box w="100%" style={{ minWidth: 0 }}>
 			<Title order={5} size="sm" c="dimmed" mb="xs">
 				Presets
 			</Title>
-			{schemas.length > 0 && (
-				<ScrollArea
-					w="100%"
-					type="always"
-					offsetScrollbars
-					scrollbarSize={8}
-					styles={{ viewport: { paddingBottom: 4 } }}
+
+			<Select
+				data={options}
+				value={currentSchemaId || null}
+				onChange={handleSetCurrentSchema}
+				placeholder="Select a preset…"
+				clearable
+				searchable
+				nothingFoundMessage="No presets found"
+				comboboxProps={{ withinPortal: false }}
+				styles={{
+					option: {
+						fontSize: "var(--mantine-font-size-sm)",
+					},
+				}}
+			/>
+
+			{current && (
+				<Flex
+					mt="sm"
+					p="xs"
+					gap="xs"
+					align="center"
+					justify="space-between"
+					style={(theme) => ({
+						borderRadius: theme.radius.sm,
+						background: "var(--ui-glass-bg)",
+					})}
 				>
-					<Chip.Group
-						onChange={(value) => handleSetCurrentSchema(value as string)}
-						value={currentSchemaId}
-						styles={{
-							root: {
-								flexWrap: "nowrap",
-								width: "max-content",
-								gap: "var(--mantine-spacing-sm)",
-							},
-						}}
-					>
-						{schemas.map((schema) => (
-							<SchemaSettingItem key={schema.id} schema={schema} />
-						))}
-					</Chip.Group>
-				</ScrollArea>
+					<Flex align="center" gap="xs" style={{ flex: 1, minWidth: 0 }}>
+						{isEditing ? (
+							<Input
+								size="xs"
+								maw={120}
+								value={editTitle}
+								variant="unstyled"
+								onChange={(evt) => setEditTitle(evt.target.value)}
+								onKeyDown={getHotkeyHandler([["enter", handleSaveTitle]])}
+								autoFocus
+							/>
+						) : (
+							<Box style={{ minWidth: 0 }}>
+								<Text size="sm" fw={500} truncate="end">
+									{current.title}
+								</Text>
+								<Text size="xs" c="dimmed">
+									{secondsToMinutes(current.timers.pomodoro)}m &middot;{" "}
+									{secondsToMinutes(current.timers["short break"])}m &middot;{" "}
+									{secondsToMinutes(current.timers["long break"])}m
+								</Text>
+							</Box>
+						)}
+					</Flex>
+
+					<Flex gap={2} style={{ flexShrink: 0 }}>
+						{isEditing ? (
+							<Button
+								variant="subtle"
+								color="gray"
+								size="compact-sm"
+								onClick={handleSaveTitle}
+							>
+								<FaCheck />
+							</Button>
+						) : (
+							<Button
+								variant="subtle"
+								color="gray"
+								size="compact-sm"
+								onClick={handleStartEdit}
+							>
+								<FaEdit />
+							</Button>
+						)}
+						<CloseButton onClick={handleDeleteSchema} />
+					</Flex>
+				</Flex>
 			)}
+
 			{schemas.length < SCHEMA_KEYS.length && (
 				<Button
 					leftSection={<FaPlus />}

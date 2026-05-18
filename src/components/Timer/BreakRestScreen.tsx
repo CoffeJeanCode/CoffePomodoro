@@ -1,5 +1,6 @@
 import { Mode } from "@/models";
 import RotatingTip from "@/components/ui/RotatingTip";
+import { getModeTitle } from "@/utils/modeLabels";
 import ui from "@/styles/ui.module.css";
 import { Box, Button, Collapse, Stack, Text, Title } from "@mantine/core";
 import { type FC, memo, useState } from "react";
@@ -35,7 +36,7 @@ const BreakRestScreen: FC<BreakRestScreenProps> = ({
 }) => {
 	const isLong = mode === Mode.LongBreak;
 	const suggestions = isLong ? LONG_BREAK_SUGGESTIONS : SHORT_BREAK_SUGGESTIONS;
-	const title = isLong ? "Deep rest" : "Short break";
+	const title = getModeTitle(mode);
 	const deepRestOpacity = isLong
 		? Math.min(0.75, (breakProgressPercent / 100) * 0.75)
 		: 0;

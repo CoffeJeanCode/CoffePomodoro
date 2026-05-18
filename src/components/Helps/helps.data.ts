@@ -1,38 +1,46 @@
 export const helps = {
-	breaks: [
-		"Short Nap",
-		"Clean Up",
-		"Meditate",
-		"Posture",
-		"Go outside",
-		"Stretches",
-		"Mini exercise",
+	sections: [
+		{
+			title: "Flow State",
+			icon: "mind",
+			items: [
+				"Focus without urgency — the timer shows no numbers, only a gentle ring",
+				"Set an intention before each session instead of chasing countdowns",
+				"Press & hold the ring center to briefly peek at remaining time",
+			],
+		},
+		{
+			title: "Break Ideas",
+			icon: "break",
+			items: [
+				"Short Nap",
+				"Clean Up",
+				"Meditate",
+				"Posture",
+				"Go outside",
+				"Stretches",
+				"Mini exercise",
+			],
+		},
+		{
+			title: "Soundscapes",
+			icon: "sound",
+			items: [
+				"Rain — steady background for deep concentration",
+				"Waves — rhythmic presence to anchor attention",
+				"Wind — open space for creative flow",
+			],
+		},
 	],
 	hotkeys: {
 		main: [
-			{ key: "Space", action: "Toggle timer" },
-			{
-				key: "Hold ring center",
-				action:
-					"During focus, press and hold the center of the progress ring to briefly see when the cycle ends (no countdown shown by default)",
-			},
-			{
-				key: "N",
-				action:
-					"Skip or go to next segment (N). During a Pomodoro, counting toward session stats follows Behavior → minimum progress for skip",
-			},
-			{
-				key: "S",
-				action:
-					"End focus session (resets timer). During a break, skips to the next Pomodoro",
-			},
-			{
-				key: "+ / -",
-				action:
-					"Add or subtract the session adjust step in minutes (Behavior settings; this session only)",
-			},
-			{ key: "F", action: "Full screen" },
-			{ key: "shift+[q-p]", action: "Select schema" },
+			{ key: "Space", action: "Toggle timer (play / pause)" },
+			{ key: "N", action: "Skip to next segment" },
+			{ key: "S", action: "End session (focus) or skip (break)" },
+			{ key: "+ / -", action: "Adjust session length for this cycle" },
+			{ key: "F", action: "Toggle full screen" },
+			{ key: "P", action: "Toggle Picture-in-Picture" },
+			{ key: "shift+[q-p]", action: "Quick-select a preset schema" },
 		],
 	},
 };

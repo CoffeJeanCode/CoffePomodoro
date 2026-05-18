@@ -1,5 +1,6 @@
 import { type Configuration, Mode } from "@/models";
 import type { TimerSchema } from "@/models/schemas";
+import { getModeTitle } from "@/utils/modeLabels";
 import { secondsToMinutes } from "@/utils/time.util";
 import { Progress } from "@mantine/core";
 import type React from "react";
@@ -18,13 +19,14 @@ const SessionViewer: React.FC<Props> = ({ configuration }) => {
 		sessionBlocks.push({
 			value: timers[Mode.Pomodoro],
 			color: "blue.8",
-			label: "Work",
+			label: getModeTitle(Mode.Pomodoro),
 		});
 		const isLastPomodoro = i === pomodorosToLongBreak - 1;
+		const breakMode = isLastPomodoro ? Mode.LongBreak : Mode.ShortBreak;
 		sessionBlocks.push({
-			value: isLastPomodoro ? timers[Mode.LongBreak] : timers[Mode.ShortBreak],
+			value: timers[breakMode],
 			color: isLastPomodoro ? "blue.4" : "blue.6",
-			label: isLastPomodoro ? "Long Break" : "Short Break",
+			label: getModeTitle(breakMode),
 		});
 	}
 

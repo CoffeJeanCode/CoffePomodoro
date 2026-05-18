@@ -3,6 +3,7 @@ import ui from "@/styles/ui.module.css";
 import { ActionIcon, Box, Group, Text } from "@mantine/core";
 import { type FC, memo } from "react";
 import { FaMinus, FaPlus } from "react-icons/fa";
+import { getModeTitle } from "@/utils/modeLabels";
 import { getColorMode, getModeHexColors } from "./utils/timer";
 
 interface TimerHeaderProps {
@@ -39,8 +40,8 @@ const TimerHeader: FC<TimerHeaderProps> = ({
 			</ActionIcon>
 
 			<Box className={ui.glassInset} px="md" py={6}>
-				<Text size="sm" fw={600} tt="capitalize" style={{ color: btnMain }}>
-					{mode}
+				<Text size="sm" fw={600} style={{ color: btnMain }}>
+					{getModeTitle(mode)}
 				</Text>
 			</Box>
 
