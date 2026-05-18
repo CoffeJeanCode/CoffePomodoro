@@ -19,11 +19,13 @@ const SessionIntention: FC<SessionIntentionProps> = ({ onConfirm }) => {
 				autosize
 				radius="md"
 				size="sm"
+				autoFocus
 				onKeyDown={(e) => {
-					if (e.key === "Enter" && (e.metaKey || e.ctrlKey) && value.trim()) {
-						e.preventDefault();
-						onConfirm(value.trim());
-					}
+					if (e.key !== "Enter" || e.shiftKey) return;
+					const trimmed = value.trim();
+					if (!trimmed) return;
+					e.preventDefault();
+					onConfirm(trimmed);
 				}}
 			/>
 			<Button

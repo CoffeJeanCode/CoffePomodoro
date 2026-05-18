@@ -16,6 +16,8 @@ interface TimerProgressRingProps {
 	compact?: boolean;
 	large?: boolean;
 	centerLabel?: string;
+	/** Focus intention shown small inside the ring during abstract sessions */
+	sessionIntention?: string;
 	/** Hide phase words in the ring center during focus */
 	abstractSession?: boolean;
 	finishTimeText?: string;
@@ -30,6 +32,7 @@ const TimerProgressRing: FC<TimerProgressRingProps> = ({
 	compact = false,
 	large = false,
 	centerLabel,
+	sessionIntention = "",
 	abstractSession = false,
 	finishTimeText = "",
 	finishTime = 0,
@@ -80,6 +83,9 @@ const TimerProgressRing: FC<TimerProgressRingProps> = ({
 		[finishTime, finishTimeText, isRunning, remainingTimeSeconds],
 	);
 
+	const intentionText = sessionIntention?.trim() ?? "";
+	const showIntentionInRing =
+		abstractSession && !intentionMode && intentionText.length > 0;
 	const showPhaseLabel = !abstractSession && !intentionMode;
 	const showSideHorizon = abstractSession && !intentionMode && endTimeDisplay;
 
@@ -185,8 +191,13 @@ const TimerProgressRing: FC<TimerProgressRingProps> = ({
 							{getProgressLabel(sessionProgressPercent)}
 						</Text>
 					)}
+					{showIntentionInRing && (
+						<Text className={styles.ringIntention} lineClamp={3}>
+							{intentionText}
+						</Text>
+					)}
 					{intentionMode && centerLabel && (
-						<Text className={styles.ringCenterLabel} px={8}>
+						<Text className={styles.ringCenterLabel} px={8} size="xs">
 							{centerLabel}
 						</Text>
 					)}

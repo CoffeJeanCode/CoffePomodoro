@@ -8,7 +8,6 @@ import SessionComplete from "./SessionComplete";
 import SessionIntention from "./SessionIntention";
 import TimerControllers from "./TimerControllers";
 import TimerHeader from "./TimerHeader";
-import TimerInfo from "./TimerInfo";
 import TimerProgressRing from "./TimerProgressRing";
 import TimerViewControls from "./TimerViewControls";
 import usePictureInPicture from "./hooks/usePictureInPicture";
@@ -155,6 +154,9 @@ const Timer = () => {
 								centerLabel={
 									needsIntention ? "What will you focus on?" : undefined
 								}
+								sessionIntention={
+									abstractSession ? sessionIntention : undefined
+								}
 							/>
 						)}
 
@@ -186,11 +188,6 @@ const Timer = () => {
 					<Box
 						className={`${styles.timerFooter} ${isFullScreen ? styles.timerFullscreenFooter : ""}`}
 					>
-						{!needsIntention && (
-							<Box className={styles.timerInfoSlot}>
-								<TimerInfo sessionIntention={sessionIntention} />
-							</Box>
-						)}
 						<TimerViewControls
 							mode={mode}
 							handlePictureInPicture={handlePictureInPicture}

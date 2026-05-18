@@ -106,7 +106,6 @@ const Settings = () => {
 				<Flex
 					direction="column"
 					gap="md"
-					pb={isSettingsChanged ? 80 : 0}
 					style={{ minWidth: 0, maxWidth: "100%" }}
 				>
 					{isSchemaSelected && currentSchema && (
@@ -157,10 +156,8 @@ const Settings = () => {
 
 				{isSettingsChanged && (
 					<Box
-						pos="absolute"
+						pos="sticky"
 						bottom={0}
-						left={0}
-						right={0}
 						p="md"
 						className={ui.glassInset}
 						style={{
@@ -168,6 +165,8 @@ const Settings = () => {
 							borderLeft: "none",
 							borderRight: "none",
 							borderBottom: "none",
+							zIndex: 2,
+							width: "100%",
 						}}
 					>
 						<Flex justify="flex-end" gap="sm">

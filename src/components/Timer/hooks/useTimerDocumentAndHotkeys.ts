@@ -31,8 +31,21 @@ export function useTimerDocumentAndHotkeys({
 
 	useFavicon(favIcon);
 	useDocumentTitle(`Coffe Pomodoro · ${getModeTitle(mode)}`);
+	const isTypingTarget = () => {
+		const el = document.activeElement;
+		if (!el) return false;
+		const tag = el.tagName;
+		return tag === "INPUT" || tag === "TEXTAREA" || el.isContentEditable;
+	};
+
 	useHotkeys([
-		["Space", () => handleToggleTimer()],
+		[
+			"Space",
+			() => {
+				if (isTypingTarget()) return;
+				handleToggleTimer();
+			},
+		],
 		["S", () => handleStopTimer()],
 		[
 			"N",
