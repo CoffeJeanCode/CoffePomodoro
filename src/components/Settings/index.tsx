@@ -83,12 +83,11 @@ const Settings = () => {
 				transitionProps={DRAWER_LEFT_TRANSITION}
 			styles={{
 				content: {
-					overflow: "hidden",
+					overflowX: "hidden",
 					borderLeft: "none",
 					borderRight: "1px solid var(--ui-glass-border)",
 				},
 				body: {
-					overflow: "hidden auto",
 					maxWidth: "100%",
 				},
 			}}
