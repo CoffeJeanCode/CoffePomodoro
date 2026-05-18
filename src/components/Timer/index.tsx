@@ -69,7 +69,9 @@ const Timer = () => {
 	const needsIntention =
 		mode === Mode.Pomodoro && !isRunning && !intentionConfirmed && !awaitingCycleAck;
 	const abstractSession =
-		mode === Mode.Pomodoro && intentionConfirmed && !awaitingCycleAck;
+		mode === Mode.Pomodoro &&
+		!awaitingCycleAck &&
+		(isRunning || intentionConfirmed);
 	const onBreak = isBreakMode(mode);
 
 	const { isFullScreen, handleFullScreen } = useTimerFullscreen(timerRef);

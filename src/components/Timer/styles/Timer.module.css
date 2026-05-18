@@ -1,5 +1,13 @@
 /* Timer-specific — ring animation (glass lives in ui.module.css) */
 
+.ringCluster {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.75rem;
+	flex-shrink: 0;
+}
+
 .ringWrap {
 	position: relative;
 	display: flex;
@@ -9,12 +17,49 @@
 	overflow: visible;
 }
 
-.ringCoreInteractive {
-	transition: transform var(--ui-duration) var(--ui-ease);
+.cycleHorizon {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 0.1rem;
+	flex-shrink: 0;
+	opacity: 0.48;
+	user-select: none;
+	pointer-events: none;
+	min-width: 3.25rem;
 }
 
-.ringCoreInteractive:active {
-	transform: scale(0.97);
+.cycleHorizonCaption {
+	font-size: 0.6rem;
+	font-weight: 500;
+	letter-spacing: 0.12em;
+	text-transform: lowercase;
+	color: rgba(255, 255, 255, 0.5);
+	line-height: 1.2;
+}
+
+.cycleHorizonTime {
+	font-size: 0.78rem;
+	font-weight: 500;
+	color: rgba(255, 255, 255, 0.7);
+	line-height: 1.25;
+	font-variant-numeric: tabular-nums;
+	white-space: nowrap;
+}
+
+@media (max-width: 30rem) {
+	.ringCluster {
+		flex-direction: column;
+		gap: 0.35rem;
+	}
+
+	.cycleHorizon {
+		flex-direction: row;
+		align-items: baseline;
+		justify-content: center;
+		gap: 0.35rem;
+		min-width: 0;
+	}
 }
 
 .ringCenterLabel {
@@ -24,32 +69,6 @@
 	font-weight: 400;
 	text-align: center;
 	line-height: 1.35;
-}
-
-.ringHorizon {
-	position: absolute;
-	inset: 0;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	padding: 0 0.35rem;
-	color: rgba(255, 255, 255, 0.92);
-	font-size: 0.72rem;
-	font-weight: 500;
-	text-align: center;
-	line-height: 1.35;
-	letter-spacing: 0.01em;
-	text-transform: none;
-	transition: opacity var(--ui-duration) var(--ui-ease);
-	pointer-events: none;
-}
-
-.ringHorizonHidden {
-	opacity: 0;
-}
-
-.ringHorizonVisible {
-	opacity: 1;
 }
 
 .ringSvg {

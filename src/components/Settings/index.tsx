@@ -81,17 +81,17 @@ const Settings = () => {
 				title="Settings"
 				onClose={() => setIsOpen(false)}
 				transitionProps={DRAWER_LEFT_TRANSITION}
-				styles={{
-					content: {
-						overflowX: "hidden",
-						borderLeft: "none",
-						borderRight: "1px solid var(--ui-glass-border)",
-					},
-					body: {
-						overflowX: "hidden",
-						maxWidth: "100%",
-					},
-				}}
+			styles={{
+				content: {
+					overflow: "hidden",
+					borderLeft: "none",
+					borderRight: "1px solid var(--ui-glass-border)",
+				},
+				body: {
+					overflow: "hidden auto",
+					maxWidth: "100%",
+				},
+			}}
 				onKeyDown={getHotkeyHandler([
 					["shift+k+s", handleSaveChangesSettings, { preventDefault: true }],
 					["shift+k+c", handleCancelChangesSettings, { preventDefault: true }],

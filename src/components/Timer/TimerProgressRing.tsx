@@ -1,9 +1,11 @@
 import type { Mode } from "@/models";
-import { formatCycleHorizonMessage } from "@/utils/temporalHorizon";
+import {
+	formatCycleHorizonMessage,
+	getCycleEndTimeDisplay,
+} from "@/utils/temporalHorizon";
 import { Box, Text } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { type FC, memo, useMemo } from "react";
-import { useTemporalReveal } from "./hooks/useTemporalReveal";
 import styles from "./styles/Timer.module.css";
 import { getModeHexColors } from "./utils/timer";
 
@@ -14,7 +16,7 @@ interface TimerProgressRingProps {
 	compact?: boolean;
 	large?: boolean;
 	centerLabel?: string;
-	/** Hide phase words; reveal end time on press-and-hold in the center */
+	/** Hide phase words in the ring center during focus */
 	abstractSession?: boolean;
 	finishTimeText?: string;
 	finishTime?: number;
@@ -35,9 +37,6 @@ const TimerProgressRing: FC<TimerProgressRingProps> = ({
 }) => {
 	const isMobile = useMediaQuery("(max-width: 30rem)");
 	const intentionMode = Boolean(centerLabel);
-	const { revealed, revealHandlers } = useTemporalReveal(
-		abstractSession && !intentionMode,
-	);
 
 	const size = intentionMode
 		? 152
@@ -59,133 +58,149 @@ const TimerProgressRing: FC<TimerProgressRingProps> = ({
 	const coreSize = Math.round(radius * 1.45);
 	const rippleSize = Math.round(radius * 2.1);
 
-	const horizonMessage = useMemo(
+	const endTimeDisplay = useMemo(
+		() =>
+			getCycleEndTimeDisplay(
+				finishTimeText,
+				finishTime,
+				remainingTimeSeconds,
+				isRunning,
+			),
+		[finishTime, finishTimeText, isRunning, remainingTimeSeconds],
+	);
+
+	const horizonAria = useMemo(
 		() =>
 			formatCycleHorizonMessage(
 				finishTimeText,
 				finishTime,
 				remainingTimeSeconds,
+				isRunning,
 			),
-		[finishTime, finishTimeText, remainingTimeSeconds],
+		[finishTime, finishTimeText, isRunning, remainingTimeSeconds],
 	);
 
 	const showPhaseLabel = !abstractSession && !intentionMode;
-	const showHorizon = abstractSession && revealed && !intentionMode;
+	const showSideHorizon = abstractSession && !intentionMode && endTimeDisplay;
 
 	return (
 		<Box
-			className={styles.ringWrap}
-			role="progressbar"
-			aria-valuenow={sessionProgressPercent}
-			aria-valuemin={0}
-			aria-valuemax={100}
-			aria-label={
-				showHorizon
-					? horizonMessage
-					: "Session progress"
-			}
+			className={styles.ringCluster}
 			style={{
-				width: size,
-				height: size,
-				touchAction: abstractSession ? "manipulation" : undefined,
 				["--ring-accent" as string]: `${btnMain}44`,
 				["--ring-accent-soft" as string]: `${btnMain}66`,
 				["--ring-accent-glow" as string]: `${btnMain}33`,
 			}}
 		>
-			<svg
-				className={styles.ringSvg}
-				width={size}
-				height={size}
-				viewBox={`0 0 ${size} ${size}`}
-				aria-hidden
-			>
-				<circle
-					cx={size / 2}
-					cy={size / 2}
-					r={radius}
-					fill="none"
-					stroke="rgba(255,255,255,0.08)"
-					strokeWidth={stroke}
-				/>
-				<circle
-					cx={size / 2}
-					cy={size / 2}
-					r={radius}
-					fill="none"
-					stroke={btnMain}
-					strokeWidth={stroke}
-					strokeLinecap="round"
-					strokeDasharray={circumference}
-					strokeDashoffset={offset}
-					transform={`rotate(-90 ${size / 2} ${size / 2})`}
-					style={{
-						transition: isRunning
-							? "stroke-dashoffset 2s ease-in-out"
-							: "stroke-dashoffset 1s ease",
-						filter: "blur(0.5px)",
-					}}
-				/>
-			</svg>
-
-			{isRunning && (
-				<>
-					<Box
-						className={styles.ringRipple}
-						style={{ width: rippleSize, height: rippleSize }}
-						aria-hidden
-					/>
-					<Box
-						className={`${styles.ringRipple} ${styles.ringRippleDelay}`}
-						style={{ width: rippleSize, height: rippleSize }}
-						aria-hidden
-					/>
-				</>
-			)}
-
 			<Box
-				{...revealHandlers}
-				className={`${styles.ringCore} ${isRunning ? styles.ringCoreRunning : ""} ${abstractSession ? styles.ringCoreInteractive : ""}`}
-				style={{
-					width: coreSize,
-					height: coreSize,
-					cursor: abstractSession ? "pointer" : "default",
-				}}
-				role={abstractSession ? "button" : undefined}
-				tabIndex={abstractSession ? 0 : undefined}
+				className={styles.ringWrap}
+				role="progressbar"
+				aria-valuenow={sessionProgressPercent}
+				aria-valuemin={0}
+				aria-valuemax={100}
 				aria-label={
-					abstractSession
-						? revealed
-							? horizonMessage
-							: "Mantén presionado para ver cuándo termina el ciclo"
-						: undefined
+					showSideHorizon ? `${horizonAria}. Session progress` : "Session progress"
 				}
+				style={{ width: size, height: size }}
 			>
-				{showPhaseLabel && (
-					<Text
-						className={styles.ringCenterLabel}
-						aria-hidden
+				<svg
+					className={styles.ringSvg}
+					width={size}
+					height={size}
+					viewBox={`0 0 ${size} ${size}`}
+					aria-hidden
+					style={{ pointerEvents: "none" }}
+				>
+					<circle
+						cx={size / 2}
+						cy={size / 2}
+						r={radius}
+						fill="none"
+						stroke="rgba(255,255,255,0.08)"
+						strokeWidth={stroke}
+					/>
+					<circle
+						cx={size / 2}
+						cy={size / 2}
+						r={radius}
+						fill="none"
+						stroke={btnMain}
+						strokeWidth={stroke}
+						strokeLinecap="round"
+						strokeDasharray={circumference}
+						strokeDashoffset={offset}
+						transform={`rotate(-90 ${size / 2} ${size / 2})`}
 						style={{
-							fontSize: large ? "1rem" : compact || isMobile ? "0.8rem" : "0.9rem",
+							transition: isRunning
+								? "stroke-dashoffset 2s ease-in-out"
+								: "stroke-dashoffset 1s ease",
+							filter: "blur(0.5px)",
 						}}
-					>
-						{getProgressLabel(sessionProgressPercent)}
-					</Text>
+					/>
+				</svg>
+
+				{isRunning && (
+					<>
+						<Box
+							className={styles.ringRipple}
+							style={{
+								width: rippleSize,
+								height: rippleSize,
+								pointerEvents: "none",
+							}}
+							aria-hidden
+						/>
+						<Box
+							className={`${styles.ringRipple} ${styles.ringRippleDelay}`}
+							style={{
+								width: rippleSize,
+								height: rippleSize,
+								pointerEvents: "none",
+							}}
+							aria-hidden
+						/>
+					</>
 				)}
-				{abstractSession && (
-					<Text
-						className={`${styles.ringHorizon} ${showHorizon ? styles.ringHorizonVisible : styles.ringHorizonHidden}`}
-						aria-hidden={!showHorizon}
-					>
-						{horizonMessage}
-					</Text>
-				)}
-				{intentionMode && centerLabel && (
-					<Text className={styles.ringCenterLabel} px={8}>
-						{centerLabel}
-					</Text>
-				)}
+
+				<Box
+					className={`${styles.ringCore} ${isRunning ? styles.ringCoreRunning : ""}`}
+					style={{
+						width: coreSize,
+						height: coreSize,
+						pointerEvents: "none",
+					}}
+				>
+					{showPhaseLabel && (
+						<Text
+							className={styles.ringCenterLabel}
+							aria-hidden
+							style={{
+								fontSize: large
+									? "1rem"
+									: compact || isMobile
+										? "0.8rem"
+										: "0.9rem",
+							}}
+						>
+							{getProgressLabel(sessionProgressPercent)}
+						</Text>
+					)}
+					{intentionMode && centerLabel && (
+						<Text className={styles.ringCenterLabel} px={8}>
+							{centerLabel}
+						</Text>
+					)}
+				</Box>
 			</Box>
+
+			{showSideHorizon && (
+				<Box className={styles.cycleHorizon} aria-hidden>
+					<Text className={styles.cycleHorizonCaption}>
+						{isRunning ? "ends" : "would end"}
+					</Text>
+					<Text className={styles.cycleHorizonTime}>{endTimeDisplay}</Text>
+				</Box>
+			)}
 		</Box>
 	);
 };

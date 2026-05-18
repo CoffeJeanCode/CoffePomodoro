@@ -1,0 +1,6 @@
+id: PROP-0010
+status: applied
+target: state/active_context.yml
+reason: Schema selector cambiado a Select dropdown con búsqueda, Helps actualizado con secciones temáticas
+created: 2026-05-18
+patch: '{"next_actions":["cursor: UI-T2 → Estandarizar Drawers (posición y estilos)","cursor: UI-T3 → Unificar paleta de colores","cursor: UI-T4 → Renombrar Settings tab ''Alerts'' → ''Notifications''","cursor: UI-T5 → QuickMenu estilizar igual que resto","cursor: UI-T6 → Stats ajustar a paleta unificada","cursor: UI-T7 → Break animations revisión"],"done":["Stage 4: UI Consistency — Schema Select dropdown con búsqueda, Helps con secciones (Flow State, Breaks, Soundscapes, Hotkeys)"]}'

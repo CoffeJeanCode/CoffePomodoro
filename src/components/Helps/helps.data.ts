@@ -6,7 +6,7 @@ export const helps = {
 			items: [
 				"Focus without urgency — the timer shows no numbers, only a gentle ring",
 				"Set an intention before each session instead of chasing countdowns",
-				"Press & hold the ring center to briefly peek at remaining time",
+				"End time sits quietly beside the ring — no countdown in the center",
 			],
 		},
 		{
