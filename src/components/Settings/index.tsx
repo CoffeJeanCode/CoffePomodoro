@@ -89,6 +89,11 @@ const Settings = () => {
 				},
 				body: {
 					maxWidth: "100%",
+					display: "flex",
+					flexDirection: "column",
+					flex: 1,
+					overflow: "hidden",
+					paddingBottom: 0,
 				},
 			}}
 				onKeyDown={getHotkeyHandler([
@@ -106,7 +111,7 @@ const Settings = () => {
 				<Flex
 					direction="column"
 					gap="md"
-					style={{ minWidth: 0, maxWidth: "100%" }}
+					style={{ minWidth: 0, maxWidth: "100%", flex: 1, overflowY: "auto" }}
 				>
 					{isSchemaSelected && currentSchema && (
 						<Text size="sm" c="dimmed">
@@ -156,8 +161,6 @@ const Settings = () => {
 
 				{isSettingsChanged && (
 					<Box
-						pos="sticky"
-						bottom={0}
 						p="md"
 						className={ui.glassInset}
 						style={{
@@ -167,6 +170,7 @@ const Settings = () => {
 							borderBottom: "none",
 							zIndex: 2,
 							width: "100%",
+							flexShrink: 0,
 						}}
 					>
 						<Flex justify="flex-end" gap="sm">

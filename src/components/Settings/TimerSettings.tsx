@@ -11,7 +11,6 @@ import type { FC } from "react";
 import { type Configuration, Mode } from "../../models";
 import { minutesToSeconds, secondsToMinutes } from "../../utils/time.util";
 import SessionViewer from "./components/SessionViewer";
-import { SliderSettings } from "./components/SliderSettings";
 
 interface Props {
 	configuration: Configuration | TimerSchema;

@@ -42,13 +42,20 @@ const SessionViewer: React.FC<Props> = ({ configuration }) => {
 
 	return (
 		<>
-			<Progress.Root size="20" radius={"md"} mt="md">
-				{progressValues.map(({ value, color }, index) => (
+			<Progress.Root size="24" radius={"md"} mt="md">
+				{progressValues.map(({ value, color, label, displayTime }, index) => (
 					<Progress.Section
 						key={`${index}-${value}`}
 						value={value}
 						color={color}
-					/>
+						title={`${label} – ${displayTime}m`}
+					>
+						{value >= 8 && (
+							<Progress.Label style={{ fontSize: "0.625rem", lineHeight: "24px", whiteSpace: "nowrap" }}>
+								{displayTime}m
+							</Progress.Label>
+						)}
+					</Progress.Section>
 				))}
 			</Progress.Root>
 		</>
