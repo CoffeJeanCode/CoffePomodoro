@@ -11,7 +11,6 @@ export const appTheme = createTheme({
 	defaultRadius: "md",
 	fontFamily:
 		'-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-	transitionTimingFunction: "var(--ui-ease)",
 	components: {
 		Button: {
 			defaultProps: {

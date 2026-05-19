@@ -8,6 +8,7 @@ interface UseTimerDocumentAndHotkeysParams {
 	mode: Mode;
 	handleToggleTimer: () => void;
 	handleStopTimer: () => void;
+	handleIntentionFulfilled: () => void;
 	handleNextTimer: (args: { isSkip: boolean }) => void;
 	handleFullScreen: () => void | Promise<void>;
 	handlePictureInPicture: () => void | Promise<void>;
@@ -18,6 +19,7 @@ export function useTimerDocumentAndHotkeys({
 	mode,
 	handleToggleTimer,
 	handleStopTimer,
+	handleIntentionFulfilled,
 	handleNextTimer,
 	handleFullScreen,
 	handlePictureInPicture,
@@ -35,7 +37,11 @@ export function useTimerDocumentAndHotkeys({
 		const el = document.activeElement;
 		if (!el) return false;
 		const tag = el.tagName;
-		return tag === "INPUT" || tag === "TEXTAREA" || el.isContentEditable;
+		return (
+			tag === "INPUT" ||
+			tag === "TEXTAREA" ||
+			(el as HTMLElement).isContentEditable
+		);
 	};
 
 	useHotkeys([
@@ -46,7 +52,16 @@ export function useTimerDocumentAndHotkeys({
 				handleToggleTimer();
 			},
 		],
-		["S", () => handleStopTimer()],
+		[
+			"S",
+			() => {
+				if (mode === Mode.Pomodoro) {
+					handleIntentionFulfilled();
+				} else {
+					handleStopTimer();
+				}
+			},
+		],
 		[
 			"N",
 			() => {

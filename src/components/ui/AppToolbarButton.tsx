@@ -1,17 +1,19 @@
 import { Button, type ButtonProps } from "@mantine/core";
-import type { FC, ReactNode } from "react";
+import type { MouseEventHandler, ReactNode } from "react";
 
-interface AppToolbarButtonProps extends ButtonProps {
+export interface AppToolbarButtonProps extends Omit<ButtonProps, "children" | "leftSection"> {
 	children: ReactNode;
 	leftSection?: ReactNode;
+	onClick?: MouseEventHandler<HTMLButtonElement>;
 }
 
 /** Top-bar actions — same glass look as the timer shell. */
-export const AppToolbarButton: FC<AppToolbarButtonProps> = ({
+export function AppToolbarButton({
 	children,
 	leftSection,
 	...props
-}) => (
+}: AppToolbarButtonProps) {
+	return (
 	<Button
 		variant="light"
 		color="gray"
@@ -30,4 +32,5 @@ export const AppToolbarButton: FC<AppToolbarButtonProps> = ({
 	>
 		{children}
 	</Button>
-);
+	);
+}

@@ -15,9 +15,9 @@ export const DAYS = [
 	"Saturday",
 ];
 export const ALARMS = {
-	Micellaneus: { title: "Micellaneus", url: Micellaneus, type: "alarm" },
-	Interface: { title: "Interface", url: Interface, type: "alarm" },
-	Rise: { title: "Rise", url: Rise, type: "alarm" },
-	Shake: { title: "Shake", url: Shake, type: "alarm" },
-	Coin: { title: "Coin", url: Coin, type: "alarm" },
+	Micellaneus: { title: "Micellaneus", url: Micellaneus, type: "alarm" as const },
+	Interface: { title: "Interface", url: Interface, type: "alarm" as const },
+	Rise: { title: "Rise", url: Rise, type: "alarm" as const },
+	Shake: { title: "Shake", url: Shake, type: "alarm" as const },
+	Coin: { title: "Coin", url: Coin, type: "alarm" as const },
 };

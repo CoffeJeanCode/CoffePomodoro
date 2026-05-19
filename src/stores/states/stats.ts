@@ -7,7 +7,7 @@ import {
 } from "@/models/stats";
 import { indexedDBStorage } from "@/utils/storage";
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { createJSONStorage, persist } from "zustand/middleware";
 import { storeVersion } from "../config";
 
 const getTimeOfDay = (): string => {
@@ -209,7 +209,7 @@ export const useStatsState = create<StatsState>()(
 		{
 			name: "stats",
 			version: storeVersion + 1,
-			storage: indexedDBStorage,
+			storage: createJSONStorage(() => indexedDBStorage),
 		},
 	),
 );

@@ -36,7 +36,7 @@ const NotificationSettings: FC<Props> = ({ configuration, setConfigValue }) => {
 				<Button
 					onClick={() => playNotification()}
 					aria-label="Preview alarm"
-					flex="0 0 auto"
+					style={{ flex: "0 0 auto" }}
 				>
 					<FaBell />
 				</Button>

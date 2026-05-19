@@ -69,8 +69,7 @@ const SchemaSettings: FC<Props> = ({ configuration }) => {
 		const lb = secondsToMinutes(s.timers["long break"]);
 		return {
 			value: s.id,
-			label: s.title,
-			description: `${p}m · ${sb}m · ${lb}m`,
+			label: `${s.title} (${p}m · ${sb}m · ${lb}m)`,
 		};
 	});
 
@@ -89,14 +88,6 @@ const SchemaSettings: FC<Props> = ({ configuration }) => {
 				searchable
 				nothingFoundMessage="No presets found"
 				comboboxProps={{ withinPortal: false }}
-				renderOption={({ option }) => (
-					<Flex direction="column" gap={1}>
-						<Text size="sm">{option.label}</Text>
-						<Text size="xs" c="dimmed">
-							{(option as any).description}
-						</Text>
-					</Flex>
-				)}
 			/>
 
 			{current && (
