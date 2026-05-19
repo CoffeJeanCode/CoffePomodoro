@@ -1,8 +1,11 @@
-import { Mode } from "@/models";
+import {
+	DEPTH_PRESETS,
+	DEPTH_PRESET_ORDER,
+	depthPresetTitle,
+} from "@/models/depth";
 import type { Schemas, TimerSchema } from "@/models/schemas";
 import { createId } from "@/utils/extra.utils";
 import { normalizeTimerSchema } from "@/utils/normalizeConfiguration";
-import { minutesToSeconds } from "@/utils/time.util";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { storeVersion } from "../config";
@@ -17,69 +20,40 @@ export interface SchemasState extends Schemas {
 	updateCurrentSchema: (updatedSchema: TimerSchema) => void;
 }
 
-const defaultSchemasRaw: Omit<TimerSchema, "id">[] = [
-	{
-		title: "Work Session",
-		timers: {
-			[Mode.Pomodoro]: minutesToSeconds(25),
-			[Mode.ShortBreak]: minutesToSeconds(5),
-			[Mode.LongBreak]: minutesToSeconds(15),
-		},
-		notification: {
-			alarm: ALARMS.Rise,
-			desktopNotification: true,
-			volume: 70,
-		},
-		behavior: {
-			canAutoPlay: false,
-			pomodorosToLongBreak: 4,
-			sessionAdjustStepMinutes: 5,
-			skipCountsSessionMinProgressPercent: 100,
-		},
+const NOTIFICATION_BY_PRESET = {
+	deep: { alarm: ALARMS.Rise, desktopNotification: true, volume: 70 },
+	sustained: { alarm: ALARMS.Micellaneus, desktopNotification: true, volume: 50 },
+	quick: { alarm: ALARMS.Shake, desktopNotification: false, volume: 30 },
+} as const;
+
+const defaultSchemasRaw: Omit<TimerSchema, "id">[] = DEPTH_PRESET_ORDER.map(
+	(key) => {
+		const preset = DEPTH_PRESETS[key];
+		return {
+			title: depthPresetTitle(preset),
+			presetKey: key,
+			timers: preset.timers,
+			notification: NOTIFICATION_BY_PRESET[key],
+			behavior: {
+				canAutoPlay: false,
+				...preset.behavior,
+			},
+		};
 	},
-	{
-		title: "Reading",
-		timers: {
-			[Mode.Pomodoro]: minutesToSeconds(30),
-			[Mode.ShortBreak]: minutesToSeconds(7),
-			[Mode.LongBreak]: minutesToSeconds(20),
-		},
-		notification: {
-			alarm: ALARMS.Micellaneus,
-			desktopNotification: true,
-			volume: 50,
-		},
-		behavior: {
-			canAutoPlay: false,
-			pomodorosToLongBreak: 3,
-			sessionAdjustStepMinutes: 5,
-			skipCountsSessionMinProgressPercent: 100,
-		},
-	},
-	{
-		title: "Study",
-		timers: {
-			[Mode.Pomodoro]: minutesToSeconds(45),
-			[Mode.ShortBreak]: minutesToSeconds(10),
-			[Mode.LongBreak]: minutesToSeconds(20),
-		},
-		notification: {
-			alarm: ALARMS.Shake,
-			desktopNotification: false,
-			volume: 30,
-		},
-		behavior: {
-			canAutoPlay: false,
-			pomodorosToLongBreak: 5,
-			sessionAdjustStepMinutes: 5,
-			skipCountsSessionMinProgressPercent: 100,
-		},
-	},
-];
+);
 
 const defaultSchemas: TimerSchema[] = defaultSchemasRaw.map((s) =>
 	normalizeTimerSchema({ ...s, id: createId() }),
 );
+
+const LEGACY_SCHEMA_TITLES = ["Work Session", "Reading", "Study"] as const;
+
+function isLegacySchemaSet(schemas: TimerSchema[]): boolean {
+	return (
+		schemas.length === 3 &&
+		schemas.every((s, i) => s.title === LEGACY_SCHEMA_TITLES[i])
+	);
+}
 
 export const useSchemasState = create<SchemasState>()(
 	persist(
@@ -124,7 +98,10 @@ export const useSchemasState = create<SchemasState>()(
 			version: storeVersion,
 			merge: (persisted, current) => {
 				const p = (persisted ?? {}) as Partial<SchemasState>;
-				const raw = p.schemas ?? current.schemas;
+				let raw = p.schemas ?? current.schemas;
+				if (isLegacySchemaSet(raw)) {
+					raw = defaultSchemas;
+				}
 				return {
 					...current,
 					...p,

@@ -1,6 +1,7 @@
 import type { Configuration } from "@/models";
+import { DEPTH_PRESETS } from "@/models/depth";
 import type { TimerSchema } from "@/models/schemas";
-import { useSchemasState, useTimerState } from "@/stores";
+import { useDepthState, useSchemasState, useTimerState } from "@/stores";
 import { SCHEMA_KEYS } from "@/stores/constants";
 import { secondsToMinutes } from "@/utils/time.util";
 import {
@@ -26,6 +27,7 @@ interface Props {
 const SchemaSettings: FC<Props> = ({ configuration }) => {
 	const { schemas, currentSchemaId, addSchema, setCurrentSchema, updateSchema, deleteSchema } =
 		useSchemasState();
+	const setActivePreset = useDepthState((s) => s.setActivePreset);
 	const resetForNext = useTimerState((state) => state.resetForNext);
 	const [isEditing, setIsEditing] = useState(false);
 	const [editTitle, setEditTitle] = useState("");
@@ -41,6 +43,8 @@ const SchemaSettings: FC<Props> = ({ configuration }) => {
 
 	const handleSetCurrentSchema = (id: string | null) => {
 		if (!id) return;
+		const selected = schemas.find((s) => s.id === id);
+		if (selected?.presetKey) setActivePreset(selected.presetKey);
 		resetForNext();
 		setCurrentSchema(id);
 	};
@@ -64,12 +68,10 @@ const SchemaSettings: FC<Props> = ({ configuration }) => {
 	};
 
 	const options = schemas.map((s) => {
-		const p = secondsToMinutes(s.timers.pomodoro);
-		const sb = secondsToMinutes(s.timers["short break"]);
-		const lb = secondsToMinutes(s.timers["long break"]);
+		const brief = s.presetKey ? DEPTH_PRESETS[s.presetKey].description : "";
 		return {
 			value: s.id,
-			label: `${s.title} (${p}m · ${sb}m · ${lb}m)`,
+			label: brief ? `${s.title} — ${brief}` : s.title,
 		};
 	});
 
@@ -124,6 +126,11 @@ const SchemaSettings: FC<Props> = ({ configuration }) => {
 								<Text size="sm" fw={500} truncate="end">
 									{current.title}
 								</Text>
+								{current.presetKey && (
+									<Text size="xs" c="dimmed" truncate="end">
+										{DEPTH_PRESETS[current.presetKey].description}
+									</Text>
+								)}
 								<Text size="xs" c="dimmed">
 									{secondsToMinutes(current.timers.pomodoro)}m &middot;{" "}
 									{secondsToMinutes(current.timers["short break"])}m &middot;{" "}

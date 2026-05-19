@@ -5,16 +5,22 @@ export type DepthPresetKey = "deep" | "sustained" | "quick";
 export interface DepthPreset {
 	key: DepthPresetKey;
 	label: string;
+	subtitle: string;
+	/** Short line for selectors and preset cards */
 	description: string;
 	timers: Timers;
-	behavior: Pick<Behavior, "pomodorosToLongBreak" | "sessionAdjustStepMinutes" | "skipCountsSessionMinProgressPercent">;
+	behavior: Pick<
+		Behavior,
+		"pomodorosToLongBreak" | "sessionAdjustStepMinutes" | "skipCountsSessionMinProgressPercent"
+	>;
 }
 
 export const DEPTH_PRESETS: Record<DepthPresetKey, DepthPreset> = {
 	deep: {
 		key: "deep",
 		label: "Deep Immersion",
-		description: "90-minute ultradian cycle for deep work",
+		subtitle: "Ultradian Rhythm",
+		description: "90/20 · flow state and high-complexity work",
 		timers: {
 			pomodoro: 90 * 60,
 			"short break": 20 * 60,
@@ -29,7 +35,8 @@ export const DEPTH_PRESETS: Record<DepthPresetKey, DepthPreset> = {
 	sustained: {
 		key: "sustained",
 		label: "Sustained Rhythm",
-		description: "52-minute focused rhythm with proportional recovery",
+		subtitle: "Rhythmic Proportion",
+		description: "52/17 · structured execution without burnout",
 		timers: {
 			pomodoro: 52 * 60,
 			"short break": 17 * 60,
@@ -43,8 +50,9 @@ export const DEPTH_PRESETS: Record<DepthPresetKey, DepthPreset> = {
 	},
 	quick: {
 		key: "quick",
-		label: "Quick Start",
-		description: "25-minute sprint for fast momentum",
+		label: "Friction Threshold",
+		subtitle: "Quick Start",
+		description: "25/5 · beat procrastination and operational tasks",
 		timers: {
 			pomodoro: 25 * 60,
 			"short break": 5 * 60,
@@ -57,5 +65,11 @@ export const DEPTH_PRESETS: Record<DepthPresetKey, DepthPreset> = {
 		},
 	},
 };
+
+export const DEPTH_PRESET_ORDER: DepthPresetKey[] = ["deep", "sustained", "quick"];
+
+export function depthPresetTitle(preset: DepthPreset): string {
+	return `${preset.label} (${preset.subtitle})`;
+}
 
 export const DEFAULT_DEPTH_PRESET: DepthPresetKey = "quick";

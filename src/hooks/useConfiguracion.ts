@@ -9,23 +9,26 @@ export const useConfiguration = (configState: ConfigurationState) => {
 		setConfiguration: setConfig,
 		resetConfiguration: resetConfig,
 	} = configState;
+	const [snapshot, setSnapshot] = useState(config);
 	const [tempConfig, setTempConfig] = useState(config);
 
 	useEffect(() => {
 		setTempConfig(config);
+		setSnapshot(config);
 	}, [config]);
 
 	const isSettingsChanged = useMemo(
-		() => !configurationEquals(tempConfig, config),
-		[tempConfig, config],
+		() => !configurationEquals(tempConfig, snapshot),
+		[tempConfig, snapshot],
 	);
 
 	const saveConfiguration = () => {
 		setConfig(tempConfig);
+		setSnapshot(tempConfig);
 	};
 
 	const cancelConfiguration = () => {
-		setTempConfig(config);
+		setTempConfig(snapshot);
 	};
 
 	const resetConfiguration = () => {

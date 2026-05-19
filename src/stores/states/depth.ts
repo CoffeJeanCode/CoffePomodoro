@@ -20,6 +20,17 @@ export const useDepthState = create<DepthState>()(
 		{
 			name: "depth",
 			version: storeVersion,
+			migrate: (persisted, version) => {
+				if (version < storeVersion) {
+					return { activePreset: DEFAULT_DEPTH_PRESET };
+				}
+				const state = persisted as { activePreset?: DepthPresetKey };
+				const valid: DepthPresetKey[] = ["deep", "sustained", "quick"];
+				if (!state.activePreset || !valid.includes(state.activePreset)) {
+					return { activePreset: DEFAULT_DEPTH_PRESET };
+				}
+				return state;
+			},
 		},
 	),
 );
