@@ -7,4 +7,6 @@ export interface Timer {
 	finishTimeText: string;
 	resumedTime: number;
 	isRunning: boolean;
+	/** Seconds saved by ending a focus session early (via Intention Fulfilled), added as bonus to the next break. */
+	savedTimeBonus: number;
 }

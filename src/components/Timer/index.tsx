@@ -1,9 +1,12 @@
 import { Mode } from "@/models";
 import { GlassPanel } from "@/components/ui/GlassPanel";
 import { useInfoState } from "@/stores";
+import { useBrainDumpState } from "@/stores/states/brainDump";
 import { Box, Container } from "@mantine/core";
+import { secondsToMinutes } from "@/utils/time.util";
 import { memo, useEffect, useRef, useState } from "react";
 import BreakRestScreen from "./BreakRestScreen";
+import IntentionComplete from "./IntentionComplete";
 import SessionComplete from "./SessionComplete";
 import SessionIntention from "./SessionIntention";
 import TimerControllers from "./TimerControllers";
@@ -27,9 +30,13 @@ const Timer = () => {
 	const {
 		acknowledgeCycleAndContinue,
 		awaitingCycleAck,
+		awaitingIntentionFulfillment,
 		breakProgressPercent,
+		cancelIntentionFulfillment,
+		confirmIntentionFulfillment,
 		dismissCycleAck,
 		handleAdjustSessionByMinutes,
+		handleIntentionFulfilled,
 		handleNextTimer,
 		handleStopTimer,
 		handleSkipBreak,
@@ -38,15 +45,23 @@ const Timer = () => {
 		finishTimeText,
 		isRunning,
 		remainingTime,
+		savedTimeBonus,
 		sessionAdjustStepMinutes,
 		sessionProgressPercent,
 		skipCountsSessionMinProgressPercent,
 	} = useTimer();
-	const { mode } = useInfoState();
+	const {
+		mode,
+		sessionIntention,
+		intentionConfirmed,
+		setSessionIntention,
+		setIntentionConfirmed,
+		clearSessionIntention,
+	} = useInfoState();
+	const brainDumpNotes = useBrainDumpState((s) => s.notes);
+	const discardAllBrainDump = useBrainDumpState((s) => s.discardAll);
 	const timerRef = useRef<HTMLDivElement>(null);
 
-	const [sessionIntention, setSessionIntention] = useState("");
-	const [intentionConfirmed, setIntentionConfirmed] = useState(false);
 	const [isEditingIntention, setIsEditingIntention] = useState(false);
 	const [phaseOpacity, setPhaseOpacity] = useState(1);
 	const prevModeRef = useRef(mode);
@@ -57,20 +72,16 @@ const Timer = () => {
 		setPhaseOpacity(0.25);
 		const fadeIn = setTimeout(() => setPhaseOpacity(1), 2000);
 
-		if (prevModeRef.current !== Mode.Pomodoro && mode === Mode.Pomodoro) {
-			setIntentionConfirmed(false);
-			setSessionIntention("");
-		}
-
 		prevModeRef.current = mode;
 		return () => clearTimeout(fadeIn);
 	}, [mode]);
 
 	const needsIntention =
-		mode === Mode.Pomodoro && !isRunning && !intentionConfirmed && !awaitingCycleAck;
+		mode === Mode.Pomodoro && !isRunning && !intentionConfirmed && !awaitingCycleAck && !awaitingIntentionFulfillment;
 	const abstractSession =
 		mode === Mode.Pomodoro &&
 		!awaitingCycleAck &&
+		!awaitingIntentionFulfillment &&
 		(isRunning || intentionConfirmed);
 	const onBreak = isBreakMode(mode);
 
@@ -95,6 +106,7 @@ const Timer = () => {
 		mode,
 		handleToggleTimer,
 		handleStopTimer,
+		handleIntentionFulfilled,
 		handleNextTimer,
 		handleFullScreen,
 		handlePictureInPicture,
@@ -128,7 +140,7 @@ const Timer = () => {
 					innerClassName={styles.timerBody}
 					style={{ opacity: phaseOpacity }}
 				>
-					{!awaitingCycleAck && !onBreak && (
+					{!awaitingCycleAck && !awaitingIntentionFulfillment && !onBreak && (
 						<Box className={styles.timerHeader}>
 							<TimerHeader
 								mode={mode}
@@ -142,14 +154,15 @@ const Timer = () => {
 <Box
 		className={`${styles.timerStage} ${needsIntention || awaitingCycleAck ? styles.timerStageIntention : ""} ${isFullScreen && onBreak ? styles.timerStageElevated : ""}`}
 	>
-		{onBreak ? (
+						{onBreak ? (
 			<BreakRestScreen
 				mode={mode as Mode.ShortBreak | Mode.LongBreak}
 				breakProgressPercent={breakProgressPercent}
 				large={isFullScreen}
-				onSkipBreak={handleSkipBreak}
+				savedTimeBonus={savedTimeBonus}
+				isRunning={isRunning}
 			/>
-						) : awaitingCycleAck ? null : (
+						) : awaitingCycleAck || awaitingIntentionFulfillment ? null : (
 							<TimerProgressRing
 								mode={mode}
 								sessionProgressPercent={sessionProgressPercent}
@@ -158,7 +171,6 @@ const Timer = () => {
 								abstractSession={abstractSession}
 								finishTimeText={finishTimeText}
 								finishTime={finishTime}
-								remainingTimeSeconds={remainingTime}
 								centerLabel={
 									needsIntention ? "What will you focus on?" : undefined
 								}
@@ -195,18 +207,31 @@ const Timer = () => {
 									onContinue={acknowledgeCycleAndContinue}
 									onEnd={() => {
 										dismissCycleAck();
-										setIntentionConfirmed(false);
-										setSessionIntention("");
+										clearSessionIntention();
 										handleStopTimer();
+									}}
+								/>
+							) : awaitingIntentionFulfillment ? (
+								<IntentionComplete
+									intention={sessionIntention}
+									savedMinutes={Math.floor(secondsToMinutes(savedTimeBonus))}
+									brainDumpNotes={brainDumpNotes}
+									onDiscardBrainDump={discardAllBrainDump}
+									onConfirm={() => {
+										confirmIntentionFulfillment();
+										clearSessionIntention();
+									}}
+									onCancel={() => {
+										cancelIntentionFulfillment();
 									}}
 								/>
 							) : (
 								<TimerControllers
 									mode={mode}
-									handleStopTimer={handleStopTimer}
 									handleToggleTimer={handleToggleTimer}
 									isPlaying={isRunning}
 									onSkipBreak={handleSkipBreak}
+									onIntentionFulfilled={handleIntentionFulfilled}
 								/>
 							)}
 						</Box>

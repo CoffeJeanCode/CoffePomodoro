@@ -10,6 +10,9 @@ interface InfoState extends Info {
 	setPomodoros: (pomodoros: number) => void;
 	setSessions: (sessions: number) => void;
 	setEndWeek: (endWeek: Date) => void;
+	setSessionIntention: (sessionIntention: string) => void;
+	setIntentionConfirmed: (intentionConfirmed: boolean) => void;
+	clearSessionIntention: () => void;
 	resetInfo: () => void;
 }
 
@@ -24,6 +27,8 @@ const initialState: Info = {
 	day: todayDate.getDay(),
 	pomodoros: 1,
 	sessions: 1,
+	sessionIntention: "",
+	intentionConfirmed: false,
 };
 
 export const useInfoState = create<InfoState>()(
@@ -35,11 +40,25 @@ export const useInfoState = create<InfoState>()(
 			setSessions: (sessions) => set(() => ({ sessions })),
 			setMode: (mode) => set(() => ({ mode })),
 			setEndWeek: (endWeek) => set(() => ({ endWeek })),
+			setSessionIntention: (sessionIntention) => set(() => ({ sessionIntention })),
+			setIntentionConfirmed: (intentionConfirmed) =>
+				set(() => ({ intentionConfirmed })),
+			clearSessionIntention: () =>
+				set(() => ({ sessionIntention: "", intentionConfirmed: false })),
 			resetInfo: () => set(initialState),
 		}),
 		{
 			name: "info",
 			version: storeVersion,
+			merge: (persisted, current) => {
+				const p = (persisted ?? {}) as Partial<InfoState>;
+				return {
+					...current,
+					...p,
+					sessionIntention: p.sessionIntention ?? "",
+					intentionConfirmed: p.intentionConfirmed ?? false,
+				};
+			},
 		},
 	),
 );

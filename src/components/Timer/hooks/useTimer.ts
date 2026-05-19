@@ -1,8 +1,9 @@
 import { Mode } from "@/models";
+import { DEPTH_PRESETS } from "@/models/depth";
 import {
 	useConfigState,
+	useDepthState,
 	useInfoState,
-	useSchemasState,
 	useStatsState,
 	useTimerState,
 } from "@/stores";
@@ -13,11 +14,10 @@ import {
 } from "@/utils/time.util";
 import { useEffect, useMemo, useRef, useState } from "react";
 import useSound from "use-sound";
-import { resolveActiveConfiguration } from "./timer/resolveActiveConfiguration";
 import { useTimerTick } from "./useTimerTick";
 
 const useTimer = () => {
-	const { currentSchemaId, findCurrentSchema } = useSchemasState();
+	const { activePreset } = useDepthState();
 	const config = useConfigState((state) => state.config);
 	const {
 		date,
@@ -37,22 +37,23 @@ const useTimer = () => {
 		isRunning,
 		resumedTime,
 		sessionSegmentTotalSeconds,
+		savedTimeBonus,
 		setIsRunning,
 		setFinishTime,
 		setResumedTime,
 		setRemainingTime,
 		setSessionSegmentTotalSeconds,
+		setSavedTimeBonus,
 	} = useTimerState();
 	const updateDailyStats = useStatsState((stats) => stats.updateDailyStats);
 	const updateStreak = useStatsState((stats) => stats.updateStreak);
 	const [awaitingCycleAck, setAwaitingCycleAck] = useState(false);
+	const [awaitingIntentionFulfillment, setAwaitingIntentionFulfillment] = useState(false);
 
-	const active = resolveActiveConfiguration(
-		config,
-		currentSchemaId,
-		findCurrentSchema,
-	);
-	const { timers, notification, behavior } = active;
+	const preset = DEPTH_PRESETS[activePreset];
+	const { timers, behavior } = preset;
+
+	const notification = config.notification;
 
 	const sessionAdjustStepMinutes = Math.min(
 		30,
@@ -79,7 +80,7 @@ const useTimer = () => {
 			},
 			isCompleted,
 		);
-		updateStreak(date.raw);
+		updateStreak(date.formated);
 	}
 
 	const [playNotification, { stop: stopNotification }] = useSound(
@@ -182,6 +183,7 @@ const useTimer = () => {
 		}
 		setIsRunning(false);
 		setResumedTime(0);
+		setSavedTimeBonus(0);
 	};
 
 	const handleToggleTimer = () => setIsRunning(!isRunning);
@@ -218,25 +220,85 @@ const useTimer = () => {
 		}
 	};
 
+	const handleIntentionFulfilled = () => {
+		if (mode !== Mode.Pomodoro) return;
+		recordPomodoroSessionStats(true);
+		sendNotification();
+		setIsRunning(false);
+		setSavedTimeBonus(remainingTime);
+		setAwaitingIntentionFulfillment(true);
+	};
+
+	const confirmIntentionFulfillment = () => {
+		setAwaitingIntentionFulfillment(false);
+		const bonus = savedTimeBonus;
+		setSavedTimeBonus(0);
+		if (bonus > 0) {
+			const breakMode = pomodoros === pomodorosToLongBreak
+				? Mode.LongBreak
+				: Mode.ShortBreak;
+			const baseDuration = timers[breakMode];
+			const extendedDuration = baseDuration + bonus;
+			setRemainingTime(extendedDuration);
+			setSessionSegmentTotalSeconds(extendedDuration);
+			setMode(breakMode);
+			if (mode === Mode.Pomodoro) {
+				setPomodoros(breakMode === Mode.LongBreak ? 1 : pomodoros + 1);
+			}
+			setIsRunning(false);
+			setResumedTime(0);
+			return;
+		}
+		handleNextTimer({ isSkip: false });
+	};
+
+	const cancelIntentionFulfillment = () => {
+		setAwaitingIntentionFulfillment(false);
+		setSavedTimeBonus(0);
+		setIsRunning(true);
+		setFinishTime(Date.now() + secondsToMilliseconds(remainingTime));
+	};
+
 	const handleEndTimer = () => {
 		if (mode === Mode.Pomodoro) {
 			handleComplete();
 			sendNotification();
 			setIsRunning(false);
+			setSavedTimeBonus(0);
 			setAwaitingCycleAck(true);
 			return;
 		}
 		sendNotification();
+		setSavedTimeBonus(0);
 		handleNextTimer({ isSkip: false });
-	};
+ };
 
 	const acknowledgeCycleAndContinue = () => {
 		setAwaitingCycleAck(false);
+		const bonus = savedTimeBonus;
+		setSavedTimeBonus(0);
+		if (bonus > 0) {
+			const breakMode = pomodoros === pomodorosToLongBreak
+				? Mode.LongBreak
+				: Mode.ShortBreak;
+			const baseDuration = timers[breakMode];
+			const extendedDuration = baseDuration + bonus;
+			setRemainingTime(extendedDuration);
+			setSessionSegmentTotalSeconds(extendedDuration);
+			setMode(breakMode);
+			if (mode === Mode.Pomodoro) {
+				setPomodoros(breakMode === Mode.LongBreak ? 1 : pomodoros + 1);
+			}
+			setIsRunning(false);
+			setResumedTime(0);
+			return;
+		}
 		handleNextTimer({ isSkip: false });
 	};
 
 	const dismissCycleAck = () => {
 		setAwaitingCycleAck(false);
+		setSavedTimeBonus(0);
 	};
 
 	const handleComplete = () => {
@@ -262,6 +324,9 @@ const useTimer = () => {
 		handleAdjustSessionByMinutes,
 		getNewMode,
 		handleToggleTimer,
+		handleIntentionFulfilled,
+		confirmIntentionFulfillment,
+		cancelIntentionFulfillment,
 		acknowledgeCycleAndContinue,
 		dismissCycleAck,
 		isRunning,
@@ -274,7 +339,9 @@ const useTimer = () => {
 		sessionAdjustStepMinutes,
 		skipCountsSessionMinProgressPercent,
 		sessionSegmentTotalSeconds,
+		savedTimeBonus,
 		awaitingCycleAck,
+		awaitingIntentionFulfillment,
 	};
 };
 

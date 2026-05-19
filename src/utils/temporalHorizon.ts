@@ -1,49 +1,32 @@
-import { getEndTime, secondsToMilliseconds } from "./time.util";
+import { getEndTime } from "./time.util";
 
 function resolveEndTimeText(
 	finishTimeText: string,
 	finishTime: number,
-	remainingTimeSeconds: number,
 	isRunning: boolean,
 ): string | null {
-	if (isRunning && finishTimeText) return finishTimeText;
-	if (isRunning && finishTime > 0) return getEndTime(finishTime);
-	if (remainingTimeSeconds > 0) {
-		const projected = Date.now() + secondsToMilliseconds(remainingTimeSeconds);
-		return getEndTime(projected);
-	}
+	if (!isRunning) return null;
+	if (finishTimeText) return finishTimeText;
+	if (finishTime > 0) return getEndTime(finishTime);
 	return null;
 }
 
-/** Short clock label for the side hint (e.g. `2:30 p.m.`). */
+/** Short clock label for the end-time hint (e.g. `2:30 p.m.`). Only while the timer is running. */
 export function getCycleEndTimeDisplay(
 	finishTimeText: string,
 	finishTime: number,
-	remainingTimeSeconds: number,
 	isRunning: boolean,
 ): string | null {
-	return resolveEndTimeText(
-		finishTimeText,
-		finishTime,
-		remainingTimeSeconds,
-		isRunning,
-	);
+	return resolveEndTimeText(finishTimeText, finishTime, isRunning);
 }
 
 /** Full phrase for screen readers. */
 export function formatCycleHorizonMessage(
 	finishTimeText: string,
 	finishTime: number,
-	remainingTimeSeconds: number,
 	isRunning: boolean,
 ): string {
-	const time = resolveEndTimeText(
-		finishTimeText,
-		finishTime,
-		remainingTimeSeconds,
-		isRunning,
-	);
-	if (!time) return "El ciclo aún no ha comenzado";
-	if (isRunning) return `El ciclo concluye a las ${time}`;
-	return `El ciclo concluiría a las ${time}`;
+	const time = resolveEndTimeText(finishTimeText, finishTime, isRunning);
+	if (!time) return "The cycle has not started yet";
+	return `The cycle ends at ${time}`;
 }

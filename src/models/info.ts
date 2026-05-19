@@ -18,4 +18,7 @@ export interface Info {
 	mode: Mode;
 	sessions: number;
 	pomodoros: number;
+	/** Current focus intention for the active Pomodoro block */
+	sessionIntention: string;
+	intentionConfirmed: boolean;
 }

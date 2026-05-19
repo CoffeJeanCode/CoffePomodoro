@@ -10,6 +10,7 @@ interface TimerState extends Timer {
 	setResumedTime: (time: number) => void;
 	setFinishTime: (time: number) => void;
 	setIsRunning: (isRunning: boolean) => void;
+	setSavedTimeBonus: (seconds: number) => void;
 	resetTimer: () => void;
 	resetForNext: () => void;
 }
@@ -22,6 +23,7 @@ const initialState: Timer = {
 	finishTimeText: "",
 	remainingTimeText: "00:00",
 	isRunning: false,
+	savedTimeBonus: 0,
 };
 
 export const useTimerState = create<TimerState>()(
@@ -36,6 +38,7 @@ export const useTimerState = create<TimerState>()(
 				set(() => ({ finishTime, finishTimeText: getEndTime(finishTime) })),
 			setIsRunning: (isRunning) => set(() => ({ isRunning })),
 			setResumedTime: (resumedTime) => set(() => ({ resumedTime })),
+			setSavedTimeBonus: (savedTimeBonus) => set(() => ({ savedTimeBonus })),
 			resetForNext: () =>
 				set({
 					resumedTime: 0,
