@@ -1,0 +1,17 @@
+id: PROP-0015
+status: applied
+target: state/active_context.yml
+reason: Claim T4.1, T5.1, T5.2, T5.4 for opencode; assign T4.2-T4.5, T5.3, T5.5 to cursor
+created: 2026-05-19
+patch:
+  next_actions:
+  - 'cursor: T4.2 → Crear BrainDump FAB + atajo de teclado'
+  - 'cursor: T4.3 → Crear BrainDump capture panel con autofocus'
+  - 'cursor: T4.4 → Integrar triage en IntentionComplete (descartar / copiar al portapapeles)'
+  - 'cursor: T4.5 → Implementar auto-purge a las 24h / medianoche'
+  - 'cursor: T5.3 → Crear DepthSelector componente semántico'
+  - 'cursor: T5.5 → Actualizar Settings UI para usar nuevo sistema de presets'
+  - 'opencode: T4.1 → Crear BrainDump store (estado efímero con expiración 24h)'
+  - 'opencode: T5.1 → Definir presets científicos (90/52/25) con descansos proporcionales'
+  - 'opencode: T5.2 → Actualizar Timer model para soportar presets + bonus proporcional'
+  - 'opencode: T5.4 → Actualizar useTimer para calcular break bonus desde preset + saved time'

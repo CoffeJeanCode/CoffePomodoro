@@ -1,71 +1,47 @@
 stages:
-- name: Stage 0 — Bootstrap
-  goal: Knogg vault setup (steps 1–7)
+- id: stage-4
   status: done
   tasks:
-  - desc: Project brief — constraints, next actions, ADRs
+  - assignee: cursor
+    desc: 'Crear BrainDump store: estado efímero con expiración 24h, persistencia localStorage temporal, método addNote(text), getNotes(), discardNote(id), discardAll(), autoPurge()'
+    id: T4.1
     status: done
-  - desc: Core vault — index.yml, architecture.yml, style_guides.yml
+  - assignee: cursor
+    desc: 'Crear BrainDump FAB: botón esquina inferior derecha, baja prominencia (gris, pequeño, opacity 0.6), atajo de teclado (ej. Ctrl+Shift+D), abre panel con autofocus'
+    id: T4.2
     status: done
-  - desc: Master plan and staged milestones
+  - assignee: cursor
+    desc: 'Crear BrainDump capture panel: modal/overlay minimalista, textarea con autofocus, Enter para guardar y cerrar, Escape para cancelar sin guardar, lista de notas activas visible'
+    id: T4.3
     status: done
-  - desc: Tool registry — cursor only (opencode uses AGENTS.md)
+  - assignee: cursor
+    desc: 'Integrar triage en IntentionComplete: al marcar Intention Fulfilled, mostrar notas capturadas con botones ''Discard'' y ''Copy to Clipboard'', formato Markdown estructurado'
+    id: T4.4
     status: done
-  - desc: Agent registry, roles, set-role, disable codex/opencode
+  - assignee: cursor
+    desc: 'Auto-purge 24h: mecanismo que elimina notas no procesadas al cambiar de día o tras 24h, sin confirmación, irreversible'
+    id: T4.5
     status: done
-  - desc: AGENTS.md — Structure + Standards sections
-    status: done
-  - desc: sync --force, doctor, agents doctor, brief refresh
-    status: done
-- name: Stage 1 — App development
-  goal: Feature work, UX polish, timer/settings on the Pomodoro SPA
-  status: in_progress
+  title: Sistema Efímero de Descarga Cognitiva (Brain Dump)
+- id: stage-5
+  status: pending
   tasks:
-  - desc: Bug fix sprint — settings, stats, timer adjust (see stages_append)
-    status: in_progress
-  - desc: Run npm run lint and npm run build before handoff
-    status: todo
-- name: Stage 2 — Quality & tooling
-  goal: Tests, CI, release hardening
-  status: todo
-  tasks:
-  - desc: Introduce Vitest (or similar) test runner
-    status: todo
-  - desc: Cover timer tick, phase transitions, config normalization
-    status: todo
-  - desc: Optional CI — lint + build on PR
-    status: todo
-stages_append:
-- goal: Unificar toda la UI con un diseño consistente y cohesivo
-  name: 'Stage 4: UI Consistency'
-  status: done
-  tasks:
-  - desc: 'Revisión visual: consistencia de colores, tipografía, spacing en todos los componentes (Timer, Settings, Stats, Helps, QuickMenu)'
-    id: UI-T1
-    owner: cursor
+  - assignee: cursor
+    desc: 'Definir presets: Deep Immersion (90m/20m break), Sustained Rhythm (52m/17m break), Quick Start (25m/5m break). Reemplazar schema actual con estos presets semánticos'
+    id: T5.1
     status: done
-  - desc: 'Estandarizar Drawers: posición consistente (todos left o todos right), mismos estilos de transición'
-    id: UI-T2
-    owner: cursor
+  - assignee: cursor
+    desc: 'Actualizar Timer model: añadir campos presetName, baseBreakMinutes, eliminar duración libre de minutos'
+    id: T5.2
     status: done
-  - desc: 'Unificar colores: decidir paleta principal (ej: gray/white para UI, red para acciones principales)'
-    id: UI-T3
-    owner: cursor
+  - assignee: cursor
+    desc: 'Crear DepthSelector: componente minimalista con 3 opciones semánticas (no numéricas), iconos de profundidad, selección con un clic'
+    id: T5.3
+  - assignee: cursor
+    desc: 'Actualizar useTimer: calcular break bonus = baseBreakMinutes(preset) + savedTimeBonus, manejar transiciones con nuevos presets'
+    id: T5.4
     status: done
-  - desc: 'Settings tabs: renombrar ''Alerts'' → ''Notifications'' o ''Sound'' para consistencia semántica'
-    id: UI-T4
-    owner: cursor
-    status: done
-  - desc: 'QuickMenu: estilizar para que coincida con el resto (mismo glass effect, mismo color de activo)'
-    id: UI-T5
-    owner: cursor
-    status: done
-  - desc: 'Stats: mantener el nuevo diseño pero asegurar que los colores y spacing coincidan con la paleta establecida'
-    id: UI-T6
-    owner: cursor
-    status: done
-  - desc: 'Break animations: revisar que las animaciones de respiración y deep rest sean fluidas y consistentes'
-    id: UI-T7
-    owner: cursor
-    status: done
-add_task: null
+  - assignee: cursor
+    desc: 'Actualizar Settings: reemplazar schema editor con DepthSelector, mantener configuración de volumen/notificaciones intacta'
+    id: T5.5
+  title: Calibración Energética (Presets Científicos)

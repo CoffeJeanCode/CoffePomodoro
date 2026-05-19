@@ -1,0 +1,53 @@
+id: PROP-0018
+status: applied
+target: plans/master_plan.yml
+reason: Mark Stage 4 (Brain Dump) and all T4.x tasks as done
+created: 2026-05-19
+patch:
+  stages:
+  - id: stage-4
+    status: done
+    tasks:
+    - assignee: cursor
+      desc: 'Crear BrainDump store: estado efímero con expiración 24h, persistencia localStorage temporal, método addNote(text), getNotes(), discardNote(id), discardAll(), autoPurge()'
+      id: T4.1
+      status: done
+    - assignee: cursor
+      desc: 'Crear BrainDump FAB: botón esquina inferior derecha, baja prominencia (gris, pequeño, opacity 0.6), atajo de teclado (ej. Ctrl+Shift+D), abre panel con autofocus'
+      id: T4.2
+      status: done
+    - assignee: cursor
+      desc: 'Crear BrainDump capture panel: modal/overlay minimalista, textarea con autofocus, Enter para guardar y cerrar, Escape para cancelar sin guardar, lista de notas activas visible'
+      id: T4.3
+      status: done
+    - assignee: cursor
+      desc: 'Integrar triage en IntentionComplete: al marcar Intention Fulfilled, mostrar notas capturadas con botones ''Discard'' y ''Copy to Clipboard'', formato Markdown estructurado'
+      id: T4.4
+      status: done
+    - assignee: cursor
+      desc: 'Auto-purge 24h: mecanismo que elimina notas no procesadas al cambiar de día o tras 24h, sin confirmación, irreversible'
+      id: T4.5
+      status: done
+    title: Sistema Efímero de Descarga Cognitiva (Brain Dump)
+  - id: stage-5
+    status: pending
+    tasks:
+    - assignee: cursor
+      desc: 'Definir presets: Deep Immersion (90m/20m break), Sustained Rhythm (52m/17m break), Quick Start (25m/5m break). Reemplazar schema actual con estos presets semánticos'
+      id: T5.1
+      status: done
+    - assignee: cursor
+      desc: 'Actualizar Timer model: añadir campos presetName, baseBreakMinutes, eliminar duración libre de minutos'
+      id: T5.2
+      status: done
+    - assignee: cursor
+      desc: 'Crear DepthSelector: componente minimalista con 3 opciones semánticas (no numéricas), iconos de profundidad, selección con un clic'
+      id: T5.3
+    - assignee: cursor
+      desc: 'Actualizar useTimer: calcular break bonus = baseBreakMinutes(preset) + savedTimeBonus, manejar transiciones con nuevos presets'
+      id: T5.4
+      status: done
+    - assignee: cursor
+      desc: 'Actualizar Settings: reemplazar schema editor con DepthSelector, mantener configuración de volumen/notificaciones intacta'
+      id: T5.5
+    title: Calibración Energética (Presets Científicos)

@@ -1,0 +1,6 @@
+id: PROP-0011
+status: applied
+target: state/active_context.yml
+reason: Marcar Stages 1-3 como completados y actualizar tareas pendientes
+created: 2026-05-19
+patch: '{"next_actions":["dev: QA → Probar flujo completo: intención → foco → Intention Fulfilled → bonus en descanso","dev: QA → Verificar PiP muestra intención y oculta countdown","dev: QA → Verificar long-press en TimerProgressRing (desktop y mobile)","dev: QA → Confirmar hotkey N aún funciona en breaks"],"done":["Stage 1: Intention Architecture — Intención requerida antes de start, ''Intention Fulfilled'' reemplaza skip, micro-validation IntentionComplete","Stage 2: Temporal Abstraction — MM:SS oculto durante foco, long-press revela hora exacta de fin","Stage 3: Energy Management — Bonus dinámico por cierre temprano añadido al descanso, pantalla de break sin métricas con círculo de respiración","UI: SessionViewer — Labels de tiempo en segmentos de progreso","UI: Drawer save/discard bar — Fixed bottom con flexbox","PiP: Muestra texto de intención dentro del ring","L10n: Todo el texto traducido a inglés","TimerControllers: ''Intention Fulfilled'' como icono FaCheck con tooltip, skip circular en breaks"]}'

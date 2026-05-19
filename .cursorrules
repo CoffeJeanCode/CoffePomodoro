@@ -2,8 +2,8 @@
 # Handoff → Cursor
 
 Project: CoffePomodoro
-Stage: Stage 4: UI Consistency
-Task: Cursor: Revisar y unificar toda la UI - colores, tipografía, spacing, Drawers
+Stage: Stage 5: Calibración Energética (Presets Científicos)
+Task: Cursor: T5.3 DepthSelector + T5.5 Settings UI
 Status: in_progress
 
 ## Constraints
@@ -15,13 +15,8 @@ Status: in_progress
 - Parallel sprint — claim knogg task before edit; no file overlap between in_progress tasks
 
 ## Next Actions
-- cursor: UI-T1 → Revisión visual de todos los componentes
-- cursor: UI-T2 → Estandarizar Drawers (posición y estilos)
-- cursor: UI-T3 → Unificar paleta de colores
-- cursor: UI-T4 → Renombrar Settings tab 'Alerts' → 'Notifications'
-- cursor: UI-T5 → QuickMenu estilizar igual que resto
-- cursor: UI-T6 → Stats ajustar a paleta unificada
-- cursor: UI-T7 → Break animations revisión
+- cursor: T5.3 → Crear DepthSelector componente semántico (3 presets con iconos)
+- cursor: T5.5 → Actualizar Settings UI para usar DepthSelector en lugar de SchemaSettings
 
 ## Summary
-Cursor done S1-W1,W3 S2-W1,W3 S3-W2. Intention flow, ring progress, ambient bg, break screen, metrics hidden.
+Stages 1–4 done (intention, temporal abstraction, energy/breaks, brain dump scratch pad). Stage 5 backend presets done; DepthSelector + Settings UI pending.

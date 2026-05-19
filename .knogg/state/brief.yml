@@ -1,8 +1,8 @@
 generated_at: 2026-05-18
 project: CoffePomodoro
 focus:
-  stage: 'Stage 4: UI Consistency'
-  task: 'Cursor: Revisar y unificar toda la UI - colores, tipografía, spacing, Drawers'
+  stage: 'Stage 5: Calibración Energética (Presets Científicos)'
+  task: 'Cursor: T5.3 DepthSelector + T5.5 Settings UI'
   status: in_progress
 constraints:
 - React 18 + TypeScript + Vite SPA; Zustand for state, Mantine 7 for UI — keep the client-only architecture
@@ -12,13 +12,8 @@ constraints:
 - Timer logic must honor sessionSegmentTotalSeconds, progress-based skip rules, and schema-driven durations from useSchemasState
 - Parallel sprint — claim knogg task before edit; no file overlap between in_progress tasks
 next_actions:
-- 'cursor: UI-T1 → Revisión visual de todos los componentes'
-- 'cursor: UI-T2 → Estandarizar Drawers (posición y estilos)'
-- 'cursor: UI-T3 → Unificar paleta de colores'
-- 'cursor: UI-T4 → Renombrar Settings tab ''Alerts'' → ''Notifications'''
-- 'cursor: UI-T5 → QuickMenu estilizar igual que resto'
-- 'cursor: UI-T6 → Stats ajustar a paleta unificada'
-- 'cursor: UI-T7 → Break animations revisión'
+- 'cursor: T5.3 → Crear DepthSelector componente semántico (3 presets con iconos)'
+- 'cursor: T5.5 → Actualizar Settings UI para usar DepthSelector en lugar de SchemaSettings'
 recent_decisions:
 - id: ADR-0004
   title: Cursor + Claude agents only
@@ -35,5 +30,5 @@ recent_decisions:
 - id: ADR-0008
   title: Evolución hacia Mindfulness Productivity
   status: accepted
-handoff_summary: Cursor done S1-W1,W3 S2-W1,W3 S3-W2. Intention flow, ring progress, ambient bg, break screen, metrics hidden.
+handoff_summary: Stages 1–4 done (brain dump scratch pad complete). Stage 5 presets in code; DepthSelector + Settings UI pending.
 source_hash: 1d5619f6e0de24af

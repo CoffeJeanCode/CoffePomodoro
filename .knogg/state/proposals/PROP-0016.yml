@@ -1,0 +1,26 @@
+id: PROP-0016
+status: applied
+target: state/active_context.yml
+reason: Mark T4.1, T5.1, T5.2, T5.4 as completed by opencode; update next actions for cursor
+created: 2026-05-19
+patch:
+  done:
+  - 'Stage 1: Intention Architecture'
+  - 'Stage 2: Temporal Abstraction'
+  - 'Stage 3: Energy Management (dynamic break bonus, analog break screens)'
+  - 'UI: SessionViewer time labels'
+  - 'UI: Drawer save/discard bar fixed'
+  - PiP intention text
+  - 'L10n: All text in English'
+  - 'TimerControllers: FaCheck icon + tooltip for Intention Fulfilled, circular skip in breaks'
+  - 'T4.1: BrainDump store with 24h auto-purge'
+  - 'T5.1: Scientific depth presets (Deep Immersion 90/20, Sustained Rhythm 52/17, Quick Start 25/5)'
+  - 'T5.2: Timer model updated for depth presets'
+  - 'T5.4: useTimer reads from DEPTH_PRESETS, break bonus uses preset base duration'
+  next_actions:
+  - 'cursor: T4.2 → Crear BrainDump FAB + atajo de teclado (Ctrl+Shift+D)'
+  - 'cursor: T4.3 → Crear BrainDump capture panel con autofocus, Enter guarda, Escape cancela'
+  - 'cursor: T4.4 → Integrar triage en IntentionComplete (descartar / copiar al portapapeles)'
+  - 'cursor: T4.5 → Implementar auto-purge a las 24h / medianoche'
+  - 'cursor: T5.3 → Crear DepthSelector componente semántico (3 presets con iconos)'
+  - 'cursor: T5.5 → Actualizar Settings UI para usar DepthSelector en lugar de SchemaSettings'
