@@ -1,0 +1,226 @@
+/* Shared glass UI — used across Timer, Settings, Home */
+
+.glassPanel {
+	position: relative;
+	overflow: hidden;
+	height: 100%;
+	border-radius: var(--ui-radius);
+	background: var(--ui-glass-bg);
+	backdrop-filter: var(--ui-glass-blur);
+	-webkit-backdrop-filter: var(--ui-glass-blur);
+	border: 1px solid var(--ui-glass-border);
+	border-top-color: var(--ui-glass-border-top);
+	box-shadow: var(--ui-shadow);
+	transition:
+		background var(--ui-duration-slow) var(--ui-ease),
+		border-color var(--ui-duration) var(--ui-ease),
+		box-shadow var(--ui-duration) var(--ui-ease),
+		opacity var(--ui-duration-slow) var(--ui-ease),
+		transform var(--ui-duration) var(--ui-ease);
+}
+
+.glassPanel::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	border-radius: inherit;
+	background: var(--glass-ambient, transparent);
+	opacity: 0.85;
+	transition: background var(--ui-duration-slow) var(--ui-ease);
+	pointer-events: none;
+	z-index: 0;
+}
+
+.glassPanelInner {
+	position: relative;
+	z-index: 1;
+	height: 100%;
+	min-height: 0;
+}
+
+/* Fullscreen timer — vivid mode gradient, no glass veil */
+.immersivePanel {
+	position: relative;
+	overflow: hidden;
+	width: 100%;
+	height: 100%;
+	border: none;
+	box-shadow: none;
+	backdrop-filter: none;
+	-webkit-backdrop-filter: none;
+	transition:
+		background var(--ui-duration-slow) var(--ui-ease),
+		opacity var(--ui-duration-slow) var(--ui-ease);
+}
+
+.glassInset {
+	background: var(--ui-glass-bg);
+	border: 1px solid var(--ui-glass-border);
+	border-radius: var(--ui-radius-sm);
+	backdrop-filter: blur(12px);
+	transition:
+		background var(--ui-duration) var(--ui-ease),
+		border-color var(--ui-duration) var(--ui-ease);
+}
+
+.tipCard {
+	padding: 0.5rem 0.75rem;
+	border-radius: var(--ui-radius-sm);
+	background: var(--ui-glass-bg);
+	border: 1px solid var(--ui-glass-border);
+	text-align: center;
+	transition: background var(--ui-duration) var(--ui-ease);
+}
+
+.tipGameSlot {
+	position: relative;
+	width: 100%;
+	min-height: 2.75rem;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	overflow: hidden;
+}
+
+.tipGameCard {
+	width: 100%;
+	will-change: transform, opacity;
+}
+
+.tipGameEnter {
+	animation: tipGameIn var(--ui-duration) var(--ui-ease) forwards;
+}
+
+.tipGameExit {
+	animation: tipGameOut var(--ui-duration) var(--ui-ease) forwards;
+}
+
+@keyframes tipGameIn {
+	from {
+		opacity: 0;
+		transform: translateY(14px) scale(0.96);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0) scale(1);
+	}
+}
+
+@keyframes tipGameOut {
+	from {
+		opacity: 1;
+		transform: translateY(0) scale(1);
+	}
+	to {
+		opacity: 0;
+		transform: translateY(-12px) scale(0.96);
+	}
+}
+
+.phaseFade {
+	transition: opacity var(--ui-duration-slow) var(--ui-ease);
+}
+
+.deepRestOverlay {
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+	border-radius: inherit;
+	background: rgb(0, 0, 0);
+	transition: opacity var(--ui-duration-slow) var(--ui-ease);
+	z-index: 1;
+}
+
+.breakContent {
+	position: relative;
+	z-index: 2;
+}
+
+.pageTitle {
+	color: var(--ui-text);
+	font-weight: 600;
+	letter-spacing: -0.02em;
+	text-align: center;
+	font-family: "Playfair Display", "Georgia", "Times New Roman", serif;
+	font-style: italic;
+}
+
+.statCard {
+	background: var(--ui-glass-bg);
+	border: 1px solid var(--ui-glass-border);
+	border-radius: var(--ui-radius-sm);
+	backdrop-filter: blur(12px);
+	transition:
+		background var(--ui-duration) var(--ui-ease),
+		border-color var(--ui-duration) var(--ui-ease);
+}
+
+.sectionTitle {
+	color: var(--ui-text);
+	font-weight: 600;
+}
+
+.pillTag {
+	padding: 0.35rem 0.65rem;
+	border-radius: var(--ui-radius-sm);
+	background: var(--ui-glass-bg);
+	border: 1px solid var(--ui-glass-border);
+	font-size: 0.875rem;
+}
+
+.breathingWrap {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.breathingRingOuter {
+	position: absolute;
+	border-radius: 50%;
+	border: 1px solid var(--ui-glass-border);
+	opacity: 0.35;
+	animation: breatheOuter 5.5s var(--ui-ease) infinite;
+}
+
+.breathingRing {
+	position: relative;
+	border-radius: 50%;
+	border: 1px solid var(--ui-glass-border-top);
+	background: radial-gradient(
+		circle,
+		var(--ui-glass-bg-strong) 0%,
+		transparent 70%
+	);
+	box-shadow: 0 0 24px rgba(250, 82, 82, 0.12);
+	animation: breathe 5.5s var(--ui-ease) infinite;
+}
+
+.breathingPaused {
+	animation-play-state: paused !important;
+}
+
+@keyframes breathe {
+	0%,
+	100% {
+		transform: scale(0.88);
+		opacity: 0.5;
+		box-shadow: 0 0 12px rgba(250, 82, 82, 0.08);
+	}
+	50% {
+		transform: scale(1.06);
+		opacity: 1;
+		box-shadow: 0 0 28px rgba(250, 82, 82, 0.2);
+	}
+}
+
+@keyframes breatheOuter {
+	0%,
+	100% {
+		transform: scale(0.95);
+		opacity: 0.2;
+	}
+	50% {
+		transform: scale(1.12);
+		opacity: 0.45;
+	}
+}

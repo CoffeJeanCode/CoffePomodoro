@@ -1,0 +1,5 @@
+# tool registry: template -> output mappings for `knogg sync`
+tools:
+  - name: cursor
+    template: adapters/cursor_prompt.md
+    output: .cursorrules

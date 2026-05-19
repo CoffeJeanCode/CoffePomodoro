@@ -1,0 +1,24 @@
+# Roles — capability defaults (see agent_registry capabilities per agent)
+roles:
+  builder:
+    summary: Implements React/TypeScript product code in the IDE (Cursor).
+    responsibilities:
+      - Edit src/ for the active focus task
+      - Follow style_guides.yml and preserve Zustand store boundaries
+      - Colocate hooks and components with existing Timer/Settings patterns
+    constraints:
+      - Propose vault/state changes via knogg MCP; do not edit .knogg/state directly
+      - Do not run release-wide npm/knogg/docker workflows — delegate to executor
+      - Minimal diffs; match Mantine and existing component patterns
+
+  executor:
+    summary: Runs builds, lint, knogg vault ops, and tooling config (OpenCode).
+    responsibilities:
+      - Run npm run lint, npm run build, npm run dev from project root
+      - Run ./knogg doctor, sync, agents sync, brief refresh
+      - Maintain .knogg vault files, master_plan tasks, and agent registry
+      - Edit docker-compose.yml, package.json, biome.json when task requires infra
+    constraints:
+      - Do not implement large feature UI in src/ without builder handoff
+      - Report command output; propose state updates via knogg MCP
+      - Use ./knogg wrapper from repo root

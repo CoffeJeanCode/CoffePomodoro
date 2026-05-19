@@ -1,0 +1,119 @@
+id: PROP-0003
+status: applied
+target: plans/master_plan.yml
+reason: Separar tareas en waves paralelizables con dependencias explícitas para permitir ejecución concurrente
+created: 2026-05-18
+patch:
+  stages_append:
+  - goal: Eliminar gamificación (rachas, conteos acumulados) y modificar inicio automático. Requerir intención escrita de un solo vistazo antes de iniciar, añadir fricción intencional entre ciclos.
+    name: 'Stage 1: Desintoxicación de Métricas y Fricción Intencional'
+    status: todo
+    tasks:
+    - desc: 'Wave 1 - Ocultar métricas visibles: contador sesiones/pomodoros, sesiones acumuladas en header/info. Archivos: TimerHeader.tsx, TimerInfo.tsx, useInfoState store.'
+      id: S1-W1
+      owner: cursor
+      parallel_with:
+      - S1-W2
+      status: todo
+    - desc: 'Wave 1 - Notificaciones automáticas: eliminar notificaciones de escritorio automáticas. Solo sonido suave opcional. Archivos: useTimer.ts, notification.utils.ts, config store.'
+      id: S1-W2
+      owner: opencode
+      parallel_with:
+      - S1-W1
+      status: todo
+    - depends_on:
+      - S1-W1
+      desc: 'Wave 2 - Flujo de intención: reemplazar Start por textarea minimalista para escribir objetivo. Confirmar para iniciar. Archivos: Timer.tsx, TimerControllers.tsx.'
+      id: S1-W3
+      owner: cursor
+      status: todo
+    - depends_on:
+      - S1-W2
+      desc: 'Wave 2 - Auto-start eliminación: forzar clic consciente para transición Pomodoro→Break. Desconfigurar canAutoPlay. Archivos: useTimer.ts, config store.'
+      id: S1-W4
+      owner: opencode
+      status: todo
+    - depends_on:
+      - S1-W4
+      desc: 'Wave 3 - Fricción de cierre: al completar sesión, mostrar resumen breve (tiempo focus) antes de ofrecer siguiente ciclo. Botones Continuar/Terminar. Archivos: Timer.tsx, useTimer.ts.'
+      id: S1-W5
+      owner: opencode
+      status: todo
+    - desc: 'DoD: No hay números visibles de progreso/éxito durante sesión. Cada inicio requiere intención explícita. Transiciones manuales obligatorias.'
+      id: S1-DOD
+      status: todo
+  - goal: Eliminar reloj de cuenta regresiva tradicional (urgencia visual). Reemplazar números por representaciones visuales abstractas de baja carga cognitiva (anillos de progreso lento, transiciones de color ambiente).
+    name: 'Stage 2: Abstracción Temporal y Jerarquía Visual'
+    status: todo
+    tasks:
+    - desc: 'Wave 1 - Timer circular: reemplazar TimerText (24:59) por indicador de progreso circular continuo. Progreso suave sin segundos. Archivos: Timer.tsx, TimerText.tsx, CSS modules.'
+      id: S2-W1
+      owner: cursor
+      parallel_with:
+      - S2-W2
+      status: todo
+    - desc: 'Wave 1 - Timer decorativo continuo: quitar barra de progreso tradicional. Usar línea suave que completa alrededor del timer. Archivos: Timer.tsx, CSS modules.'
+      id: S2-W2
+      owner: opencode
+      parallel_with:
+      - S2-W1
+      status: todo
+    - depends_on:
+      - S2-W1
+      desc: 'Wave 2 - Ambient mode: fondo cambia gradualmente según progreso (frío/calmado → cálido). Sin números visibles. Archivos: Timer.tsx, gradient logic.'
+      id: S2-W3
+      owner: cursor
+      status: todo
+    - depends_on:
+      - S2-W2
+      desc: 'Wave 2 - Ocultar tiempo exacto: mostrar solo indicador visual/simple, no minutos:segundos. Archivos: TimerText.tsx, useTimer.ts.'
+      id: S2-W4
+      owner: opencode
+      status: todo
+    - depends_on:
+      - S2-W4
+      desc: 'Wave 3 - Simplificar controles: solo Play/Pause (iconos suaves) y Stop. Eliminar Skip visible durante sesión. Archivos: TimerControllers.tsx.'
+      id: S2-W5
+      owner: opencode
+      status: todo
+    - desc: 'DoD: El usuario no percibe presión de tiempo. Puede mantener sesión sin mirar reloj. Progreso perceptible pero no cuantificado.'
+      id: S2-DOD
+      status: todo
+  - goal: Rediseñar estados de pausa y alarmas. Cambiar alarmas invasivas por paisajes sonoros de escalado suave. Pantalla de descanso minimalista para desconexión real.
+    name: 'Stage 3: Transiciones Orgánicas y Aburrimiento Profundo'
+    status: todo
+    tasks:
+    - desc: 'Wave 1 - Soundscape: reemplazar alarma sonora por paisajes sonoros (nature, rain, waves). Fade in gradual 5s, sin beep. Opcional en settings. Archivos: useTimer.ts, assets/, config store.'
+      id: S3-W1
+      owner: opencode
+      parallel_with:
+      - S3-W2
+      status: todo
+    - desc: 'Wave 1 - Break minimalista: pantalla de descanso sin timer. Sugerencias de pausa analógica (Camina, Mira ventana, Estira). Archivos: Timer.tsx, Mode type.'
+      id: S3-W2
+      owner: cursor
+      parallel_with:
+      - S3-W1
+      status: todo
+    - depends_on:
+      - S3-W1
+      desc: 'Wave 2 - Transición suave: fundido 2s Pomodoro→Break. No cambio abrupto. Sonido gradual. Archivos: Timer.tsx, useTimer.ts, CSS transitions.'
+      id: S3-W3
+      owner: opencode
+      status: todo
+    - depends_on:
+      - S3-W3
+      desc: 'Wave 2 - Respiración guiada: animación círculo que expande/contrae. Duración del break, sin números. Archivos: Timer.tsx, CSS animations.'
+      id: S3-W4
+      owner: opencode
+      status: todo
+    - depends_on:
+      - S3-W4
+      desc: 'Wave 3 - Deep Rest: durante break largo, oscurecer pantalla progresivamente. Invitar a cerrar ojos o hacer nada. Archivos: Timer.tsx, CSS modules.'
+      id: S3-W5
+      owner: opencode
+      status: todo
+    - desc: 'DoD: El break se siente como descanso real, no como espera. Sonido natural, sin ansiedad de timing. La interfaz no demanda atención.'
+      id: S3-DOD
+      status: todo
+project: CoffePomodoro

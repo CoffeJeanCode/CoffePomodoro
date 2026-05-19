@@ -1,0 +1,76 @@
+# CoffePomodoro component architecture
+components:
+  - name: App shell
+    path: src/App.tsx, src/main.tsx
+    role: Mantine dark theme, Suspense boundary, lazy Home page
+    connects_to: [Home]
+
+  - name: Home page
+    path: src/pages/Home/index.tsx
+    role: Layout shell; day/week rollover resets; lazy-loads feature modules
+    connects_to: [Timer, Settings, Stats, Helps, QuickMenu, Zustand stores]
+
+  - name: Timer
+    path: src/components/Timer/
+    role: Countdown UI, progress gradient, play/pause/skip, document title/favicon
+    connects_to: [useTimer, useTimerTick, useTimerState, useInfoState, useConfigState, useSchemasState]
+
+  - name: useTimer orchestrator
+    path: src/components/Timer/hooks/useTimer.ts
+    role: Wires controls, phase transitions, notifications, stats on session end
+    connects_to: [timerControls, resolveActiveConfiguration, stores]
+
+  - name: Settings
+    path: src/components/Settings/
+    role: Modal with tabs; edits config via useConfiguration draft pattern
+    connects_to: [useConfigState, useSchemasState, useConfiguration]
+
+  - name: Stats
+    path: src/components/Stats/
+    role: Weekly time + session charts per weekday
+    connects_to: [useStatsState, chart libs]
+
+  - name: QuickMenu
+    path: src/components/QuickMenu/
+    role: Switch Pomodoro / ShortBreak / LongBreak without opening Settings
+    connects_to: [useInfoState, useTimerState]
+
+  - name: Zustand timer store
+    path: src/stores/states/timer.ts
+    role: remaining seconds, running flag, sessionSegmentTotalSeconds, resetTimer
+    connects_to: [useTimerTick, Home rollover]
+
+  - name: Zustand config store
+    path: src/stores/states/config.ts
+    role: Alarm, volume, behavioral flags; merge with defaults on hydrate
+    connects_to: [Settings, Timer notifications]
+
+  - name: Zustand info store
+    path: src/stores/states/info.ts
+    role: Current mode, date, week end, pomodoro count, favicon
+    connects_to: [Timer, QuickMenu, Home]
+
+  - name: Zustand stats store
+    path: src/stores/states/stats.ts
+    role: Weekly aggregates; auto-reset when week rolls over
+    connects_to: [Stats, useTimer on qualifying session end]
+
+  - name: Zustand schemas store
+    path: src/stores/states/schema.ts
+    role: Named presets (Work, Reading, Study); active schema drives durations
+    connects_to: [Settings Schema tab, resolveActiveConfiguration]
+
+  - name: useConfiguration hook
+    path: src/hooks/useConfiguracion.ts
+    role: tempConfig draft, isSettingsChanged, save/cancel/reset, Ramda lensPath updates
+    connects_to: [Settings forms]
+
+flows:
+  - name: Timer tick
+    steps: useTimerTick interval → decrement remaining → update progress % → gradient styles
+  - name: Session complete
+    steps: alarm (use-sound) → desktop notification → stats update → optional auto-advance phase
+  - name: Settings edit
+    steps: setConfigValue on tempConfig → Save → setConfiguration on store → persist localStorage
+  - name: Day / week rollover
+    steps: Home useLayoutEffect → reset timer/info if new day → reset stats if new week

@@ -1,72 +1,88 @@
 import { Mode } from "@/models";
-import { Button, Group } from "@mantine/core";
-import { FC, memo } from "react";
-import { FaPause, FaPlay, FaStepForward, FaStop } from "react-icons/fa";
+import { ActionIcon, Group, Tooltip } from "@mantine/core";
+import { type FC, memo } from "react";
+import { FaCheck, FaForward, FaPause, FaPlay } from "react-icons/fa";
+import { getColorMode } from "./utils/timer";
 
 interface TimerControllersProps {
-  mode: string;
-  isPlaying: boolean;
-  handleToggleTimer: () => void;
-  handleNextTimer: ({ isSkip }: { isSkip: boolean }) => void;
-  handleStopTimer: () => void;
+	mode: Mode;
+	isPlaying: boolean;
+	handleToggleTimer: () => void;
+	onSkipBreak?: () => void;
+	onIntentionFulfilled?: () => void;
 }
 
 const TimerControllers: FC<TimerControllersProps> = ({
-  mode,
-  isPlaying,
-  handleToggleTimer,
-  handleNextTimer,
-  handleStopTimer,
+	mode,
+	isPlaying,
+	handleToggleTimer,
+	onSkipBreak,
+	onIntentionFulfilled,
 }) => {
-  const color = mode === Mode.Pomodoro ? "red.9" : "green.9";
+	const color = getColorMode(mode);
+	const onBreak = mode !== Mode.Pomodoro;
 
-  const playButtonProps = {
-    leftSection: isPlaying ? <FaPause /> : <FaPlay />,
-    title: isPlaying ? "Pause <Space>" : "Play <Space>",
-    color,
-    onClick: () => handleToggleTimer(),
-  };
+	if (onBreak) {
+		return (
+			<Group gap="lg" justify="center">
+				<Tooltip label={isPlaying ? "Pause" : "Start"} withArrow>
+					<ActionIcon
+						size={56}
+						radius="xl"
+						variant="light"
+						color={color}
+						onClick={handleToggleTimer}
+						aria-label={isPlaying ? "Pause" : "Start"}
+					>
+						{isPlaying ? <FaPause size={20} /> : <FaPlay size={20} />}
+					</ActionIcon>
+				</Tooltip>
+				<Tooltip label="Skip break (N)" withArrow>
+					<ActionIcon
+						size={44}
+						radius="xl"
+						variant="light"
+						color={color}
+						onClick={onSkipBreak}
+						aria-label="Skip break"
+						style={{ opacity: 0.85 }}
+					>
+						<FaForward size={16} />
+					</ActionIcon>
+				</Tooltip>
+			</Group>
+		);
+	}
 
-  const skipButtonProps = {
-    leftSection: <FaStepForward />,
-    color,
-    title: "Skip <N>",
-    onClick: () => handleNextTimer({ isSkip: true }),
-  };
-
-  const pauseButtonProps = {
-    leftSection: <FaPause />,
-    title: "Pause <Space>",
-    color,
-    onClick: () => handleToggleTimer(),
-  };
-
-  const stopButtonProps = {
-    leftSection: <FaStop />,
-    title: "Stop <S>",
-    color,
-    onClick: () => handleStopTimer(),
-  };
-
-  return (
-    <Group my={10}>
-      {!isPlaying ? (
-        <>
-          <Button {...playButtonProps}>Play</Button>
-          <Button {...skipButtonProps}>Skip</Button>
-        </>
-      ) : (
-        <>
-          <Button {...pauseButtonProps}>Pause</Button>
-          {mode === Mode.ShortBreak || mode === Mode.LongBreak ? (
-            <Button {...skipButtonProps}>Skip</Button>
-          ) : (
-            <Button {...stopButtonProps}>Stop</Button>
-          )}
-        </>
-      )}
-    </Group>
-  );
+		return (
+			<Group gap="lg" justify="center">
+				<Tooltip label={isPlaying ? "Pause" : "Start"} withArrow>
+					<ActionIcon
+						size={56}
+						radius="xl"
+						variant="light"
+						color={color}
+						onClick={handleToggleTimer}
+						aria-label={isPlaying ? "Pause" : "Start"}
+					>
+						{isPlaying ? <FaPause size={20} /> : <FaPlay size={20} />}
+					</ActionIcon>
+				</Tooltip>
+				<Tooltip label="Mark intention as fulfilled (S)" withArrow>
+					<ActionIcon
+						size={44}
+						radius="xl"
+						variant="light"
+						color="gray"
+						onClick={onIntentionFulfilled}
+						aria-label="Intention Fulfilled"
+						style={{ opacity: 0.85 }}
+					>
+						<FaCheck size={16} />
+					</ActionIcon>
+				</Tooltip>
+			</Group>
+		);
 };
 
 export default memo(TimerControllers);

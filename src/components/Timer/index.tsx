@@ -1,112 +1,256 @@
-import { FavIcon, Mode } from "@/models/info";
+import { Mode } from "@/models";
+import { GlassPanel } from "@/components/ui/GlassPanel";
 import { useInfoState } from "@/stores";
-import {
-  Box,
-  Button,
-  Center,
-  Container,
-  Group,
-  MantineStyleProp,
-} from "@mantine/core";
-import { useDocumentTitle, useFavicon, useHotkeys } from "@mantine/hooks";
-import { memo, useEffect, useMemo, useState } from "react";
-import { RiFullscreenFill } from "react-icons/ri";
+import { useBrainDumpState } from "@/stores/states/brainDump";
+import { Box, Container } from "@mantine/core";
+import { secondsToMinutes } from "@/utils/time.util";
+import { memo, useEffect, useRef, useState } from "react";
+import BreakRestScreen from "./BreakRestScreen";
+import IntentionComplete from "./IntentionComplete";
+import SessionComplete from "./SessionComplete";
+import SessionIntention from "./SessionIntention";
 import TimerControllers from "./TimerControllers";
-import TimerInfo from "./TimerInfo";
-import TimerMode from "./TimerMode";
-import TimerText from "./TimerText";
-import useTimer from "./useTimer";
+import TimerHeader from "./TimerHeader";
+import TimerProgressRing from "./TimerProgressRing";
+import TimerViewControls from "./TimerViewControls";
+import usePictureInPicture from "./hooks/usePictureInPicture";
+import useTimer from "./hooks/useTimer";
+import { useTimerDocumentAndHotkeys } from "./hooks/useTimerDocumentAndHotkeys";
+import { useTimerFullscreen } from "./hooks/useTimerFullscreen";
+import styles from "./styles/Timer.module.css";
+import {
+	buildAmbientBackground,
+	buildFullscreenBackground,
+} from "./utils/ambientBackground";
+
+const isBreakMode = (mode: Mode) =>
+	mode === Mode.ShortBreak || mode === Mode.LongBreak;
 
 const Timer = () => {
-  const {
-    handleNextTimer,
-    handleStopTimer,
-    handleToggleTimer,
-    isRunning,
-    remainingTimeText,
-  } = useTimer();
-  const { mode, favIcon, setFavIcon } = useInfoState();
-  const [isFullScreen, setIsFullScreen] = useState(false);
+	const {
+		acknowledgeCycleAndContinue,
+		awaitingCycleAck,
+		awaitingIntentionFulfillment,
+		breakProgressPercent,
+		cancelIntentionFulfillment,
+		confirmIntentionFulfillment,
+		dismissCycleAck,
+		handleAdjustSessionByMinutes,
+		handleIntentionFulfilled,
+		handleNextTimer,
+		handleStopTimer,
+		handleSkipBreak,
+		handleToggleTimer,
+		finishTime,
+		finishTimeText,
+		isRunning,
+		remainingTime,
+		savedTimeBonus,
+		sessionAdjustStepMinutes,
+		sessionProgressPercent,
+		skipCountsSessionMinProgressPercent,
+	} = useTimer();
+	const {
+		mode,
+		sessionIntention,
+		intentionConfirmed,
+		setSessionIntention,
+		setIntentionConfirmed,
+		clearSessionIntention,
+	} = useInfoState();
+	const brainDumpNotes = useBrainDumpState((s) => s.notes);
+	const discardAllBrainDump = useBrainDumpState((s) => s.discardAll);
+	const timerRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    setFavIcon(mode === Mode.Pomodoro ? FavIcon.work : FavIcon.break);
-  }, [mode]);
+	const [isEditingIntention, setIsEditingIntention] = useState(false);
+	const [phaseOpacity, setPhaseOpacity] = useState(1);
+	const prevModeRef = useRef(mode);
 
-  useFavicon(favIcon);
-  useDocumentTitle(`${remainingTimeText} | ${mode.toLocaleUpperCase()}`);
-  useHotkeys([
-    ["Space", () => handleToggleTimer()],
-    ["S", () => handleStopTimer()],
-    ["N", () => handleNextTimer({ isSkip: true })],
-    ["F", () => handleFullScreen()],
-  ]);
+	useEffect(() => {
+		if (prevModeRef.current === mode) return;
 
-  const handleFullScreen = async () => {
-    const fullScreen = !isFullScreen;
+		setPhaseOpacity(0.25);
+		const fadeIn = setTimeout(() => setPhaseOpacity(1), 2000);
 
-    if (fullScreen && !document.fullscreenElement)
-      document.documentElement.requestFullscreen();
-    else if (document.exitFullscreen) document.exitFullscreen();
+		prevModeRef.current = mode;
+		return () => clearTimeout(fadeIn);
+	}, [mode]);
 
-    setIsFullScreen(fullScreen);
-  };
+	const needsIntention =
+		mode === Mode.Pomodoro && !isRunning && !intentionConfirmed && !awaitingCycleAck && !awaitingIntentionFulfillment;
+	const abstractSession =
+		mode === Mode.Pomodoro &&
+		!awaitingCycleAck &&
+		!awaitingIntentionFulfillment &&
+		(isRunning || intentionConfirmed);
+	const onBreak = isBreakMode(mode);
 
-  const fullScreenStyle: MantineStyleProp = useMemo(
-    () =>
-      isFullScreen
-        ? {
-            width: "100vw",
-            height: "100vh",
-            borderRadius: 0,
-            position: "absolute",
-            top: 0,
-            left: 0,
-            display: "grid",
-            placeItems: "center",
-          }
-        : {},
-    [isFullScreen]
-  );
-  return (
-    <Container>
-      <Box
-        style={(theme) => ({
-          minWidth: "min(300, 30vw)",
-          background:
-            mode === Mode.Pomodoro
-              ? theme.colors.red[8]
-              : theme.colors.green[8],
-          padding: `${theme.spacing.lg} calc(${theme.spacing.xl} * 2)`,
-          borderRadius: theme.spacing.md,
-          transition: "all 500ms ease-in-out",
-          ...fullScreenStyle,
-        })}
-      >
-        <Center style={{ flexDirection: "column" }}>
-          <Group>
-            <TimerMode />
-            <Button
-              size="xs"
-              title="Full Screen <F>"
-              color={mode === Mode.Pomodoro ? "red.8" : "green.8"}
-              onClick={handleFullScreen}
-            >
-              <RiFullscreenFill />
-            </Button>
-          </Group>
-          <TimerText />
-          <TimerControllers
-            mode={mode}
-            handleNextTimer={handleNextTimer}
-            handleStopTimer={handleStopTimer}
-            handleToggleTimer={handleToggleTimer}
-            isPlaying={isRunning}
-          />
-          <TimerInfo />
-        </Center>
-      </Box>
-    </Container>
-  );
+	const { isFullScreen, handleFullScreen } = useTimerFullscreen(timerRef);
+
+	const progressPercent = onBreak
+		? breakProgressPercent
+		: sessionProgressPercent;
+
+	const { handlePictureInPicture, isPiPOpen } = usePictureInPicture({
+		handleToggleTimer,
+		handleStopTimer,
+		handleNextTimer,
+		handleAdjustSessionByMinutes,
+		sessionAdjustStepMinutes,
+		skipCountsSessionMinProgressPercent,
+		mode,
+		sessionProgressPercent: progressPercent,
+	});
+
+	useTimerDocumentAndHotkeys({
+		mode,
+		handleToggleTimer,
+		handleStopTimer,
+		handleIntentionFulfilled,
+		handleNextTimer,
+		handleFullScreen,
+		handlePictureInPicture,
+		handleAdjustSessionByMinutes,
+	});
+
+	const handleConfirmIntention = (intention: string) => {
+		const isFirstIntention = !intentionConfirmed;
+		setSessionIntention(intention);
+		setIntentionConfirmed(true);
+		setIsEditingIntention(false);
+		if (isFirstIntention) handleToggleTimer();
+	};
+
+	const handleEditIntention = () => {
+		if (!abstractSession || !intentionConfirmed) return;
+		setIsEditingIntention(true);
+	};
+
+	const ambient = buildAmbientBackground(mode, progressPercent);
+	const fullscreenBg = buildFullscreenBackground(mode, progressPercent);
+
+	return (
+		<Container px={0} fluid={isFullScreen} w={isFullScreen ? "100%" : undefined}>
+			<Box ref={timerRef} w={isFullScreen ? "100%" : undefined}>
+				<GlassPanel
+					immersive={isFullScreen}
+					ambientBackground={isFullScreen ? fullscreenBg : ambient}
+					className={`${styles.timerSquare} ${onBreak ? styles.timerSquareBreak : ""} ${isFullScreen ? styles.timerFullscreen : ""}`}
+					padding={isFullScreen ? "2rem 1.5rem" : "1rem 1.25rem"}
+					innerClassName={styles.timerBody}
+					style={{ opacity: phaseOpacity }}
+				>
+					{!awaitingCycleAck && !awaitingIntentionFulfillment && !onBreak && (
+						<Box className={styles.timerHeader}>
+							<TimerHeader
+								mode={mode}
+								sessionAdjustStepMinutes={sessionAdjustStepMinutes}
+								onAddMinute={() => handleAdjustSessionByMinutes(1)}
+								onSubtractMinute={() => handleAdjustSessionByMinutes(-1)}
+							/>
+						</Box>
+					)}
+
+<Box
+		className={`${styles.timerStage} ${needsIntention || awaitingCycleAck ? styles.timerStageIntention : ""} ${isFullScreen && onBreak ? styles.timerStageElevated : ""}`}
+	>
+						{onBreak ? (
+			<BreakRestScreen
+				mode={mode as Mode.ShortBreak | Mode.LongBreak}
+				breakProgressPercent={breakProgressPercent}
+				large={isFullScreen}
+				savedTimeBonus={savedTimeBonus}
+				isRunning={isRunning}
+			/>
+						) : awaitingCycleAck || awaitingIntentionFulfillment ? null : (
+							<TimerProgressRing
+								mode={mode}
+								sessionProgressPercent={sessionProgressPercent}
+								isRunning={isRunning}
+								large={isFullScreen && !needsIntention}
+								abstractSession={abstractSession}
+								finishTimeText={finishTimeText}
+								finishTime={finishTime}
+								centerLabel={
+									needsIntention ? "What will you focus on?" : undefined
+								}
+								sessionIntention={
+									abstractSession && !isEditingIntention
+										? sessionIntention
+										: undefined
+								}
+								canEditIntention={
+									abstractSession && intentionConfirmed && !isEditingIntention
+								}
+								onEditIntention={handleEditIntention}
+							/>
+						)}
+
+						<Box
+							className={`${styles.timerActions} ${isEditingIntention ? styles.timerActionsCentered : ""}`}
+						>
+							{needsIntention || isEditingIntention ? (
+								<SessionIntention
+									centered={isEditingIntention}
+									key={isEditingIntention ? "edit" : "new"}
+									initialValue={isEditingIntention ? sessionIntention : ""}
+									submitLabel={isEditingIntention ? "Save" : "Begin focus"}
+									onConfirm={handleConfirmIntention}
+									onCancel={
+										isEditingIntention
+											? () => setIsEditingIntention(false)
+											: undefined
+									}
+								/>
+							) : awaitingCycleAck ? (
+								<SessionComplete
+									onContinue={acknowledgeCycleAndContinue}
+									onEnd={() => {
+										dismissCycleAck();
+										clearSessionIntention();
+										handleStopTimer();
+									}}
+								/>
+							) : awaitingIntentionFulfillment ? (
+								<IntentionComplete
+									intention={sessionIntention}
+									savedMinutes={Math.floor(secondsToMinutes(savedTimeBonus))}
+									brainDumpNotes={brainDumpNotes}
+									onDiscardBrainDump={discardAllBrainDump}
+									onConfirm={() => {
+										confirmIntentionFulfillment();
+										clearSessionIntention();
+									}}
+									onCancel={() => {
+										cancelIntentionFulfillment();
+									}}
+								/>
+							) : (
+								<TimerControllers
+									mode={mode}
+									handleToggleTimer={handleToggleTimer}
+									isPlaying={isRunning}
+									onSkipBreak={handleSkipBreak}
+									onIntentionFulfilled={handleIntentionFulfilled}
+								/>
+							)}
+						</Box>
+					</Box>
+
+					<Box
+						className={`${styles.timerFooter} ${isFullScreen ? styles.timerFullscreenFooter : ""}`}
+					>
+						<TimerViewControls
+							mode={mode}
+							handlePictureInPicture={handlePictureInPicture}
+							handleFullScreen={handleFullScreen}
+							isPiPOpen={isPiPOpen}
+						/>
+					</Box>
+				</GlassPanel>
+			</Box>
+		</Container>
+	);
 };
 
 export default memo(Timer);

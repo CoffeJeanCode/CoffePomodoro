@@ -1,0 +1,21 @@
+done:
+- 'Stage 1: Intention Architecture'
+- 'Stage 2: Temporal Abstraction'
+- 'Stage 3: Energy Management (dynamic break bonus, analog break screens)'
+- 'Stage 4: Brain Dump (ephemeral scratch pad, triage on intention fulfilled)'
+- 'UI: SessionViewer time labels'
+- 'UI: Drawer save/discard bar fixed'
+- PiP intention text
+- 'L10n: All text in English'
+- 'TimerControllers: FaCheck icon + tooltip for Intention Fulfilled, circular skip in breaks'
+- 'T4.1: BrainDump store with 24h auto-purge'
+- 'T4.2: BrainDump FAB + Ctrl+Shift+D hotkey (bottom-right scratch pad)'
+- 'T4.3: BrainDump capture panel (autofocus, Enter save, Escape close)'
+- 'T4.4: IntentionComplete triage (discard / copy markdown)'
+- 'T4.5: Auto-purge 24h and on day rollover'
+- 'T5.1: Scientific depth presets (Deep Immersion 90/20, Sustained Rhythm 52/17, Quick Start 25/5)'
+- 'T5.2: Timer model updated for depth presets'
+- 'T5.4: useTimer reads from DEPTH_PRESETS, break bonus uses preset base duration'
+next_actions:
+- 'cursor: T5.3 → Crear DepthSelector componente semántico (3 presets con iconos)'
+- 'cursor: T5.5 → Actualizar Settings UI para usar DepthSelector en lugar de SchemaSettings'

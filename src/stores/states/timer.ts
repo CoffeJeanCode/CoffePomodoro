@@ -1,38 +1,54 @@
-import { Timer } from "@/models";
+import type { Timer } from "@/models";
 import { getEndTime, getTime } from "@/utils/time.util";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { storeVersion } from "../config";
 
 interface TimerState extends Timer {
-  setRemainingTime: (time: number) => void;
-  setFinishTime: (finishTime: number) => void;
-  setIsRunning: (isRunning: boolean) => void;
-  resetTimer: () => void;
+	setRemainingTime: (time: number) => void;
+	setSessionSegmentTotalSeconds: (seconds: number) => void;
+	setResumedTime: (time: number) => void;
+	setFinishTime: (time: number) => void;
+	setIsRunning: (isRunning: boolean) => void;
+	setSavedTimeBonus: (seconds: number) => void;
+	resetTimer: () => void;
+	resetForNext: () => void;
 }
 
 const initialState: Timer = {
-  finishTime: 0,
-  remainingTime: 0,
-  finishTimeText: "",
-  remainingTimeText: "00:00",
-  isRunning: false,
+	finishTime: 0,
+	remainingTime: 0,
+	sessionSegmentTotalSeconds: 0,
+	resumedTime: 0,
+	finishTimeText: "",
+	remainingTimeText: "00:00",
+	isRunning: false,
+	savedTimeBonus: 0,
 };
 
 export const useTimerState = create<TimerState>()(
-  persist(
-    (set) => ({
-      ...initialState,
-      setRemainingTime: (time) =>
-        set(() => ({ remainingTime: time, remainingTimeText: getTime(time) })),
-      setFinishTime: (finishTime) =>
-        set(() => ({ finishTime, finishTimeText: getEndTime(finishTime) })),
-      setIsRunning: (isRunning) => set(() => ({ isRunning })),
-      resetTimer: () => set(initialState),
-    }),
-    {
-      name: "timer",
-      version: storeVersion,
-    }
-  )
+	persist(
+		(set) => ({
+			...initialState,
+			setRemainingTime: (time) =>
+				set(() => ({ remainingTime: time, remainingTimeText: getTime(time) })),
+			setSessionSegmentTotalSeconds: (sessionSegmentTotalSeconds) =>
+				set(() => ({ sessionSegmentTotalSeconds })),
+			setFinishTime: (finishTime) =>
+				set(() => ({ finishTime, finishTimeText: getEndTime(finishTime) })),
+			setIsRunning: (isRunning) => set(() => ({ isRunning })),
+			setResumedTime: (resumedTime) => set(() => ({ resumedTime })),
+			setSavedTimeBonus: (savedTimeBonus) => set(() => ({ savedTimeBonus })),
+			resetForNext: () =>
+				set({
+					resumedTime: 0,
+					isRunning: false,
+				}),
+			resetTimer: () => set(initialState),
+		}),
+		{
+			name: "timer",
+			version: storeVersion,
+		},
+	),
 );

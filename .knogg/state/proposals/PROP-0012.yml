@@ -1,0 +1,6 @@
+id: PROP-0012
+status: applied
+target: plans/master_plan.yml
+reason: Marcar Stages 1, 2 y 3 como completados con todas sus sub-tareas
+created: 2026-05-19
+patch: '{"stages":[{"id":"stage-1","title":"Intention Architecture","status":"completed","tasks":["session-intention-required","remove-skip-replace-intention-fulfilled","micro-validation-screen"]},{"id":"stage-2","title":"Temporal Abstraction","status":"completed","tasks":["hide-mmss-during-focus","long-press-reveal-end-time"]},{"id":"stage-3","title":"Energy Management","status":"completed","tasks":["dynamic-break-bonus","analog-break-screen","breathing-circle"]}]}'

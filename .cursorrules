@@ -1,0 +1,22 @@
+<!-- generated-by: knogg -->
+# Handoff → Cursor
+
+Project: CoffePomodoro
+Stage: Stage 5: Calibración Energética (Presets Científicos)
+Task: Cursor: T5.3 DepthSelector + T5.5 Settings UI
+Status: in_progress
+
+## Constraints
+- React 18 + TypeScript + Vite SPA; Zustand for state, Mantine 7 for UI — keep the client-only architecture
+- Lint and format with Biome only (npm run lint / format); no ESLint/Prettier and no automated test suite yet
+- Respect five persisted Zustand stores (timer, config, info, stats, schemas) with storeVersion migrations — do not collapse or cross-wire store boundaries
+- Use @ path alias to src/; lazy-load pages and major features with React.lazy + Suspense
+- Timer logic must honor sessionSegmentTotalSeconds, progress-based skip rules, and schema-driven durations from useSchemasState
+- Parallel sprint — claim knogg task before edit; no file overlap between in_progress tasks
+
+## Next Actions
+- cursor: T5.3 → Crear DepthSelector componente semántico (3 presets con iconos)
+- cursor: T5.5 → Actualizar Settings UI para usar DepthSelector en lugar de SchemaSettings
+
+## Summary
+Stages 1–4 done (intention, temporal abstraction, energy/breaks, brain dump scratch pad). Stage 5 backend presets done; DepthSelector + Settings UI pending.

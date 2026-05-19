@@ -1,0 +1,49 @@
+decisions:
+- id: ADR-0001
+  date: 2026-05-18
+  title: Zustand multi-store persistence
+  status: accepted
+  scope: global
+  reason: Timer, config, info, stats, and schemas are independent domains with separate persist keys and storeVersion migrations; keeps concerns isolated and matches existing AGENTS.md architecture.
+- id: ADR-0002
+  date: 2026-05-18
+  title: Biome for lint and format
+  status: accepted
+  scope: global
+  reason: Project already uses @biomejs/biome via npm scripts; no ESLint/Prettier toolchain to maintain.
+- id: ADR-0003
+  date: 2026-05-18
+  title: Knogg vault at .knogg for agent context
+  status: accepted
+  scope: global
+  reason: Centralize architecture, style, plans, and handoff state for Cursor/OpenCode agents without coupling runtime app code.
+- id: ADR-0004
+  date: 2026-05-18
+  title: Cursor + Claude agents only
+  status: superseded
+  scope: global
+  reason: Primary IDE is Cursor (frontend-dev); Claude Code for review. Codex/OpenCode disabled to avoid overwriting human-owned AGENTS.md via sync.
+- id: ADR-0005
+  date: 2026-05-18
+  title: Cursor builder + OpenCode executor capabilities
+  status: accepted
+  scope: global
+  reason: 'Split work by capability: Cursor writes src/** (React UI, stores, timer); OpenCode owns .knogg/**, npm/knogg/docker runs, and tooling configs. Per knogg ADR-0006 capability pattern.'
+- id: ADR-0006
+  date: 2026-05-18
+  title: Cursor + OpenCode agents only
+  status: accepted
+  scope: global
+  reason: 'No Claude Code in this project. Active agents: cursor (builder) and opencode (executor). Removed claude from agent_registry and tool_registry.'
+- id: ADR-0007
+  date: 2026-05-18
+  title: Parallel bug sprint BUG-A/B/C
+  status: accepted
+  scope: global
+  reason: 'Partition by file globs: cursor owns Settings + timer adjust; opencode owns stats store/chart/Home + new usePomodoroStats.ts. Wave2 BUG-C wires stats hook. BUG-V executor verifies build.'
+- id: ADR-0008
+  date: 2026-05-18
+  title: Evolución hacia Mindfulness Productivity
+  status: accepted
+  scope: product-architecture
+  reason: Transformar Coffe Pomodoro de herramienta de productividad tradicional a plataforma de efectividad con atención plena. Contraarrestar la "sociedad del cansancio" eliminando urgencia visual, gamificación y autoexplotación. Enfoque en flow states, reducción de fatiga mental y diseño contemplativo.

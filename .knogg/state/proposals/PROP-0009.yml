@@ -1,0 +1,7 @@
+id: PROP-0009
+status: applied
+target: state/active_context.yml
+reason: Schema selector mejorado con timer values visibles y horizontal scroll
+created: 2026-05-18
+patch: '{"next_actions":["cursor: UI-T1 → Revisión visual de todos los componentes","cursor: UI-T2 → Estandarizar Drawers (posición y estilos)","cursor: UI-T3 → Unificar paleta de colores","cursor: UI-T4 → Renombrar Settings tab ''Alerts'' → ''Notifications''","cursor: UI-T5 → QuickMenu estilizar igual que resto","cursor: UI-T6 → Stats ajustar a paleta unificada","cursor: UI-T7 → Break animations revisión","cursor: UI-T8 → Schema selector mejorado con tiempos visibles y horizontal scroll (done)"],"done":["Stage 4: UI Consistency — Schema selector mejorado con minutos visibles en cada chip"]}'
+project: CoffePomodoro
