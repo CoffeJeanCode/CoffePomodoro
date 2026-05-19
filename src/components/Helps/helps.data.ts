@@ -4,10 +4,11 @@ export const helps = {
 			title: "Flow State",
 			icon: "mind",
 			items: [
-				"Focus without urgency — the timer shows no numbers, only a gentle ring",
+				"Focus without urgency — progress is the ring, not words or countdowns",
 				"Set an intention before each session instead of chasing countdowns",
-				"End time sits quietly beside the ring — no countdown in the center",
-				"Use Edit intention in the ring center to update your focus mid-session",
+				"End time appears below the ring only while the timer is running",
+				"Double-click to update your intention",
+				"Ctrl+Shift+D opens the scratch pad (bottom-right) — jot thoughts without leaving focus",
 			],
 		},
 		{

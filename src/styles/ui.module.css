@@ -195,6 +195,10 @@
 	animation: breathe 5.5s var(--ui-ease) infinite;
 }
 
+.breathingPaused {
+	animation-play-state: paused !important;
+}
+
 @keyframes breathe {
 	0%,
 	100% {
