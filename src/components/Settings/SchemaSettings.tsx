@@ -7,7 +7,6 @@ import { secondsToMinutes } from "@/utils/time.util";
 import {
 	Box,
 	Button,
-	CloseButton,
 	Flex,
 	Input,
 	Select,
@@ -17,7 +16,7 @@ import {
 import { getHotkeyHandler } from "@mantine/hooks";
 import type { FC } from "react";
 import { useState } from "react";
-import { FaCheck, FaEdit, FaPlus } from "react-icons/fa";
+import { FaCheck, FaEdit, FaPlus, FaTrash } from "react-icons/fa";
 
 interface Props {
 	configuration: Configuration | TimerSchema;
@@ -160,7 +159,15 @@ const SchemaSettings: FC<Props> = ({ configuration }) => {
 								<FaEdit />
 							</Button>
 						)}
-						<CloseButton onClick={handleDeleteSchema} />
+						<Button
+							variant="subtle"
+							color="gray"
+							size="compact-sm"
+							aria-label="Delete preset"
+							onClick={handleDeleteSchema}
+						>
+							<FaTrash />
+						</Button>
 					</Flex>
 				</Flex>
 			)}
