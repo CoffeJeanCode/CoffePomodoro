@@ -18,6 +18,10 @@
 	overflow: visible;
 }
 
+.ringWrapEditable {
+	cursor: pointer;
+}
+
 .cycleHorizon {
 	display: flex;
 	flex-direction: row;
@@ -76,15 +80,6 @@
 	flex: 0 1 auto;
 }
 
-.ringEditIntention {
-	flex-shrink: 0;
-	opacity: 0.75;
-	font-size: 0.62rem !important;
-	height: auto !important;
-	padding: 0.15rem 0.45rem !important;
-	letter-spacing: 0.04em;
-}
-
 .ringCenterLabel {
 	color: rgba(255, 255, 255, 0.85);
 	letter-spacing: 0.08em;
@@ -120,6 +115,36 @@
 
 .ringCoreRunning {
 	animation: ringPulse 3s ease-in-out infinite;
+}
+
+.ringCorePaused {
+	opacity: 0.85;
+}
+
+.ringPausedMark {
+	position: relative;
+	width: 12px;
+	height: 12px;
+	flex-shrink: 0;
+}
+
+.ringPausedMark::before,
+.ringPausedMark::after {
+	content: "";
+	position: absolute;
+	top: 0;
+	width: 3px;
+	height: 12px;
+	border-radius: 1px;
+	background: rgba(255, 255, 255, 0.5);
+}
+
+.ringPausedMark::before {
+	left: 1px;
+}
+
+.ringPausedMark::after {
+	right: 1px;
 }
 
 .ringRipple {

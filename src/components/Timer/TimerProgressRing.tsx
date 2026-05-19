@@ -3,7 +3,7 @@ import {
 	formatCycleHorizonMessage,
 	getCycleEndTimeDisplay,
 } from "@/utils/temporalHorizon";
-import { Box, Button, Text } from "@mantine/core";
+import { Box, Text, Tooltip } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { type FC, memo, useMemo } from "react";
 import styles from "./styles/Timer.module.css";
@@ -22,7 +22,6 @@ interface TimerProgressRingProps {
 	abstractSession?: boolean;
 	finishTimeText?: string;
 	finishTime?: number;
-	remainingTimeSeconds?: number;
 	/** Double-click ring center to edit intention mid-session */
 	canEditIntention?: boolean;
 	onEditIntention?: () => void;
@@ -39,7 +38,6 @@ const TimerProgressRing: FC<TimerProgressRingProps> = ({
 	abstractSession = false,
 	finishTimeText = "",
 	finishTime = 0,
-	remainingTimeSeconds = 0,
 	canEditIntention = false,
 	onEditIntention,
 }) => {
@@ -67,54 +65,38 @@ const TimerProgressRing: FC<TimerProgressRingProps> = ({
 	const rippleSize = Math.round(radius * 2.1);
 
 	const endTimeDisplay = useMemo(
-		() =>
-			getCycleEndTimeDisplay(
-				finishTimeText,
-				finishTime,
-				remainingTimeSeconds,
-				isRunning,
-			),
-		[finishTime, finishTimeText, isRunning, remainingTimeSeconds],
+		() => getCycleEndTimeDisplay(finishTimeText, finishTime, isRunning),
+		[finishTime, finishTimeText, isRunning],
 	);
 
 	const horizonAria = useMemo(
-		() =>
-			formatCycleHorizonMessage(
-				finishTimeText,
-				finishTime,
-				remainingTimeSeconds,
-				isRunning,
-			),
-		[finishTime, finishTimeText, isRunning, remainingTimeSeconds],
+		() => formatCycleHorizonMessage(finishTimeText, finishTime, isRunning),
+		[finishTime, finishTimeText, isRunning],
 	);
 
 	const intentionText = sessionIntention?.trim() ?? "";
 	const showIntentionInRing =
-		abstractSession && !intentionMode && intentionText.length > 0;
-	const showPhaseLabel = !abstractSession && !intentionMode;
-	const showBottomHorizon = abstractSession && !intentionMode && endTimeDisplay;
+		isRunning && abstractSession && !intentionMode && intentionText.length > 0;
+	const showBottomHorizon = isRunning && !intentionMode && Boolean(endTimeDisplay);
 
-	return (
-		<Box
-			className={styles.ringCluster}
-			style={{
-				["--ring-accent" as string]: `${btnMain}44`,
-				["--ring-accent-soft" as string]: `${btnMain}66`,
-				["--ring-accent-glow" as string]: `${btnMain}33`,
-			}}
-		>
+	const ring = (
 			<Box
-				className={styles.ringWrap}
+				className={`${styles.ringWrap} ${canEditIntention ? styles.ringWrapEditable : ""}`}
 				role="progressbar"
 				aria-valuenow={sessionProgressPercent}
 				aria-valuemin={0}
 				aria-valuemax={100}
 				aria-label={
-					showBottomHorizon
-						? `${horizonAria}. Session progress`
-						: "Session progress"
+					canEditIntention
+						? "Session progress. Double-click to edit intention"
+						: showBottomHorizon
+							? `${horizonAria}. Session progress`
+							: "Session progress"
 				}
 				style={{ width: size, height: size }}
+				onDoubleClick={
+					canEditIntention ? () => onEditIntention?.() : undefined
+				}
 			>
 				<svg
 					className={styles.ringSvg}
@@ -176,41 +158,17 @@ const TimerProgressRing: FC<TimerProgressRingProps> = ({
 				)}
 
 				<Box
-					className={`${styles.ringCore} ${isRunning ? styles.ringCoreRunning : ""}`}
+					className={`${styles.ringCore} ${isRunning ? styles.ringCoreRunning : ""} ${!isRunning && !intentionMode ? styles.ringCorePaused : ""}`}
 					style={{ width: coreSize, height: coreSize }}
 				>
 					<Box className={styles.ringCoreInner}>
-						{showPhaseLabel && (
-							<Text
-								className={styles.ringCenterLabel}
-								aria-hidden
-								style={{
-									fontSize: large
-										? "1rem"
-										: compact || isMobile
-											? "0.8rem"
-											: "0.9rem",
-								}}
-							>
-								{getProgressLabel(sessionProgressPercent)}
-							</Text>
+						{!isRunning && !intentionMode && (
+							<Box className={styles.ringPausedMark} aria-hidden />
 						)}
 						{showIntentionInRing && (
 							<Text className={styles.ringIntention} lineClamp={3}>
 								{intentionText}
 							</Text>
-						)}
-						{canEditIntention && (
-							<Button
-								type="button"
-								variant="subtle"
-								color="gray"
-								size="xs"
-								className={styles.ringEditIntention}
-								onClick={() => onEditIntention?.()}
-							>
-								Edit intention
-							</Button>
 						)}
 						{intentionMode && centerLabel && (
 							<Text className={styles.ringCenterLabel} px={8} size="xs">
@@ -220,26 +178,39 @@ const TimerProgressRing: FC<TimerProgressRingProps> = ({
 					</Box>
 				</Box>
 			</Box>
+	);
+
+	return (
+		<Box
+			className={styles.ringCluster}
+			style={{
+				["--ring-accent" as string]: `${btnMain}44`,
+				["--ring-accent-soft" as string]: `${btnMain}66`,
+				["--ring-accent-glow" as string]: `${btnMain}33`,
+			}}
+		>
+			{canEditIntention ? (
+				<Tooltip
+					label="Double-click the ring to edit your intention"
+					position="top"
+					withArrow
+					openDelay={400}
+					events={{ hover: true, focus: true, touch: false }}
+				>
+					{ring}
+				</Tooltip>
+			) : (
+				ring
+			)}
 
 			{showBottomHorizon && (
 				<Box className={styles.cycleHorizon} aria-hidden>
-					<Text className={styles.cycleHorizonCaption}>
-						{isRunning ? "ends" : "would end"}
-					</Text>
+					<Text className={styles.cycleHorizonCaption}>ends</Text>
 					<Text className={styles.cycleHorizonTime}>{endTimeDisplay}</Text>
 				</Box>
 			)}
 		</Box>
 	);
 };
-
-function getProgressLabel(percent: number): string {
-	if (percent < 20) return "Beginning";
-	if (percent < 40) return "Focusing";
-	if (percent < 60) return "Flowing";
-	if (percent < 80) return "Deep";
-	if (percent < 95) return "Winding down";
-	return "Finishing";
-}
 
 export default memo(TimerProgressRing);

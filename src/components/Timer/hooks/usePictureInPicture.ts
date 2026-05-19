@@ -1,6 +1,6 @@
 import type { Mode } from "@/models/info";
 import type { Timer } from "@/models/timer";
-import { useTimerState } from "@/stores";
+import { useInfoState, useTimerState } from "@/stores";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { buildAmbientBackground } from "../utils/ambientBackground";
 import {
@@ -28,18 +28,13 @@ interface UsePictureInPictureProps {
 const PIP_RING_RADIUS = 28;
 const PIP_RING_SIZE = PIP_RING_RADIUS * 2 + 8;
 
-function buildPiPMarkup(
-	timerState: Pick<Timer, "remainingTimeText" | "finishTimeText" | "isRunning">,
-): string {
+function buildPiPMarkup(timerState: Pick<Timer, "isRunning">): string {
 	const cx = PIP_RING_SIZE / 2;
 	const cy = PIP_RING_SIZE / 2;
-	const finishClass = timerState.isRunning ? "visible" : "hidden";
-	const finishLabel = timerState.finishTimeText
-		? `Finish ${timerState.finishTimeText}`
-		: "";
+	const runningAttr = timerState.isRunning ? "true" : "false";
 
 	return `
-<div id="pip-root">
+<div id="pip-root" data-running="${runningAttr}">
   <div id="pip-ambient"></div>
   <div class="pip-content">
     <div class="pip-ring-wrap">
@@ -48,9 +43,13 @@ function buildPiPMarkup(
         <circle id="pip-ring-progress" class="pip-ring-progress" cx="${cx}" cy="${cy}" r="${PIP_RING_RADIUS}" stroke-width="4"/>
       </svg>
       <div class="timer-container pip-time-overlay">
-        <div id="time-text" class="time-text">${timerState.remainingTimeText}</div>
-        <div id="finish-text" class="finish-text ${finishClass}">${finishLabel}</div>
+        <div id="pip-paused-mark" class="pip-paused-mark hidden" aria-hidden></div>
+        <div id="time-text" class="time-text hidden"></div>
       </div>
+    </div>
+    <div id="intention-text" class="intention-text"></div>
+    <div class="pip-ring-linear">
+      <div id="pip-ring-linear-bar" class="pip-ring-linear-bar"></div>
     </div>
   </div>
   <div id="controls-area" class="controls"></div>
@@ -78,10 +77,10 @@ const usePictureInPicture = ({
 	nextRef.current = handleNextTimer;
 
 	const timerState = useTimerState((state: Timer) => ({
-		remainingTimeText: state.remainingTimeText,
-		finishTimeText: state.finishTimeText,
 		isRunning: state.isRunning,
 	}));
+
+	const sessionIntention = useInfoState((state) => state.sessionIntention);
 
 	const [pipWindow, setPipWindow] = useState<Window | null>(null);
 	const pipWindowRef = useRef<Window | null>(null);
@@ -93,7 +92,7 @@ const usePictureInPicture = ({
 		const colors = getModeHexColors(mode);
 		const ambient = buildAmbientBackground(mode, sessionProgressPercent);
 
-		updatePiPTimeElements(doc, timerState, sessionProgressPercent);
+		updatePiPTimeElements(doc, timerState, sessionIntention);
 		updatePiPAmbient(doc, ambient);
 		updatePiPProgressRing(doc, sessionProgressPercent, colors.btnMain);
 
@@ -117,6 +116,7 @@ const usePictureInPicture = ({
 		sessionAdjustStepMinutes,
 		sessionProgressPercent,
 		skipCountsSessionMinProgressPercent,
+		sessionIntention,
 		timerState,
 	]);
 

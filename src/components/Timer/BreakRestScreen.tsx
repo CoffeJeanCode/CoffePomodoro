@@ -1,38 +1,41 @@
 import { Mode } from "@/models";
 import RotatingTip from "@/components/ui/RotatingTip";
 import { getModeTitle } from "@/utils/modeLabels";
+import { secondsToMinutes } from "@/utils/time.util";
 import ui from "@/styles/ui.module.css";
 import { Box, Button, Collapse, Stack, Text, Title } from "@mantine/core";
 import { type FC, memo, useState } from "react";
-import { FaForward, FaLightbulb } from "react-icons/fa";
+import { FaLightbulb } from "react-icons/fa";
 import BreathingCircle from "./BreathingCircle";
 
 const SHORT_BREAK_SUGGESTIONS = [
-	"Take a short walk",
-	"Look out the window",
-	"Stretch your shoulders",
+	"Look away from the screen",
+	"Stretch your body",
 	"Drink some water",
+	"Take three deep breaths",
 ];
 
 const LONG_BREAK_SUGGESTIONS = [
 	"Step away from the screen",
-	"Close your eyes for a minute",
+	"Close your eyes for a moment",
 	"Do nothing for a while",
-	"Light movement or fresh air",
+	"Gentle movement or fresh air",
 ];
 
 interface BreakRestScreenProps {
 	mode: Mode.ShortBreak | Mode.LongBreak;
 	breakProgressPercent: number;
 	large?: boolean;
-	onSkipBreak: () => void;
+	savedTimeBonus?: number;
+	isRunning?: boolean;
 }
 
 const BreakRestScreen: FC<BreakRestScreenProps> = ({
 	mode,
 	breakProgressPercent,
 	large = false,
-	onSkipBreak,
+	savedTimeBonus = 0,
+	isRunning = true,
 }) => {
 	const isLong = mode === Mode.LongBreak;
 	const suggestions = isLong ? LONG_BREAK_SUGGESTIONS : SHORT_BREAK_SUGGESTIONS;
@@ -41,6 +44,7 @@ const BreakRestScreen: FC<BreakRestScreenProps> = ({
 		? Math.min(0.75, (breakProgressPercent / 100) * 0.75)
 		: 0;
 	const [showTips, setShowTips] = useState(false);
+	const bonusMinutes = secondsToMinutes(savedTimeBonus);
 
 	return (
 		<Box pos="relative" w="100%" style={{ maxWidth: large ? 400 : 280 }}>
@@ -73,19 +77,18 @@ const BreakRestScreen: FC<BreakRestScreenProps> = ({
 					style={{ maxWidth: 320, opacity: 0.7 }}
 				>
 					{isLong
-						? "Let the screen dim. Rest without watching the clock."
+						? "Let the screen fade. Rest without watching the clock."
 						: "No clock — just rest."}
 				</Text>
-				<BreathingCircle large={large} />
-				<Button
-					variant="light"
-					color={isLong ? "blue" : "green"}
-					size={large ? "sm" : "xs"}
-					leftSection={<FaForward size={14} />}
-					onClick={onSkipBreak}
-				>
-					Skip break
-				</Button>
+				{bonusMinutes > 0 && (
+					<Text size="xs" c="blue.4" ta="center" style={{ opacity: 0.8 }}>
+						Extended break +{bonusMinutes} min for early completion
+					</Text>
+				)}
+				<BreathingCircle large={large} isAnimating={isRunning} />
+				<Text size="xs" c="dimmed" ta="center" style={{ opacity: 0.45, maxWidth: 240, lineHeight: 1.5 }}>
+					{isLong ? "Look away · Stretch · Do nothing" : "Breathe · Release · Recover"}
+				</Text>
 				<Button
 					variant="subtle"
 					color="gray"
@@ -94,7 +97,7 @@ const BreakRestScreen: FC<BreakRestScreenProps> = ({
 					onClick={() => setShowTips((open) => !open)}
 					aria-expanded={showTips}
 				>
-					{showTips ? "Hide tips" : "Show tips"}
+					{showTips ? "Hide suggestions" : "Show suggestions"}
 				</Button>
 				<Collapse in={showTips} w="100%">
 					<RotatingTip tips={suggestions} />

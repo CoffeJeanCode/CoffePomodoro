@@ -132,6 +132,40 @@ export const getPiPStyles = (colors: PiPColors) => `
         transition: stroke-dashoffset 1s var(--pip-ease);
     }
 
+    #pip-root[data-running="false"] .pip-ring-progress {
+        opacity: 0.45;
+    }
+
+    .pip-paused-mark {
+        position: relative;
+        width: 14px;
+        height: 14px;
+        flex-shrink: 0;
+    }
+
+    .pip-paused-mark::before,
+    .pip-paused-mark::after {
+        content: "";
+        position: absolute;
+        top: 1px;
+        width: 3px;
+        height: 12px;
+        border-radius: 1px;
+        background: rgba(255, 255, 255, 0.55);
+    }
+
+    .pip-paused-mark::before {
+        left: 2px;
+    }
+
+    .pip-paused-mark::after {
+        right: 2px;
+    }
+
+    .pip-paused-mark.hidden {
+        display: none;
+    }
+
     .timer-container {
         display: flex;
         flex-direction: column;
@@ -157,6 +191,31 @@ export const getPiPStyles = (colors: PiPColors) => `
         letter-spacing: 0.1em;
         text-transform: lowercase;
         opacity: 0.75;
+    }
+
+    .time-text.hidden {
+        display: none;
+    }
+
+    .intention-text {
+        display: none;
+        font-size: clamp(0.65rem, 2.8vmin, 0.85rem);
+        font-weight: 500;
+        line-height: 1.3;
+        text-align: center;
+        padding: 0 4px;
+        word-break: break-word;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        max-width: 200px;
+        opacity: 0.8;
+    }
+
+    .intention-text.visible {
+        display: -webkit-box;
     }
 
     .finish-text {
@@ -185,10 +244,10 @@ export const getPiPStyles = (colors: PiPColors) => `
 
     .controls-center {
         display: flex;
-        flex-direction: column;
+        flex-direction: row;
         align-items: center;
         justify-content: center;
-        gap: clamp(4px, 1.2vmin, 8px);
+        gap: clamp(6px, 1.5vmin, 12px);
     }
 
     .btn {
@@ -252,5 +311,78 @@ export const getPiPStyles = (colors: PiPColors) => `
         fill: currentColor;
     }
 
+    .pip-ring-linear {
+        display: none;
+        position: relative;
+        width: 100%;
+        max-width: 200px;
+        height: 4px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 2px;
+        overflow: hidden;
+        margin: 0 auto;
+    }
+
+    .pip-ring-linear-bar {
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 100%;
+        width: 0%;
+        background: var(--pip-accent);
+        border-radius: 2px;
+        transition: width 1s var(--pip-ease);
+    }
+
+    @media (max-width: 320px), (max-height: 260px) {
+        body {
+            padding: 0;
+        }
+
+        #pip-root {
+            padding: 0;
+            border-radius: 0;
+            border: none;
+            gap: 0;
+        }
+
+        .pip-ring-wrap {
+            display: none;
+        }
+
+        .pip-ring-linear {
+            display: block;
+            max-width: 100%;
+            height: 3px;
+            border-radius: 0;
+        }
+
+        .pip-content {
+            gap: 0;
+        }
+
+        .controls {
+            gap: 0;
+        }
+
+        .controls-center {
+            gap: 4px;
+        }
+
+        .intention-text {
+            max-width: 100%;
+            padding: 0 6px;
+        }
+
+        .btn-main {
+            width: clamp(28px, 8vmin, 40px);
+            height: clamp(28px, 8vmin, 40px);
+        }
+
+        .btn-sub {
+            width: clamp(24px, 7vmin, 34px);
+            height: clamp(24px, 7vmin, 34px);
+        }
+    }
 
 `;

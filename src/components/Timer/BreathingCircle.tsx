@@ -4,9 +4,13 @@ import ui from "@/styles/ui.module.css";
 
 interface BreathingCircleProps {
 	large?: boolean;
+	isAnimating?: boolean;
 }
 
-const BreathingCircle: FC<BreathingCircleProps> = ({ large = false }) => {
+const BreathingCircle: FC<BreathingCircleProps> = ({
+	large = false,
+	isAnimating = true,
+}) => {
 	const ringSize = large ? 136 : 100;
 	const outerSize = large ? 180 : 118;
 
@@ -23,7 +27,7 @@ const BreathingCircle: FC<BreathingCircleProps> = ({ large = false }) => {
 				}}
 			>
 				<Box
-					className={ui.breathingRingOuter}
+					className={`${ui.breathingRingOuter} ${!isAnimating ? ui.breathingPaused : ""}`}
 					style={{
 						width: outerSize,
 						height: outerSize,
@@ -31,7 +35,7 @@ const BreathingCircle: FC<BreathingCircleProps> = ({ large = false }) => {
 					aria-hidden
 				/>
 				<Box
-					className={ui.breathingRing}
+					className={`${ui.breathingRing} ${!isAnimating ? ui.breathingPaused : ""}`}
 					style={{
 						width: ringSize,
 						height: ringSize,

@@ -35,38 +35,47 @@ export function updatePiPProgressRing(
 	circle.setAttribute("stroke-dasharray", String(circumference));
 	circle.setAttribute("stroke-dashoffset", String(offset));
 	circle.setAttribute("stroke", accentColor);
-}
 
-const getProgressLabel = (percent: number): string => {
-	if (percent < 20) return "Beginning";
-	if (percent < 40) return "Focusing";
-	if (percent < 60) return "Flowing";
-	if (percent < 80) return "Deep";
-	if (percent < 95) return "Winding down";
-	return "Finishing";
-};
+	const bar = doc.getElementById("pip-ring-linear-bar") as HTMLElement | null;
+	if (bar) {
+		bar.style.width = `${sessionProgressPercent}%`;
+		bar.style.background = accentColor;
+	}
+}
 
 export function updatePiPTimeElements(
 	doc: Document,
-	timerState: Pick<Timer, "remainingTimeText" | "finishTimeText" | "isRunning">,
-	sessionProgressPercent: number,
+	timerState: Pick<Timer, "isRunning">,
+	sessionIntention?: string,
 ) {
-	const timeEl = doc.getElementById("time-text");
-	if (timeEl) {
-		const label = timerState.isRunning
-			? getProgressLabel(sessionProgressPercent)
-			: timerState.remainingTimeText;
-		timeEl.textContent = label;
-		timeEl.className = timerState.isRunning ? "time-text abstract" : "time-text";
+	const root = doc.getElementById("pip-root");
+	if (root) {
+		root.setAttribute("data-running", timerState.isRunning ? "true" : "false");
 	}
 
-	const finishEl = doc.getElementById("finish-text");
-	if (finishEl) {
-		finishEl.textContent = timerState.isRunning ? "Session in progress" : "";
-		finishEl.className = timerState.isRunning
-			? "finish-text visible"
-			: "finish-text hidden";
-}
+	const showIntention =
+		timerState.isRunning && Boolean(sessionIntention?.trim().length);
+
+	const intentionEl = doc.getElementById("intention-text");
+	if (intentionEl) {
+		intentionEl.textContent = showIntention ? (sessionIntention?.trim() ?? "") : "";
+		intentionEl.className = showIntention
+			? "intention-text visible"
+			: "intention-text";
+	}
+
+	const timeEl = doc.getElementById("time-text");
+	if (timeEl) {
+		timeEl.textContent = "";
+		timeEl.className = "time-text hidden";
+	}
+
+	const pausedEl = doc.getElementById("pip-paused-mark");
+	if (pausedEl) {
+		pausedEl.className = timerState.isRunning
+			? "pip-paused-mark hidden"
+			: "pip-paused-mark";
+	}
 }
 
 export function buildPiPControlsHtml(control: {
