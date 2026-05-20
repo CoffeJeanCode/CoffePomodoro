@@ -7,6 +7,7 @@ import {
 	useStatsState,
 	useTimerState,
 } from "@/stores";
+import { useSchemasState } from "@/stores";
 import {
 	getToday,
 	minutesToSeconds,
@@ -18,6 +19,7 @@ import { useTimerTick } from "./useTimerTick";
 
 const useTimer = () => {
 	const { activePreset } = useDepthState();
+	const { currentSchemaId, findCurrentSchema } = useSchemasState();
 	const config = useConfigState((state) => state.config);
 	const {
 		date,
@@ -50,8 +52,9 @@ const useTimer = () => {
 	const [awaitingCycleAck, setAwaitingCycleAck] = useState(false);
 	const [awaitingIntentionFulfillment, setAwaitingIntentionFulfillment] = useState(false);
 
-	const preset = DEPTH_PRESETS[activePreset];
-	const { timers, behavior } = preset;
+	const depthPreset = DEPTH_PRESETS[activePreset];
+	const currentSchema = currentSchemaId !== "" ? findCurrentSchema() : null;
+	const { timers, behavior } = currentSchema ?? depthPreset;
 
 	const notification = config.notification;
 

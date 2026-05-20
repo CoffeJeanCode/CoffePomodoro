@@ -1,4 +1,4 @@
-import { useSchemasState } from "@/stores";
+import { useSchemasState, useTimerState } from "@/stores";
 import { Menu } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useEffect, useState } from "react";
@@ -8,6 +8,7 @@ const QuickMenu = () => {
 	const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
 	const [opened, { open, close }] = useDisclosure(false);
 	const { schemas, setCurrentSchema, currentSchemaId } = useSchemasState();
+	const resetForNext = useTimerState((s) => s.resetForNext);
 
 	useEffect(() => {
 		const handleQuickMenu = (evt: MouseEvent) => {
@@ -53,9 +54,11 @@ const QuickMenu = () => {
 							leftSection={<RiTimerLine size={16} />}
 							color={isActive ? "red" : undefined}
 							variant={isActive ? "light" : "subtle"}
-							onClick={() =>
-								setCurrentSchema(schema.id === currentSchemaId ? "" : schema.id)
-							}
+							onClick={() => {
+								const newId = schema.id === currentSchemaId ? "" : schema.id;
+								resetForNext();
+								setCurrentSchema(newId);
+							}}
 						>
 							{schema.title}
 						</Menu.Item>

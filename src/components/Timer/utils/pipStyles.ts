@@ -4,13 +4,13 @@ interface PiPColors {
 	btnMainHover: string;
 }
 
-/** PiP window — matches app glass + ambient language */
+/** PiP window — vertical layout, matches app glass + ambient language */
 export const getPiPStyles = (colors: PiPColors) => `
     :root {
         --pip-page-bg: #0a0e14;
         --pip-glass-bg: rgba(255, 255, 255, 0.06);
-        --pip-glass-border: rgba(255, 255, 255, 0.14);
-        --pip-glass-border-top: rgba(255, 255, 255, 0.22);
+        --pip-glass-border: rgba(255, 255, 255, 0.12);
+        --pip-glass-border-top: rgba(255, 255, 255, 0.20);
         --pip-glass-blur: blur(20px) saturate(150%);
         --pip-shadow: 0 12px 36px rgba(0, 0, 0, 0.4);
         --pip-radius: 1rem;
@@ -18,51 +18,40 @@ export const getPiPStyles = (colors: PiPColors) => `
         --pip-btn-hover: ${colors.btnMainHover};
         --pip-accent: ${colors.btnMain};
         --pip-font: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        --pip-pad: clamp(8px, 2vmin, 14px);
         --pip-ease: cubic-bezier(0.4, 0, 0.2, 1);
         --pip-duration: 0.45s;
-        --btn-main-size: clamp(32px, 9vmin, 48px);
-        --btn-sub-size: clamp(28px, 7.5vmin, 40px);
-        --btn-adj-size: clamp(26px, 7vmin, 36px);
+        --btn-main-size: clamp(36px, 11vmin, 52px);
+        --btn-sub-size: clamp(30px, 9vmin, 42px);
     }
 
-    * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-        user-select: none;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
 
     body {
         background-color: var(--pip-page-bg);
         background-image:
-            radial-gradient(ellipse 80% 50% at 50% 0%, color-mix(in srgb, var(--pip-accent) 18%, transparent) 0%, transparent 55%),
+            radial-gradient(ellipse 80% 50% at 50% 0%, color-mix(in srgb, var(--pip-accent) 22%, transparent) 0%, transparent 60%),
             linear-gradient(180deg, #0c1018 0%, var(--pip-page-bg) 100%);
         color: #f1f3f5;
         font-family: var(--pip-font);
         height: 100vh;
         width: 100vw;
-        min-height: 0;
-        min-width: 0;
         overflow: hidden;
         display: flex;
         align-items: center;
         justify-content: center;
-        padding: var(--pip-pad);
+        padding: 8px;
     }
 
     #pip-root {
         position: relative;
         display: flex;
-        flex-direction: row;
+        flex-direction: column;
         align-items: center;
-        justify-content: center;
+        justify-content: space-between;
         width: 100%;
         height: 100%;
-        max-width: 100%;
-        max-height: 100%;
-        gap: clamp(6px, 1.5vmin, 10px);
-        padding: var(--pip-pad);
+        gap: 6px;
+        padding: 12px 14px;
         border-radius: var(--pip-radius);
         background: var(--pip-glass-bg);
         border: 1px solid var(--pip-glass-border);
@@ -80,22 +69,38 @@ export const getPiPStyles = (colors: PiPColors) => `
         position: absolute;
         inset: 0;
         border-radius: inherit;
-        opacity: 0.88;
+        opacity: 0.85;
         pointer-events: none;
         z-index: 0;
         transition: background 1.2s var(--pip-ease);
     }
 
+    /* ── content column (ring + label + intention) ── */
     .pip-content {
         position: relative;
         z-index: 1;
+        flex: 1;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        gap: clamp(4px, 1.2vmin, 8px);
+        gap: 8px;
+        width: 100%;
+        min-height: 0;
     }
 
+    /* ── mode label ── */
+    .pip-mode-label {
+        font-size: clamp(0.6rem, 3vmin, 0.72rem);
+        font-weight: 600;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--pip-accent);
+        opacity: 0.85;
+        line-height: 1;
+    }
+
+    /* ── ring ── */
     .pip-ring-wrap {
         position: relative;
         display: flex;
@@ -103,17 +108,6 @@ export const getPiPStyles = (colors: PiPColors) => `
         justify-content: center;
         flex-shrink: 0;
         width: min-content;
-        margin-inline: auto;
-    }
-
-    .pip-time-overlay {
-        position: absolute;
-        inset: 0;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        pointer-events: none;
     }
 
     .pip-ring-svg {
@@ -122,24 +116,56 @@ export const getPiPStyles = (colors: PiPColors) => `
 
     .pip-ring-track {
         fill: none;
-        stroke: rgba(255, 255, 255, 0.1);
+        stroke: rgba(255, 255, 255, 0.08);
     }
 
     .pip-ring-progress {
         fill: none;
         stroke: var(--pip-accent);
         stroke-linecap: round;
-        transition: stroke-dashoffset 1s var(--pip-ease);
+        transition: stroke-dashoffset 1.2s var(--pip-ease);
     }
 
     #pip-root[data-running="false"] .pip-ring-progress {
-        opacity: 0.45;
+        opacity: 0.4;
+        transition: stroke-dashoffset 0.6s var(--pip-ease);
     }
 
+    #pip-root[data-running="false"] .pip-ring-linear {
+        display: none !important;
+    }
+
+    /* ── ring center overlay ── */
+    .pip-time-overlay {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        pointer-events: none;
+    }
+
+    .time-text {
+        font-variant-numeric: tabular-nums;
+        font-weight: 700;
+        line-height: 1;
+        letter-spacing: -0.02em;
+        text-align: center;
+        font-size: clamp(1.05rem, 6.5vmin, 1.4rem);
+        text-shadow: 0 1px 8px rgba(0, 0, 0, 0.4);
+    }
+
+    #pip-root[data-running="false"] .time-text {
+        opacity: 0.7;
+    }
+
+    /* ── paused bars ── */
     .pip-paused-mark {
         position: relative;
-        width: 14px;
-        height: 14px;
+        width: 12px;
+        height: 12px;
         flex-shrink: 0;
     }
 
@@ -149,96 +175,69 @@ export const getPiPStyles = (colors: PiPColors) => `
         position: absolute;
         top: 1px;
         width: 3px;
-        height: 12px;
-        border-radius: 1px;
-        background: rgba(255, 255, 255, 0.55);
+        height: 10px;
+        border-radius: 1.5px;
+        background: rgba(255, 255, 255, 0.45);
     }
 
-    .pip-paused-mark::before {
-        left: 2px;
-    }
+    .pip-paused-mark::before { left: 1px; }
+    .pip-paused-mark::after  { right: 1px; }
+    .pip-paused-mark.hidden  { display: none; }
 
-    .pip-paused-mark::after {
-        right: 2px;
-    }
-
-    .pip-paused-mark.hidden {
-        display: none;
-    }
-
-    .timer-container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        min-width: 0;
-        gap: clamp(2px, 0.6vmin, 4px);
-    }
-
-    .time-text {
-        font-variant-numeric: tabular-nums;
-        font-weight: 700;
-        line-height: 1;
-        letter-spacing: -0.02em;
-        text-align: center;
-        font-size: clamp(1.35rem, 8vmin, 2.75rem);
-        text-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
-    }
-
-    .time-text.abstract {
-        font-size: clamp(0.8rem, 3.5vmin, 1rem);
-        font-weight: 400;
-        letter-spacing: 0.1em;
-        text-transform: lowercase;
-        opacity: 0.75;
-    }
-
-    .time-text.hidden {
-        display: none;
-    }
-
+    /* ── intention badge ── */
     .intention-text {
         display: none;
-        font-size: clamp(0.65rem, 2.8vmin, 0.85rem);
-        font-weight: 500;
-        line-height: 1.3;
+        font-size: clamp(0.62rem, 3vmin, 0.78rem);
+        font-weight: 400;
+        font-style: italic;
+        line-height: 1.35;
         text-align: center;
-        padding: 0 4px;
-        word-break: break-word;
+        color: rgba(255, 255, 255, 0.72);
+        max-width: 220px;
         overflow: hidden;
-        text-overflow: ellipsis;
         display: -webkit-box;
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
-        max-width: 200px;
-        opacity: 0.8;
+        padding: 4px 10px;
+        border-radius: 6px;
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.09);
+        border-left: 2px solid ${colors.btnMain}88;
     }
 
     .intention-text.visible {
         display: -webkit-box;
     }
 
-    .finish-text {
-        font-size: clamp(0.6rem, 2vmin, 0.7rem);
-        font-weight: 500;
-        opacity: 0.75;
-        text-align: center;
-        line-height: 1.2;
-    }
-
-    .finish-text.hidden {
+    /* ── linear progress fallback (very small windows) ── */
+    .pip-ring-linear {
         display: none;
+        width: 100%;
+        max-width: 200px;
+        height: 3px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 2px;
+        overflow: hidden;
     }
 
+    .pip-ring-linear-bar {
+        position: relative;
+        height: 100%;
+        width: 0%;
+        background: var(--pip-accent);
+        border-radius: 2px;
+        transition: width 1s var(--pip-ease);
+    }
+
+    /* ── controls row ── */
     .controls {
         position: relative;
         z-index: 1;
+        width: 100%;
         display: flex;
         flex-direction: column;
-        flex-wrap: nowrap;
         align-items: center;
-        justify-content: center;
-        gap: clamp(4px, 1.2vmin, 8px);
+        gap: 6px;
         flex-shrink: 0;
     }
 
@@ -247,7 +246,7 @@ export const getPiPStyles = (colors: PiPColors) => `
         flex-direction: row;
         align-items: center;
         justify-content: center;
-        gap: clamp(6px, 1.5vmin, 12px);
+        gap: clamp(10px, 3vmin, 18px);
     }
 
     .btn {
@@ -264,23 +263,18 @@ export const getPiPStyles = (colors: PiPColors) => `
         flex-shrink: 0;
     }
 
-    .btn:active {
-        transform: scale(0.92);
-    }
+    .btn:active { transform: scale(0.90); }
 
     .btn-main {
         width: var(--btn-main-size);
         height: var(--btn-main-size);
-        background: rgba(255, 255, 255, 0.14);
+        background: rgba(255, 255, 255, 0.15);
         backdrop-filter: blur(8px);
-        color: white;
         border-color: var(--pip-glass-border-top);
-        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.28);
     }
 
-    .btn-main:hover {
-        background: rgba(255, 255, 255, 0.22);
-    }
+    .btn-main:hover { background: rgba(255, 255, 255, 0.24); }
 
     .btn-sub {
         width: var(--btn-sub-size);
@@ -289,100 +283,75 @@ export const getPiPStyles = (colors: PiPColors) => `
         backdrop-filter: blur(8px);
     }
 
-    .btn-sub:hover {
-        background: rgba(255, 255, 255, 0.1);
-    }
+    .btn-sub:hover { background: rgba(255, 255, 255, 0.1); }
 
-    .btn-adjust {
-        width: var(--btn-adj-size);
-        height: var(--btn-adj-size);
-        background: transparent;
-        color: rgba(255, 255, 255, 0.72);
-    }
+    .btn svg { width: 44%; height: 44%; fill: currentColor; }
 
-    .btn-adjust:hover {
-        background: rgba(255, 255, 255, 0.08);
-        color: white;
-    }
-
-    .btn svg {
-        width: 50%;
-        height: 50%;
-        fill: currentColor;
-    }
-
-    .pip-ring-linear {
-        display: none;
-        position: relative;
-        width: 100%;
-        max-width: 200px;
-        height: 4px;
-        background: rgba(255, 255, 255, 0.1);
-        border-radius: 2px;
-        overflow: hidden;
-        margin: 0 auto;
-    }
-
-    .pip-ring-linear-bar {
-        position: absolute;
-        left: 0;
-        top: 0;
-        height: 100%;
-        width: 0%;
-        background: var(--pip-accent);
-        border-radius: 2px;
-        transition: width 1s var(--pip-ease);
-    }
-
-    @media (max-width: 320px), (max-height: 260px) {
-        body {
-            padding: 0;
-        }
+    /* ── compact: short/narrow windows — content left, buttons right ── */
+    @media (max-width: 220px), (max-height: 200px) {
+        body { padding: 0; }
 
         #pip-root {
-            padding: 0;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 10px;
             border-radius: 0;
             border: none;
-            gap: 0;
-        }
-
-        .pip-ring-wrap {
-            display: none;
-        }
-
-        .pip-ring-linear {
-            display: block;
-            max-width: 100%;
-            height: 3px;
-            border-radius: 0;
+            gap: 10px;
         }
 
         .pip-content {
-            gap: 0;
+            flex: 1;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: center;
+            gap: 5px;
+            min-width: 0;
+        }
+
+        .pip-ring-wrap { display: none; }
+
+        .pip-ring-linear {
+            display: block;
+            width: 100%;
+            max-width: 100%;
+            height: 4px;
+            border-radius: 2px;
+        }
+
+        .pip-mode-label { display: none; }
+
+        .pip-ring-linear { order: 1; }
+
+        .intention-text {
+            order: 2;
+            max-width: 100%;
+            text-align: left;
+            border-radius: 4px;
+            padding: 2px 6px;
+            font-size: 0.6rem;
         }
 
         .controls {
-            gap: 0;
+            flex-shrink: 0;
+            flex-direction: column;
+            gap: 6px;
         }
 
         .controls-center {
-            gap: 4px;
-        }
-
-        .intention-text {
-            max-width: 100%;
-            padding: 0 6px;
+            flex-direction: column;
+            gap: 6px;
         }
 
         .btn-main {
-            width: clamp(28px, 8vmin, 40px);
-            height: clamp(28px, 8vmin, 40px);
+            width: clamp(28px, 9vmin, 38px);
+            height: clamp(28px, 9vmin, 38px);
         }
 
         .btn-sub {
-            width: clamp(24px, 7vmin, 34px);
-            height: clamp(24px, 7vmin, 34px);
+            width: clamp(24px, 7.5vmin, 32px);
+            height: clamp(24px, 7.5vmin, 32px);
         }
     }
-
 `;

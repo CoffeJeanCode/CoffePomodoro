@@ -1,5 +1,20 @@
 /* Shared glass UI — used across Timer, Settings, Home */
 
+@keyframes intentionFadeIn {
+	from {
+		opacity: 0;
+		transform: translateY(3px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+.intentionBadge {
+	animation: intentionFadeIn 0.28s ease;
+}
+
 .glassPanel {
 	position: relative;
 	overflow: hidden;

@@ -41,7 +41,11 @@ const SchemaSettings: FC<Props> = ({ configuration }) => {
 	};
 
 	const handleSetCurrentSchema = (id: string | null) => {
-		if (!id) return;
+		if (!id) {
+			resetForNext();
+			setCurrentSchema("");
+			return;
+		}
 		const selected = schemas.find((s) => s.id === id);
 		if (selected?.presetKey) setActivePreset(selected.presetKey);
 		resetForNext();

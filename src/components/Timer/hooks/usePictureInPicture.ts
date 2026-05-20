@@ -25,7 +25,7 @@ interface UsePictureInPictureProps {
 	sessionProgressPercent: number;
 }
 
-const PIP_RING_RADIUS = 28;
+const PIP_RING_RADIUS = 44;
 const PIP_RING_SIZE = PIP_RING_RADIUS * 2 + 8;
 
 function buildPiPMarkup(timerState: Pick<Timer, "isRunning">): string {
@@ -37,14 +37,15 @@ function buildPiPMarkup(timerState: Pick<Timer, "isRunning">): string {
 <div id="pip-root" data-running="${runningAttr}">
   <div id="pip-ambient"></div>
   <div class="pip-content">
+    <div id="pip-mode-label" class="pip-mode-label">Focus</div>
     <div class="pip-ring-wrap">
       <svg class="pip-ring-svg" width="${PIP_RING_SIZE}" height="${PIP_RING_SIZE}" viewBox="0 0 ${PIP_RING_SIZE} ${PIP_RING_SIZE}" aria-hidden>
         <circle class="pip-ring-track" cx="${cx}" cy="${cy}" r="${PIP_RING_RADIUS}" stroke-width="4"/>
         <circle id="pip-ring-progress" class="pip-ring-progress" cx="${cx}" cy="${cy}" r="${PIP_RING_RADIUS}" stroke-width="4"/>
       </svg>
-      <div class="timer-container pip-time-overlay">
+      <div class="pip-time-overlay">
+        <div id="time-text" class="time-text"></div>
         <div id="pip-paused-mark" class="pip-paused-mark hidden" aria-hidden></div>
-        <div id="time-text" class="time-text hidden"></div>
       </div>
     </div>
     <div id="intention-text" class="intention-text"></div>
@@ -78,6 +79,7 @@ const usePictureInPicture = ({
 
 	const timerState = useTimerState((state: Timer) => ({
 		isRunning: state.isRunning,
+		remainingTimeText: state.remainingTimeText,
 	}));
 
 	const sessionIntention = useInfoState((state) => state.sessionIntention);
@@ -92,7 +94,7 @@ const usePictureInPicture = ({
 		const colors = getModeHexColors(mode);
 		const ambient = buildAmbientBackground(mode, sessionProgressPercent);
 
-		updatePiPTimeElements(doc, timerState, sessionIntention);
+		updatePiPTimeElements(doc, timerState, timerState.remainingTimeText, mode, sessionIntention);
 		updatePiPAmbient(doc, ambient);
 		updatePiPProgressRing(doc, sessionProgressPercent, colors.btnMain);
 
@@ -136,7 +138,7 @@ const usePictureInPicture = ({
 				}
 			).documentPictureInPicture.requestWindow({
 				width: 280,
-				height: 320,
+				height: 360,
 				preferInitialWindowSize: true,
 			});
 

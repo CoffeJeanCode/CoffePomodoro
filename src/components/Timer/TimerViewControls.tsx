@@ -1,7 +1,12 @@
 import type { Mode } from "@/models/info";
 import { ActionIcon, Group, Tooltip } from "@mantine/core";
 import { type FC, memo } from "react";
-import { RiFullscreenFill, RiPictureInPictureFill } from "react-icons/ri";
+import {
+	RiFullscreenExitFill,
+	RiFullscreenFill,
+	RiPictureInPicture2Fill,
+	RiPictureInPictureFill,
+} from "react-icons/ri";
 import { getColorMode } from "./utils/timer";
 
 interface TimerViewControlsProps {
@@ -9,6 +14,7 @@ interface TimerViewControlsProps {
 	handlePictureInPicture: () => void;
 	handleFullScreen: () => void;
 	isPiPOpen: boolean;
+	isFullScreen: boolean;
 }
 
 const TimerViewControls: FC<TimerViewControlsProps> = ({
@@ -16,12 +22,13 @@ const TimerViewControls: FC<TimerViewControlsProps> = ({
 	handlePictureInPicture,
 	handleFullScreen,
 	isPiPOpen,
+	isFullScreen,
 }) => {
 	const base = getColorMode(mode);
 
 	return (
 		<Group gap="sm" justify="center" w="100%">
-			<Tooltip label="Picture-in-Picture (Shift+I)" withArrow>
+			<Tooltip label={isPiPOpen ? "Close Picture-in-Picture (Shift+I)" : "Picture-in-Picture (Shift+I)"} withArrow>
 				<ActionIcon
 					size="lg"
 					variant="light"
@@ -29,18 +36,18 @@ const TimerViewControls: FC<TimerViewControlsProps> = ({
 					onClick={handlePictureInPicture}
 					aria-label="Picture in picture"
 				>
-					<RiPictureInPictureFill size={18} />
+					{isPiPOpen ? <RiPictureInPicture2Fill size={18} /> : <RiPictureInPictureFill size={18} />}
 				</ActionIcon>
 			</Tooltip>
-			<Tooltip label="Full screen (F)" withArrow>
+			<Tooltip label={isFullScreen ? "Exit full screen (F)" : "Full screen (F)"} withArrow>
 				<ActionIcon
 					size="lg"
 					variant="light"
-					color="gray"
+					color={isFullScreen ? base : "gray"}
 					onClick={handleFullScreen}
 					aria-label="Full screen"
 				>
-					<RiFullscreenFill size={18} />
+					{isFullScreen ? <RiFullscreenExitFill size={18} /> : <RiFullscreenFill size={18} />}
 				</ActionIcon>
 			</Tooltip>
 		</Group>

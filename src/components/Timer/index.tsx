@@ -1,8 +1,8 @@
 import { Mode } from "@/models";
 import { GlassPanel } from "@/components/ui/GlassPanel";
-import { useInfoState } from "@/stores";
+import { useInfoState, useSchemasState } from "@/stores";
 import { useBrainDumpState } from "@/stores/states/brainDump";
-import { Box, Container } from "@mantine/core";
+import { Box, Container, Text } from "@mantine/core";
 import { secondsToMinutes } from "@/utils/time.util";
 import { memo, useEffect, useRef, useState } from "react";
 import BreakRestScreen from "./BreakRestScreen";
@@ -44,7 +44,6 @@ const Timer = () => {
 		finishTime,
 		finishTimeText,
 		isRunning,
-		remainingTime,
 		savedTimeBonus,
 		sessionAdjustStepMinutes,
 		sessionProgressPercent,
@@ -58,6 +57,8 @@ const Timer = () => {
 		setIntentionConfirmed,
 		clearSessionIntention,
 	} = useInfoState();
+	const { currentSchemaId, findCurrentSchema } = useSchemasState();
+	const activeSchema = currentSchemaId ? findCurrentSchema() : null;
 	const brainDumpNotes = useBrainDumpState((s) => s.notes);
 	const discardAllBrainDump = useBrainDumpState((s) => s.discardAll);
 	const timerRef = useRef<HTMLDivElement>(null);
@@ -78,6 +79,7 @@ const Timer = () => {
 
 	const needsIntention =
 		mode === Mode.Pomodoro && !isRunning && !intentionConfirmed && !awaitingCycleAck && !awaitingIntentionFulfillment;
+	const isExpanded = needsIntention || isEditingIntention || awaitingCycleAck || awaitingIntentionFulfillment;
 	const abstractSession =
 		mode === Mode.Pomodoro &&
 		!awaitingCycleAck &&
@@ -135,7 +137,7 @@ const Timer = () => {
 				<GlassPanel
 					immersive={isFullScreen}
 					ambientBackground={isFullScreen ? fullscreenBg : ambient}
-					className={`${styles.timerSquare} ${onBreak ? styles.timerSquareBreak : ""} ${isFullScreen ? styles.timerFullscreen : ""}`}
+					className={`${styles.timerSquare} ${onBreak ? styles.timerSquareBreak : ""} ${isExpanded ? styles.timerSquareExpanded : ""} ${isFullScreen ? styles.timerFullscreen : ""}`}
 					padding={isFullScreen ? "2rem 1.5rem" : "1rem 1.25rem"}
 					innerClassName={styles.timerBody}
 					style={{ opacity: phaseOpacity }}
@@ -151,17 +153,17 @@ const Timer = () => {
 						</Box>
 					)}
 
-<Box
-		className={`${styles.timerStage} ${needsIntention || awaitingCycleAck ? styles.timerStageIntention : ""} ${isFullScreen && onBreak ? styles.timerStageElevated : ""}`}
-	>
+					<Box
+						className={`${styles.timerStage} ${needsIntention || awaitingCycleAck ? styles.timerStageIntention : ""} ${isFullScreen && onBreak ? styles.timerStageElevated : ""}`}
+					>
 						{onBreak ? (
-			<BreakRestScreen
-				mode={mode as Mode.ShortBreak | Mode.LongBreak}
-				breakProgressPercent={breakProgressPercent}
-				large={isFullScreen}
-				savedTimeBonus={savedTimeBonus}
-				isRunning={isRunning}
-			/>
+							<BreakRestScreen
+								mode={mode as Mode.ShortBreak | Mode.LongBreak}
+								breakProgressPercent={breakProgressPercent}
+								large={isFullScreen}
+								savedTimeBonus={savedTimeBonus}
+								isRunning={isRunning}
+							/>
 						) : awaitingCycleAck || awaitingIntentionFulfillment ? null : (
 							<TimerProgressRing
 								mode={mode}
@@ -240,11 +242,23 @@ const Timer = () => {
 					<Box
 						className={`${styles.timerFooter} ${isFullScreen ? styles.timerFullscreenFooter : ""}`}
 					>
+						<Box className={styles.timerInfoSlot}>
+							{activeSchema && (
+								<Text
+									size="xs"
+									ta="center"
+									style={{ opacity: 0.35, letterSpacing: "0.06em", fontSize: "0.6rem" }}
+								>
+									{activeSchema.title}
+								</Text>
+							)}
+						</Box>
 						<TimerViewControls
 							mode={mode}
 							handlePictureInPicture={handlePictureInPicture}
 							handleFullScreen={handleFullScreen}
 							isPiPOpen={isPiPOpen}
+							isFullScreen={isFullScreen}
 						/>
 					</Box>
 				</GlassPanel>

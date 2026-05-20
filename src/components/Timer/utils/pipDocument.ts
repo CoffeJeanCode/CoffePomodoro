@@ -1,10 +1,16 @@
-import type { Mode } from "@/models/info";
+import { Mode } from "@/models/info";
 import type { Timer } from "@/models/timer";
 import {
 	getSkipButtonTitle,
 	getTimerControlState,
 	getTimerControlsDomStateKey,
 } from "./timerControls";
+
+const MODE_LABEL: Record<Mode, string> = {
+	[Mode.Pomodoro]: "Focus",
+	[Mode.ShortBreak]: "Short break",
+	[Mode.LongBreak]: "Long break",
+};
 
 export const pipControlIcons = {
 	Play: `<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>`,
@@ -46,35 +52,33 @@ export function updatePiPProgressRing(
 export function updatePiPTimeElements(
 	doc: Document,
 	timerState: Pick<Timer, "isRunning">,
+	remainingTimeText: string,
+	mode: Mode,
 	sessionIntention?: string,
 ) {
 	const root = doc.getElementById("pip-root");
-	if (root) {
-		root.setAttribute("data-running", timerState.isRunning ? "true" : "false");
-	}
+	if (root) root.setAttribute("data-running", timerState.isRunning ? "true" : "false");
 
-	const showIntention =
-		timerState.isRunning && Boolean(sessionIntention?.trim().length);
-
-	const intentionEl = doc.getElementById("intention-text");
-	if (intentionEl) {
-		intentionEl.textContent = showIntention ? (sessionIntention?.trim() ?? "") : "";
-		intentionEl.className = showIntention
-			? "intention-text visible"
-			: "intention-text";
-	}
+	const modeLabelEl = doc.getElementById("pip-mode-label");
+	if (modeLabelEl) modeLabelEl.textContent = MODE_LABEL[mode] ?? "Focus";
 
 	const timeEl = doc.getElementById("time-text");
 	if (timeEl) {
-		timeEl.textContent = "";
-		timeEl.className = "time-text hidden";
+		timeEl.textContent = remainingTimeText;
+		timeEl.className = "time-text";
 	}
 
 	const pausedEl = doc.getElementById("pip-paused-mark");
 	if (pausedEl) {
-		pausedEl.className = timerState.isRunning
-			? "pip-paused-mark hidden"
-			: "pip-paused-mark";
+		pausedEl.className = timerState.isRunning ? "pip-paused-mark hidden" : "pip-paused-mark";
+	}
+
+	const showIntention =
+		mode === Mode.Pomodoro && Boolean(sessionIntention?.trim().length);
+	const intentionEl = doc.getElementById("intention-text");
+	if (intentionEl) {
+		intentionEl.textContent = showIntention ? (sessionIntention?.trim() ?? "") : "";
+		intentionEl.className = showIntention ? "intention-text visible" : "intention-text";
 	}
 }
 
