@@ -142,7 +142,7 @@ export function mountOrUpdatePiPControls(
 	if (controlsEl.getAttribute("data-state") !== stateKey) {
 		controlsEl.setAttribute("data-state", stateKey);
 		controlsEl.innerHTML = buildPiPControlsHtml({
-			isPaused: !controlState.isPaused,
+			isPaused: controlState.isPaused,
 		});
 
 		doc
