@@ -20,16 +20,7 @@ export function getTimerControlsDomStateKey(state: TimerControlState): string {
 	return `${state.isPaused}-${state.showSkip}`;
 }
 
-export function getSkipButtonTitle(
-	mode: Mode,
-	skipCountsSessionMinProgressPercent: number,
-): string {
+export function getSkipButtonTitle(mode: Mode): string {
 	if (mode !== Mode.Pomodoro) return "Skip <N>";
-	if (skipCountsSessionMinProgressPercent <= 0) {
-		return "Skip <N> (always counts toward session stats)";
-	}
-	if (skipCountsSessionMinProgressPercent >= 100) {
-		return "Skip <N> (counts only when the segment is complete)";
-	}
-	return `Skip <N> (counts if ≥${skipCountsSessionMinProgressPercent}% elapsed)`;
+	return "Skip <N>";
 }

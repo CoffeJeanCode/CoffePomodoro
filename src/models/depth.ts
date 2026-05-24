@@ -11,9 +11,7 @@ export interface DepthPreset {
 	timers: Timers;
 	behavior: Pick<
 		Behavior,
-		| "pomodorosToLongBreak"
-		| "sessionAdjustStepMinutes"
-		| "skipCountsSessionMinProgressPercent"
+		"pomodorosToLongBreak" | "sessionAdjustStepMinutes"
 	>;
 }
 
@@ -31,7 +29,6 @@ export const DEPTH_PRESETS: Record<DepthPresetKey, DepthPreset> = {
 		behavior: {
 			pomodorosToLongBreak: 3,
 			sessionAdjustStepMinutes: 10,
-			skipCountsSessionMinProgressPercent: 100,
 		},
 	},
 	sustained: {
@@ -47,7 +44,6 @@ export const DEPTH_PRESETS: Record<DepthPresetKey, DepthPreset> = {
 		behavior: {
 			pomodorosToLongBreak: 3,
 			sessionAdjustStepMinutes: 5,
-			skipCountsSessionMinProgressPercent: 100,
 		},
 	},
 	quick: {
@@ -63,7 +59,6 @@ export const DEPTH_PRESETS: Record<DepthPresetKey, DepthPreset> = {
 		behavior: {
 			pomodorosToLongBreak: 4,
 			sessionAdjustStepMinutes: 5,
-			skipCountsSessionMinProgressPercent: 100,
 		},
 	},
 };

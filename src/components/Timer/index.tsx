@@ -48,7 +48,6 @@ const Timer = () => {
 		savedTimeBonus,
 		sessionAdjustStepMinutes,
 		sessionProgressPercent,
-		skipCountsSessionMinProgressPercent,
 	} = useTimer();
 	const {
 		mode,
@@ -101,7 +100,6 @@ const Timer = () => {
 		handleNextTimer,
 		handleAdjustSessionByMinutes,
 		sessionAdjustStepMinutes,
-		skipCountsSessionMinProgressPercent,
 		mode,
 		sessionProgressPercent: progressPercent,
 	});

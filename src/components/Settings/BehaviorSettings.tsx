@@ -41,19 +41,6 @@ const BehaviorSettings: FC<Props> = ({ configuration, setConfigValue }) => {
 						)
 					}
 				/>
-				<NumberInput
-					label="Count skipped work toward stats after progress (%)"
-					size="xs"
-					min={0}
-					max={100}
-					value={b.skipCountsSessionMinProgressPercent ?? 100}
-					onChange={(value) =>
-						setConfigValue(
-							"behavior.skipCountsSessionMinProgressPercent",
-							Math.min(100, Math.max(0, Number(value) || 0)),
-						)
-					}
-				/>
 			</Stack>
 		</Box>
 	);

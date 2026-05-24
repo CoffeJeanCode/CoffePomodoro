@@ -23,8 +23,6 @@ export interface Behavior {
 	pomodorosToLongBreak: number;
 	/** Minutes added or removed per +/− adjust (buttons and hotkeys). */
 	sessionAdjustStepMinutes: number;
-	/** Minimum segment progress (0–100) for Skip during work to count toward session stats. */
-	skipCountsSessionMinProgressPercent: number;
 }
 
 export interface Configuration {

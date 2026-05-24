@@ -20,7 +20,6 @@ interface UsePictureInPictureProps {
 	handleNextTimer: ({ isSkip }: { isSkip: boolean }) => void;
 	handleAdjustSessionByMinutes: (delta: 1 | -1) => void;
 	sessionAdjustStepMinutes: number;
-	skipCountsSessionMinProgressPercent: number;
 	mode: Mode;
 	sessionProgressPercent: number;
 }
@@ -64,7 +63,6 @@ const usePictureInPicture = ({
 	handleNextTimer,
 	handleAdjustSessionByMinutes,
 	sessionAdjustStepMinutes,
-	skipCountsSessionMinProgressPercent,
 	mode,
 	sessionProgressPercent,
 }: UsePictureInPictureProps) => {
@@ -108,7 +106,6 @@ const usePictureInPicture = ({
 			doc,
 			mode,
 			timerState.isRunning,
-			skipCountsSessionMinProgressPercent,
 			{
 				onAdjust: (delta) => adjustRef.current(delta),
 				onToggle: () => toggleRef.current(),
@@ -123,7 +120,6 @@ const usePictureInPicture = ({
 		mode,
 		sessionAdjustStepMinutes,
 		sessionProgressPercent,
-		skipCountsSessionMinProgressPercent,
 		sessionIntention,
 		timerState,
 	]);

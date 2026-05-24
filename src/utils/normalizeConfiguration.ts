@@ -34,7 +34,6 @@ export const defaultBehavior: Behavior = {
 	canAutoPlay: false,
 	pomodorosToLongBreak: 4,
 	sessionAdjustStepMinutes: 5,
-	skipCountsSessionMinProgressPercent: 100,
 };
 
 export function normalizeBehavior(raw?: Partial<Behavior> | null): Behavior {
@@ -44,9 +43,6 @@ export function normalizeBehavior(raw?: Partial<Behavior> | null): Behavior {
 			raw?.pomodorosToLongBreak ?? defaultBehavior.pomodorosToLongBreak,
 		sessionAdjustStepMinutes:
 			raw?.sessionAdjustStepMinutes ?? defaultBehavior.sessionAdjustStepMinutes,
-		skipCountsSessionMinProgressPercent:
-			raw?.skipCountsSessionMinProgressPercent ??
-			defaultBehavior.skipCountsSessionMinProgressPercent,
 	};
 }
 

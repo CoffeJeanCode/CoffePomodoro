@@ -63,12 +63,6 @@ const useTimer = () => {
 		30,
 		Math.max(1, behavior.sessionAdjustStepMinutes ?? 5),
 	);
-	const skipCountsSessionMinProgressPercent = Math.min(
-		100,
-		Math.max(0, behavior.skipCountsSessionMinProgressPercent ?? 100),
-	);
-	const skipCountsSessionMinProgressFraction =
-		skipCountsSessionMinProgressPercent / 100;
 
 	function recordPomodoroSessionStats(isCompleted: boolean) {
 		const elapsedTime = sessionSegmentTotalSeconds - remainingTime;
@@ -168,11 +162,7 @@ const useTimer = () => {
 
 	const handleNextTimer = ({ isSkip }: { isSkip: boolean }) => {
 		if (isSkip && mode === Mode.Pomodoro) {
-			const total = sessionSegmentTotalSeconds;
-			const progressed = total > 0 ? (total - remainingTime) / total : 0;
-			if (progressed >= skipCountsSessionMinProgressFraction) {
-				recordPomodoroSessionStats(false);
-			}
+			recordPomodoroSessionStats(false);
 		}
 
 		const newMode = isSkip
@@ -339,7 +329,6 @@ const useTimer = () => {
 		sessionProgressPercent,
 		breakProgressPercent,
 		sessionAdjustStepMinutes,
-		skipCountsSessionMinProgressPercent,
 		sessionSegmentTotalSeconds,
 		savedTimeBonus,
 		awaitingCycleAck,

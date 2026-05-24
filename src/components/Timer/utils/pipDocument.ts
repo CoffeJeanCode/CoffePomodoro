@@ -119,19 +119,15 @@ export interface PiPControlHandlers {
 function secondaryControlTitle(
 	mode: Mode,
 	isRunning: boolean,
-	skipCountsSessionMinProgressPercent: number,
 ): string {
 	const { showSkip } = getTimerControlState(mode, isRunning);
-	return showSkip
-		? getSkipButtonTitle(mode, skipCountsSessionMinProgressPercent)
-		: "Stop <S>";
+	return showSkip ? getSkipButtonTitle(mode) : "Stop <S>";
 }
 
 export function mountOrUpdatePiPControls(
 	doc: Document,
 	mode: Mode,
 	isRunning: boolean,
-	skipCountsSessionMinProgressPercent: number,
 	handlers: PiPControlHandlers,
 ) {
 	const controlState = getTimerControlState(mode, isRunning);
