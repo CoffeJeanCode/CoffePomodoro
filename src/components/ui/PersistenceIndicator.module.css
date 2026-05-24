@@ -1,0 +1,15 @@
+.anchor {
+	position: fixed;
+	left: 1rem;
+	bottom: 1rem;
+	z-index: 200;
+}
+
+.fab {
+	opacity: 0.45;
+	transition: opacity var(--ui-duration) var(--ui-ease);
+}
+
+.fab:hover {
+	opacity: 0.9;
+}

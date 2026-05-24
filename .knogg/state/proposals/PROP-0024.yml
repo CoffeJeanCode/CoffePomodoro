@@ -1,0 +1,78 @@
+id: PROP-0024
+status: applied
+target: plans/master_plan.yml
+reason: 'Structural Style Engine (Shape Language) refactor roadmap: abandon the color-coupled theme engine and split personalization into two orthogonal axes — an independent color layer (--color-*) and a structural layer (--ui-*) switched by data-ui-style. Adds stage SSE-1 (token decoupling + style router) and SSE-2 (3 radical structural profiles + control surface). The app must feel like three different products using exactly the same colors.'
+created: 2026-05-24
+patch:
+  stages:
+    SSE-1:
+      name: 'Desacoplamiento de Tokens y Enrutador de Estilos (Shape Language Engine)'
+      objective: Abandonar el motor de "temas de color" (data-theme acopla color+forma) y reestructurar el sistema en DOS ejes ortogonales. Eje de color (--color-*) independiente y constante; eje estructural (--ui-*) que controla geometria, topologia, sombras, tipografia y fisicas, conmutado por un atributo data-ui-style en el elemento raiz. El cambio estructural no debe tocar ningun token de color ni disparar recalculos de layout en JavaScript.
+      dod:
+      - 'Los CSS Custom Properties estan estrictamente separados: tokens de color bajo el prefijo --color-* y tokens estructurales bajo --ui-* (radius, border-width, border-style, shadow, blur, font-family, transition, spring, press-transform)'
+      - 'Ningun componente usa valores de forma quemados (radius/border/shadow/font/transition hardcoded); todos consumen var(--ui-*)'
+      - 'Ningun componente usa colores quemados; todos consumen var(--color-*)'
+      - 'Existe useUIStyleState (zustand persistido) que escribe data-ui-style en document.documentElement sin re-render de React (paridad con ADR-0010)'
+      - 'El eje de color y el eje estructural son independientes: cambiar uno no muta el otro'
+      - 'npm run build pasa y no hay lecturas de getComputedStyle por tick ni reflow forzado en el cambio de estilo'
+      tasks:
+        SSE-T1.1:
+          assignee: cursor
+          description: 'Definir la taxonomia de tokens en app.css :root separando dos capas. Capa de COLOR (independiente, no la toca el switch estructural): --color-bg, --color-surface, --color-surface-2, --color-text, --color-text-muted, --color-accent, --color-accent-contrast, --color-success, --color-info, --color-warning, --color-border-ink. Capa ESTRUCTURAL (la conmuta data-ui-style): geometria (--ui-radius, --ui-radius-sm, --ui-radius-pill, --ui-border-width, --ui-border-style, --ui-border-color), topologia (--ui-shadow, --ui-shadow-sm, --ui-shadow-pressed, --ui-blur, --ui-surface-alpha), tipografia (--ui-font-family, --ui-font-display, --ui-letter-spacing, --ui-text-transform), fisica (--ui-duration, --ui-duration-slow, --ui-ease, --ui-spring, --ui-press-transform). Regla clave: los tokens estructurales COMPONEN tokens de color (ej. --ui-border-color usa var(--color-border-ink) o un rgba translucido) pero nunca definen matices.'
+          status: pending
+          title: Definir taxonomia de tokens (capa color vs capa estructura)
+        SSE-T1.2:
+          assignee: cursor
+          description: 'Auditar y migrar todo el CSS/JS a tokens. Reemplazar radius/border/shadow/font/transition quemados en ui.module.css, Timer/styles/Timer.module.css, mantineTheme.ts, GlassPanel.tsx y app.css por var(--ui-*). Reemplazar colores quemados (rgba(255,255,255,...), #1a1a1a, etc.) por var(--color-*). El componente GlassPanel y los paneles/botones/modales deben quedar agnosticos de forma: su geometria sale 100% de variables.'
+          status: pending
+          title: Migrar componentes a tokens abstractos (cero valores quemados)
+        SSE-T1.3:
+          assignee: cursor
+          description: 'Implementar el Enrutador de Estilos: store useUIStyleState (zustand + persist, key ui-style) con applyUIStyle(id) que hace document.documentElement.setAttribute("data-ui-style", id). Aplicar en carga inicial (modulo) y en cada cambio, igual que el patron applyTheme de ADR-0010 (cero re-render del DOM React). El bloque [data-ui-style="X"] en CSS solo sobre-escribe tokens --ui-* estructurales.'
+          status: pending
+          title: Construir Style Router via atributo data-ui-style (zero re-render)
+        SSE-T1.4:
+          assignee: cursor
+          description: 'Desacoplar el motor de color existente del estructural. El actual data-theme/useThemeState (que mezcla color+forma) se divide: la informacion de color de los temas pasa a ser opcionalmente un "color scheme" independiente bajo --color-*, mientras que la forma migra a los 3 perfiles data-ui-style. Garantizar que setTheme (color) y setUIStyle (estructura) no interfieran y que ambos persistan por separado.'
+          status: pending
+          title: Separar el motor de color del motor estructural (ejes ortogonales)
+    SSE-2:
+      name: 'Perfiles Estructurales Radicales y Superficie de Control'
+      objective: Definir tres perfiles estructurales que hagan sentir la app como tres softwares distintos usando exactamente los mismos colores. Cada perfil solo sobre-escribe tokens --ui-*. Exponer el control al usuario separado del control de color, y dar paridad estructural a superficies fuera del arbol React (PiP).
+      dod:
+      - 'Al cambiar data-ui-style entre mechanical/brutal/ethereal la interfaz muta su geometria y sus fisicas de interaccion al instante'
+      - 'Con el mismo --color-accent, los tres perfiles se ven radicalmente diferentes (forma, sombra, tipografia, fisica) sin alterar el matiz'
+      - 'El boton en perfil Brutalism se desplaza fisicamente al hacer click para cancelar su sombra proyectada; el perfil Neumorphism alterna extruido->hundido via inset; el perfil Ethereal usa spring fluido + scale'
+      - 'La ventana PiP refleja el perfil estructural activo (geometria, sombra, tipografia) reusando los tokens'
+      - 'El selector de Estilo/Forma esta separado del selector de Color en Settings y en el menu de click derecho'
+      tasks:
+        SSE-T2.1:
+          assignee: cursor
+          description: 'Perfil A "Mecanico / Neumorfismo Duro" (Hardware vibe). [data-ui-style="mechanical"]: --ui-radius:12px, --ui-border-width:0px, --ui-shadow dual extruido (6px 6px 12px sombra-oscura + -6px -6px 12px luz, derivadas de la luminancia de superficie, NO del acento), --ui-shadow-pressed inset (hundido), --ui-blur:none, fisica con peso --ui-ease cubic-bezier(0.4,0,0.6,1) lento (~0.4s), --ui-press-transform:none (el feedback es el swap a inset). Elementos parecen extruidos del fondo (plastico/metal).'
+          status: pending
+          title: 'Perfil A: Mecanico / Neumorfismo Duro'
+        SSE-T2.2:
+          assignee: cursor
+          description: 'Perfil B "Brutalismo Tactil" (alta friccion positiva). [data-ui-style="brutal"]: --ui-radius:0px, --ui-border-width:3px, --ui-border-style:solid, --ui-border-color:var(--color-border-ink), --ui-shadow:4px 4px 0px var(--color-border-ink) (opaca, sin blur), --ui-blur:none, tipografia de alta densidad (monoespaciada/display rigida) con --ui-text-transform:uppercase y --ui-letter-spacing, fisica seca/instantanea (~0.08s o rebote mecanico), --ui-press-transform: translate(4px,4px) + --ui-shadow-pressed:0 0 0 (al click el boton se desplaza para cancelar su sombra).'
+          status: pending
+          title: 'Perfil B: Brutalismo Tactil'
+        SSE-T2.3:
+          assignee: cursor
+          description: 'Perfil C "Etereo / Glassmorphism" (flujo y suspension). [data-ui-style="ethereal"]: --ui-radius:1.5rem y --ui-radius-pill:99px (pildoras), --ui-border-width:1px con --ui-border-color translucido (rgba sutil derivado de --color-text), --ui-blur:blur(20px) saturate(150%) (uso intensivo de backdrop-filter), sombras muy difusas y multicapa en el eje Z (0 16px 48px rgba muy suave), fisica de resorte fluida --ui-spring cubic-bezier(0.34,1.56,0.64,1) ~0.45s, --ui-press-transform:scale(0.96). Elementos flotan en capas.'
+          status: pending
+          title: 'Perfil C: Etereo / Glassmorphism'
+        SSE-T2.4:
+          assignee: cursor
+          description: 'Superficie de control separada. En Settings dividir en dos controles distintos: "Forma/Estilo" (mechanical/brutal/ethereal -> setUIStyle) y "Color" (esquema de color -> setTheme/color scheme). Anadir submenu de Estilo en QuickMenu (click derecho) ademas del de Color. Previews que muestren la forma sin cambiar el color. Retirar el ThemeSwitcher de los botones superiores (ya hecho).'
+          status: pending
+          title: Separar selectores de Forma y Color en Settings + click derecho
+        SSE-T2.5:
+          assignee: cursor
+          description: 'Paridad estructural en PiP. getPiPStyles debe recibir tokens divididos (color + estructura) del perfil activo y aplicarlos al documento PiP (radius, border, shadow, blur, font, press) ademas del color. Re-render del CSS PiP cuando cambia data-ui-style (clave de estilo que incluya el perfil estructural, no solo el modo).'
+          status: pending
+          title: Propagar tokens estructurales a la ventana PiP
+        SSE-T2.6:
+          assignee: opencode
+          description: 'Verificar el DoD del motor: (1) mutacion instantanea al cambiar data-ui-style; (2) invariancia de color: capturar --color-accent y confirmar identico valor en los 3 perfiles; (3) performance: confirmar que el switch es solo cascada CSS, sin getComputedStyle por tick ni reflow forzado en JS; (4) npm run build limpio + arranque del contenedor.'
+          status: pending
+          title: Verificar DoD (mutacion instantanea, invariancia de color, performance, build)

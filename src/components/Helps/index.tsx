@@ -32,12 +32,7 @@ const Helps = () => {
 				<Stack gap="lg" py="xs">
 					{helps.sections.map((section) => (
 						<div key={section.title}>
-							<Title
-								order={3}
-								size="h4"
-								className={ui.sectionTitle}
-								mb="sm"
-							>
+							<Title order={3} size="h4" className={ui.sectionTitle} mb="sm">
 								{section.title}
 							</Title>
 							<List spacing="sm" icon={iconMap[section.icon]}>
@@ -51,12 +46,7 @@ const Helps = () => {
 					))}
 
 					<div>
-						<Title
-							order={3}
-							size="h4"
-							className={ui.sectionTitle}
-							mb="xs"
-						>
+						<Title order={3} size="h4" className={ui.sectionTitle} mb="xs">
 							Hotkeys
 						</Title>
 						<Text size="sm" c="dimmed" mb="sm">

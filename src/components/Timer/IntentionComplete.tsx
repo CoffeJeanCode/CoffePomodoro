@@ -1,8 +1,8 @@
+import brainDumpStyles from "@/components/BrainDump/BrainDump.module.css";
 import type { BrainDumpNote } from "@/models/brainDump";
 import { copyBrainDumpToClipboard } from "@/utils/brainDump.util";
 import { Box, Button, Group, Stack, Text } from "@mantine/core";
 import { type FC, memo } from "react";
-import brainDumpStyles from "@/components/BrainDump/BrainDump.module.css";
 
 interface IntentionCompleteProps {
 	intention: string;
@@ -37,7 +37,13 @@ const IntentionComplete: FC<IntentionCompleteProps> = ({
 			>
 				Intention fulfilled
 			</Text>
-			<Text size="md" fw={500} c="white" ta="center" style={{ fontStyle: "italic" }}>
+			<Text
+				size="md"
+				fw={500}
+				c="white"
+				ta="center"
+				style={{ fontStyle: "italic" }}
+			>
 				"{intention}"
 			</Text>
 			{savedMinutes > 0 && (
@@ -52,16 +58,30 @@ const IntentionComplete: FC<IntentionCompleteProps> = ({
 					</Text>
 					<Box className={brainDumpStyles.triageList}>
 						{brainDumpNotes.map((note) => (
-							<Text key={note.id} size="xs" className={brainDumpStyles.noteItem}>
+							<Text
+								key={note.id}
+								size="xs"
+								className={brainDumpStyles.noteItem}
+							>
 								{note.text}
 							</Text>
 						))}
 					</Box>
 					<Group gap="xs" grow mt="xs">
-						<Button variant="light" color="gray" size="xs" onClick={onDiscardBrainDump}>
+						<Button
+							variant="light"
+							color="gray"
+							size="xs"
+							onClick={onDiscardBrainDump}
+						>
 							Discard
 						</Button>
-						<Button variant="light" color="blue" size="xs" onClick={() => void handleCopy()}>
+						<Button
+							variant="light"
+							color="blue"
+							size="xs"
+							onClick={() => void handleCopy()}
+						>
 							Copy
 						</Button>
 					</Group>

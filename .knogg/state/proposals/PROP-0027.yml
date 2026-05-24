@@ -1,0 +1,30 @@
+id: PROP-0027
+status: applied
+target: state/active_context.yml
+reason: 'SSE-0 foundation complete: 2-layer token architecture (color fixed + structure variable), 3 new styles defined, store migrated, Icon component and audio synthesis created, build verified'
+created: 2026-05-24
+patch:
+  done:
+  - 'SSE-0 Foundation: tokens-color-root.css + tokens-shape-root.css created (2-layer architecture)'
+  - 'SSE-0: uiStyles.ts rewritten with 3 new styles (ciberpunk/rustico/minimal)'
+  - 'SSE-0: palette.ts updated with --color-red/green/blue + *-on variants + mode aliases'
+  - 'SSE-0: app.css rewritten with composed aliases (--ui-bg/surface/text + color-mix)'
+  - 'SSE-0: uiStyle.ts store updated with migration ethereal→ciberpunk, mechanical→rustico, brutal→minimal'
+  - 'SSE-0: mantineTheme.ts glass surface border uses var(--ui-border-width/style/color)'
+  - 'SSE-0: Icon.tsx component created with ICON_SETS registry (hud/doodle/line)'
+  - 'SSE-0: uiSounds.ts rewritten with Web Audio API style-specific synthesis (square/sine/triangle per profile)'
+  - 'SSE-0: pipStyles.ts updated to use --ui-bg/text-muted instead of old --color-*'
+  - 'SSE-0: Build verified clean, lint clean (3 pre-existing errors only)'
+  focus:
+    stage: 'SSE-A: Vertical Ciberpunk'
+    status: in_progress
+    task: SSE-0 foundation complete; implementing per-style visual effects
+  next_actions:
+  - 'SSE-A: Ciberpunk — glitch @keyframes, hard-shadow press, clip-path bevels, HUD-style headings, uppercase monospace'
+  - 'SSE-B: Rustico — blob radius, dashed border overrides, paper texture ::after, draw-on SVG stroke-dashoffset animation'
+  - 'SSE-C: Minimal — 3px radius enforcement, white surface overrides, clean shadow transitions'
+  - 'SSE-V: Accessibility audit, prefers-reduced-motion, build verification'
+  recent_decisions:
+  - id: ADR-0012
+    status: accepted
+    title: Shape Language Engine V2 — Color Fixed, Canvas Variable

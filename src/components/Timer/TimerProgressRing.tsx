@@ -57,8 +57,7 @@ const TimerProgressRing: FC<TimerProgressRingProps> = ({
 	const ringInset = intentionMode ? 6 : large ? 10 : 14;
 	const radius = (size - stroke) / 2 - ringInset;
 	const circumference = 2 * Math.PI * radius;
-	const offset =
-		circumference - (sessionProgressPercent / 100) * circumference;
+	const offset = circumference - (sessionProgressPercent / 100) * circumference;
 	const { btnMain } = getModeHexColors(mode);
 
 	const coreSize = Math.round(radius * 1.45);
@@ -77,107 +76,106 @@ const TimerProgressRing: FC<TimerProgressRingProps> = ({
 	const intentionText = sessionIntention?.trim() ?? "";
 	const showIntentionInRing =
 		isRunning && abstractSession && !intentionMode && intentionText.length > 0;
-	const showBottomHorizon = isRunning && !intentionMode && Boolean(endTimeDisplay);
+	const showBottomHorizon =
+		isRunning && !intentionMode && Boolean(endTimeDisplay);
 
 	const ring = (
-			<Box
-				className={`${styles.ringWrap} ${canEditIntention ? styles.ringWrapEditable : ""}`}
-				role="progressbar"
-				aria-valuenow={sessionProgressPercent}
-				aria-valuemin={0}
-				aria-valuemax={100}
-				aria-label={
-					canEditIntention
-						? "Session progress. Double-click to edit intention"
-						: showBottomHorizon
-							? `${horizonAria}. Session progress`
-							: "Session progress"
-				}
-				style={{ width: size, height: size }}
-				onDoubleClick={
-					canEditIntention ? () => onEditIntention?.() : undefined
-				}
+		<Box
+			className={`${styles.ringWrap} ${canEditIntention ? styles.ringWrapEditable : ""}`}
+			role="progressbar"
+			aria-valuenow={sessionProgressPercent}
+			aria-valuemin={0}
+			aria-valuemax={100}
+			aria-label={
+				canEditIntention
+					? "Session progress. Double-click to edit intention"
+					: showBottomHorizon
+						? `${horizonAria}. Session progress`
+						: "Session progress"
+			}
+			style={{ width: size, height: size }}
+			onDoubleClick={canEditIntention ? () => onEditIntention?.() : undefined}
+		>
+			<svg
+				className={styles.ringSvg}
+				width={size}
+				height={size}
+				viewBox={`0 0 ${size} ${size}`}
+				aria-hidden
+				style={{ pointerEvents: "none" }}
 			>
-				<svg
-					className={styles.ringSvg}
-					width={size}
-					height={size}
-					viewBox={`0 0 ${size} ${size}`}
-					aria-hidden
-					style={{ pointerEvents: "none" }}
-				>
-					<circle
-						cx={size / 2}
-						cy={size / 2}
-						r={radius}
-						fill="none"
-						stroke="rgba(255,255,255,0.08)"
-						strokeWidth={stroke}
-					/>
-					<circle
-						cx={size / 2}
-						cy={size / 2}
-						r={radius}
-						fill="none"
-						stroke={btnMain}
-						strokeWidth={stroke}
-						strokeLinecap="round"
-						strokeDasharray={circumference}
-						strokeDashoffset={offset}
-						transform={`rotate(-90 ${size / 2} ${size / 2})`}
+				<circle
+					cx={size / 2}
+					cy={size / 2}
+					r={radius}
+					fill="none"
+					stroke="var(--ui-ring-track)"
+					strokeWidth={stroke}
+				/>
+				<circle
+					cx={size / 2}
+					cy={size / 2}
+					r={radius}
+					fill="none"
+					stroke={btnMain}
+					strokeWidth={stroke}
+					strokeLinecap="round"
+					strokeDasharray={circumference}
+					strokeDashoffset={offset}
+					transform={`rotate(-90 ${size / 2} ${size / 2})`}
+					style={{
+						transition: isRunning
+							? "stroke-dashoffset 2s ease-in-out"
+							: "stroke-dashoffset 1s ease",
+						filter: "blur(0.5px)",
+					}}
+				/>
+			</svg>
+
+			{isRunning && (
+				<>
+					<Box
+						className={styles.ringRipple}
 						style={{
-							transition: isRunning
-								? "stroke-dashoffset 2s ease-in-out"
-								: "stroke-dashoffset 1s ease",
-							filter: "blur(0.5px)",
+							width: rippleSize,
+							height: rippleSize,
+							pointerEvents: "none",
 						}}
+						aria-hidden
 					/>
-				</svg>
+					<Box
+						className={`${styles.ringRipple} ${styles.ringRippleDelay}`}
+						style={{
+							width: rippleSize,
+							height: rippleSize,
+							pointerEvents: "none",
+						}}
+						aria-hidden
+					/>
+				</>
+			)}
 
-				{isRunning && (
-					<>
-						<Box
-							className={styles.ringRipple}
-							style={{
-								width: rippleSize,
-								height: rippleSize,
-								pointerEvents: "none",
-							}}
-							aria-hidden
-						/>
-						<Box
-							className={`${styles.ringRipple} ${styles.ringRippleDelay}`}
-							style={{
-								width: rippleSize,
-								height: rippleSize,
-								pointerEvents: "none",
-							}}
-							aria-hidden
-						/>
-					</>
-				)}
-
-				<Box
-					className={`${styles.ringCore} ${isRunning ? styles.ringCoreRunning : ""} ${!isRunning && !intentionMode ? styles.ringCorePaused : ""}`}
-					style={{ width: coreSize, height: coreSize }}
-				>
-					<Box className={styles.ringCoreInner}>
-						{!isRunning && !intentionMode && (
-							<Box className={styles.ringPausedMark} aria-hidden />
-						)}
-						{showIntentionInRing && (
-							<Text className={styles.ringIntention} lineClamp={3}>
-								{intentionText}
-							</Text>
-						)}
-						{intentionMode && centerLabel && (
-							<Text className={styles.ringCenterLabel} px={8} size="xs">
-								{centerLabel}
-							</Text>
-						)}
-					</Box>
+			<Box
+				className={`${styles.ringCore} ${isRunning ? styles.ringCoreRunning : ""} ${!isRunning && !intentionMode ? styles.ringCorePaused : ""}`}
+				style={{ width: coreSize, height: coreSize }}
+			>
+				<Box className={styles.ringCoreInner}>
+					{!isRunning && !intentionMode && (
+						<Box className={styles.ringPausedMark} aria-hidden />
+					)}
+					{showIntentionInRing && (
+						<Text className={styles.ringIntention} lineClamp={3}>
+							{intentionText}
+						</Text>
+					)}
+					{intentionMode && centerLabel && (
+						<Text className={styles.ringCenterLabel} px={8} size="xs">
+							{centerLabel}
+						</Text>
+					)}
 				</Box>
 			</Box>
+		</Box>
 	);
 
 	return (

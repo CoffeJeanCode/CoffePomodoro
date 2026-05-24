@@ -59,7 +59,11 @@ const SessionIntention: FC<SessionIntentionProps> = ({
 					onConfirm(trimmed);
 				}}
 			/>
-			<Group gap="xs" grow={!onCancel} justify={centered ? "center" : undefined}>
+			<Group
+				gap="xs"
+				grow={!onCancel}
+				justify={centered ? "center" : undefined}
+			>
 				{onCancel && (
 					<Button variant="subtle" color="gray" size="sm" onClick={onCancel}>
 						Cancel

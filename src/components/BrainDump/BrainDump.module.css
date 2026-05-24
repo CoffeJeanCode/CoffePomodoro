@@ -17,9 +17,8 @@
 
 .fab {
 	opacity: 0.55;
-	transition:
-		opacity var(--ui-duration) var(--ui-ease),
-		transform var(--ui-duration) var(--ui-ease);
+	transition: opacity var(--ui-duration) var(--ui-ease), transform
+		var(--ui-spring-duration) var(--ui-spring-ease);
 }
 
 .fab:hover,
@@ -31,21 +30,25 @@
 	transform: scale(1.05);
 }
 
+.fab:active {
+	transform: scale(0.92);
+}
+
 .notepad {
 	width: min(292px, calc(100vw - 2rem));
 	max-height: min(360px, 52vh);
 	display: flex;
 	flex-direction: column;
-	border-radius: var(--ui-radius-sm) var(--ui-radius-sm) var(--ui-radius) var(--ui-radius-sm);
+	border-radius: var(--ui-radius-sm) var(--ui-radius-sm) var(--ui-radius)
+		var(--ui-radius-sm);
 	border: 1px solid rgba(255, 255, 255, 0.14);
 	background: linear-gradient(
 		165deg,
 		rgba(42, 40, 36, 0.97) 0%,
 		rgba(28, 26, 24, 0.98) 100%
 	);
-	box-shadow:
-		0 12px 40px rgba(0, 0, 0, 0.45),
-		inset 0 1px 0 rgba(255, 255, 255, 0.08);
+	box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45), inset 0 1px 0
+		rgba(255, 255, 255, 0.08);
 	backdrop-filter: blur(16px);
 	overflow: hidden;
 }

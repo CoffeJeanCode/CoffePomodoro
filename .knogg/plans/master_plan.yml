@@ -1,47 +1,180 @@
 stages:
-- id: stage-4
-  status: done
-  tasks:
-  - assignee: cursor
-    desc: 'Crear BrainDump store: estado efímero con expiración 24h, persistencia localStorage temporal, método addNote(text), getNotes(), discardNote(id), discardAll(), autoPurge()'
-    id: T4.1
-    status: done
-  - assignee: cursor
-    desc: 'Crear BrainDump FAB: botón esquina inferior derecha, baja prominencia (gris, pequeño, opacity 0.6), atajo de teclado (ej. Ctrl+Shift+D), abre panel con autofocus'
-    id: T4.2
-    status: done
-  - assignee: cursor
-    desc: 'Crear BrainDump capture panel: modal/overlay minimalista, textarea con autofocus, Enter para guardar y cerrar, Escape para cancelar sin guardar, lista de notas activas visible'
-    id: T4.3
-    status: done
-  - assignee: cursor
-    desc: 'Integrar triage en IntentionComplete: al marcar Intention Fulfilled, mostrar notas capturadas con botones ''Discard'' y ''Copy to Clipboard'', formato Markdown estructurado'
-    id: T4.4
-    status: done
-  - assignee: cursor
-    desc: 'Auto-purge 24h: mecanismo que elimina notas no procesadas al cambiar de día o tras 24h, sin confirmación, irreversible'
-    id: T4.5
-    status: done
-  title: Sistema Efímero de Descarga Cognitiva (Brain Dump)
-- id: stage-5
-  status: pending
-  tasks:
-  - assignee: cursor
-    desc: 'Definir presets: Deep Immersion (90m/20m break), Sustained Rhythm (52m/17m break), Quick Start (25m/5m break). Reemplazar schema actual con estos presets semánticos'
-    id: T5.1
-    status: done
-  - assignee: cursor
-    desc: 'Actualizar Timer model: añadir campos presetName, baseBreakMinutes, eliminar duración libre de minutos'
-    id: T5.2
-    status: done
-  - assignee: cursor
-    desc: 'Crear DepthSelector: componente minimalista con 3 opciones semánticas (no numéricas), iconos de profundidad, selección con un clic'
-    id: T5.3
-  - assignee: cursor
-    desc: 'Actualizar useTimer: calcular break bonus = baseBreakMinutes(preset) + savedTimeBonus, manejar transiciones con nuevos presets'
-    id: T5.4
-    status: done
-  - assignee: cursor
-    desc: 'Actualizar Settings: reemplazar schema editor con DepthSelector, mantener configuración de volumen/notificaciones intacta'
-    id: T5.5
-  title: Calibración Energética (Presets Científicos)
+  PWA-1:
+    dod:
+    - npm run build genera un manifest.webmanifest valido con display standalone
+    - 'Lighthouse audits: installable=yes'
+    - Iconos 192+512 presentes en manifest
+    - Prompt de instalacion aparece solo cuando el timer esta pausado o detenido
+    - Meta tags (theme-color, apple-touch-icon, manifest link) presentes en index.html
+    name: Aislamiento Visual y Manifiesto (Instalabilidad)
+    objective: Configurar manifest.json y assets visuales para que la app sea instalable en escritorio/movil ejecutandose en modo standalone/fullscreen, eliminando la interfaz del navegador (barra de URL, pestanas) para crear un lienzo libre de distracciones.
+    tasks:
+      PWA-T1.1:
+        assignee: opencode
+        description: Agregar vite-plugin-pwa como devDependency y configurar VitePWA plugin en vite.config.ts con registerType=autoUpdate, workbox config basica, y manifest placeholder
+        status: pending
+        title: Instalar vite-plugin-pwa y configurar VitePluginPWAModule
+      PWA-T1.2:
+        assignee: opencode
+        description: Definir Web App Manifest con name, short_name, description, start_url, display=standalone, theme_color, background_color, iconos 192x192 y 512x512 (maskable), categories=productivity
+        status: pending
+        title: Crear manifest.webmanifest con display standalone
+      PWA-T1.3:
+        assignee: opencode
+        description: 'Crear iconos PWA a partir de favicon.svg existente: 192x192, 512x512 (maskable con padding), apple-touch-icon 180x180. Usar svg-to-png o herramienta similar en public/icons/'
+        status: pending
+        title: Generar iconos PWA (192, 512, maskable, favicon iOS)
+      PWA-T1.4:
+        assignee: opencode
+        description: Agregar theme-color meta, apple-mobile-web-app-capable, apple-mobile-web-app-status-bar-style, link rel=manifest, link rel=apple-touch-icon en index.html head
+        status: pending
+        title: Agregar meta tags PWA en index.html
+      PWA-T1.5:
+        assignee: opencode
+        description: 'Crear hook useInstallPrompt que capture beforeinstallprompt, guarde el deferredPrompt, y exponga canInstall + triggerInstall. Solo mostrar prompt cuando timer NO este corriendo (respetar foco activo). UI sutil: btn flotante o Mantine Badge'
+        status: pending
+        title: Implementar prompt de instalacion contextual (beforeinstallprompt)
+  PWA-2:
+    dod:
+    - npm run build genera sw.js y workbox files automaticamente
+    - App carga y funciona en modo avion (Chrome DevTools offline simulation)
+    - Fuentes Playfair Display cargan sin conexion a internet
+    - Alarmas .mp3/.aac reproducen correctamente offline
+    - Lighthouse PWA score >= 90 en categoria offline
+    - Update notification Mantine sutil aparece cuando hay nueva version
+    name: El Refugio Offline (Service Worker y Caching)
+    objective: Implementar y registrar un Service Worker para cache de recursos estaticos (HTML, CSS, JS, fuentes, sonidos de alarma). Garantizar carga instantanea y funcionamiento completo en modo avion/sin WiFi.
+    tasks:
+      PWA-T2.1:
+        assignee: opencode
+        description: Configurar VitePWA workbox con globPatterns para JS/CSS/HTML, navigateFallback, runtimeCaching para Google Fonts (cacheFirst con 30 dias), y precaching de assets de alarma
+        status: pending
+        title: Configurar Workbox en vite-plugin-pwa para precaching de app shell
+      PWA-T2.2:
+        assignee: opencode
+        description: Descargar Playfair Display y mover a src/assets/fonts/. Eliminar dependencia de Google Fonts CDN en index.html. Agregar @font-face en CSS. Garantiza funcionamiento 100% offline sin CDN
+        status: pending
+        title: Migrar fuentes a bundle local (self-hosted)
+      PWA-T2.3:
+        assignee: opencode
+        description: Configurar runtimeCaching para los archivos .mp3/.aac en src/assets/ con cacheFirst strategy. Los sonidos de alarma deben funcionar offline para notificar fin de sesion correctamente
+        status: pending
+        title: Estrategia de cache para assets de audio (alarmas)
+      PWA-T2.4:
+        assignee: opencode
+        description: Importar y ejecutar registerSW() de virtual:pwa-register en main.tsx. Configurar onUpdate callback para notificar al usuario cuando hay nueva version disponible (Mantine Notification sutil, sin interrumpir sesion activa)
+        status: pending
+        title: Registrar Service Worker en main.tsx con autoUpdate
+      PWA-T2.5:
+        assignee: opencode
+        description: Crear pagina offline.html en public/ que muestre un mensaje coherente con el branding de CoffePomodoro si algo falla. Configurar navigateFallback en workbox para usarla
+        status: pending
+        title: Agregar pagina offline fallback personalizada
+  PWA-3:
+    dod:
+    - Migracion de stores a IndexedDB completada sin perdida de datos existentes
+    - Sesiones de timer activas se restauran al reabrir la PWA con remainingTime recalculado
+    - Brain Dump notes persisten correctamente tras cierre y reinicio de app/dispositivo
+    - Auto-purge de notas >24h se ejecuta al abrir la app
+    - Export/Import JSON funciona para backup manual de los datos del usuario
+    - Lighthouse PWA audit pasa con score >= 90
+    - La app funciona 100% offline sin dependencia de red para ningun feature
+    name: Persistencia Local del Estado Cognitivo
+    objective: Adaptar el almacenamiento del estado de la app (ciclo activo, intencion actual, notas Brain Dump) para que persistan de forma segura localmente. Si el usuario cierra la PWA o reinicia su dispositivo, la sesion y notas temporales persisten respetando la regla de auto-limpieza de 24 horas, sin depender de base de datos en la nube.
+    tasks:
+      PWA-T3.1:
+        assignee: opencode
+        description: Migrar schema store (esquemas de usuario custom) y brainDump store a IndexedDB usando el indexedDBStorage ya existente en src/utils/storage.ts. Agregar storeVersion adecuado para cada migracion. Las notas del Brain Dump y los esquemas deben sobrevivir cierre de app o reinicio de dispositivo
+        status: pending
+        title: Migrar stores pesados de localStorage a IndexedDB via storage.ts existente
+      PWA-T3.2:
+        assignee: opencode
+        description: El store timer ya persiste con localStorage, pero no maneja recovery de sesion activa. Agregar logica en useTimer para calcular remainingTime desde finishTime al reabrir la app, restaurando el temporizador en curso con la intencion activa. Si remainingTime <= 0 al reabrir, contar como sesion completada/salteada segun progreso
+        status: pending
+        title: Implementar timer persistence con recovery de sesion activa
+      PWA-T3.3:
+        assignee: opencode
+        description: Agregar un indicador sutil en la UI (icono de escudo/check en TimerHeader o AppToolbar) que muestre si los datos estan siendo persistidos correctamente. Si IndexedDB falla, mostrar advertencia con opcion de exportar datos como JSON backup
+        status: pending
+        title: Implementar indicador de persistencia de datos locales
+      PWA-T3.4:
+        assignee: opencode
+        description: Crear feature de exportar/importar todas las stores como JSON para backup manual. Agregar en Settings > Behavior tab. Permite al usuario migrar datos entre dispositivos sin nube. Export descarga archivo .json, import lo restaura via textarea o file input
+        status: pending
+        title: Agregar exportacion/importacion de datos de usuario
+      PWA-T3.5:
+        assignee: opencode
+        description: Ejecutar autoPurge() del brainDump store al inicializar la app (en App.tsx o main.tsx). Ya existe la funcion, solo necesita invocarse en startup para limpiar notas >24h que hayan expirado mientras la app estuvo cerrada
+        status: pending
+        title: Auto-purge al abrir la app (respect 24h Brain Dump rule)
+  SSE-1:
+    name: 'Desacoplamiento de Tokens y Enrutador de Estilos (Shape Language Engine)'
+    objective: Abandonar el motor de "temas de color" (data-theme acopla color+forma) y reestructurar el sistema en DOS ejes ortogonales. Eje de color (--color-*) independiente y constante; eje estructural (--ui-*) que controla geometria, topologia, sombras, tipografia y fisicas, conmutado por un atributo data-ui-style en el elemento raiz. El cambio estructural no debe tocar ningun token de color ni disparar recalculos de layout en JavaScript.
+    dod:
+    - 'Los CSS Custom Properties estan estrictamente separados: tokens de color bajo el prefijo --color-* y tokens estructurales bajo --ui-* (radius, border-width, border-style, shadow, blur, font-family, transition, spring, press-transform)'
+    - 'Ningun componente usa valores de forma quemados (radius/border/shadow/font/transition hardcoded); todos consumen var(--ui-*)'
+    - 'Ningun componente usa colores quemados; todos consumen var(--color-*)'
+    - 'Existe useUIStyleState (zustand persistido) que escribe data-ui-style en document.documentElement sin re-render de React (paridad con ADR-0010)'
+    - 'El eje de color y el eje estructural son independientes: cambiar uno no muta el otro'
+    - 'npm run build pasa y no hay lecturas de getComputedStyle por tick ni reflow forzado en el cambio de estilo'
+    tasks:
+      SSE-T1.1:
+        assignee: cursor
+        description: 'Definir la taxonomia de tokens en app.css :root separando dos capas. Capa de COLOR (independiente, no la toca el switch estructural): --color-bg, --color-surface, --color-surface-2, --color-text, --color-text-muted, --color-accent, --color-accent-contrast, --color-success, --color-info, --color-warning, --color-border-ink. Capa ESTRUCTURAL (la conmuta data-ui-style): geometria (--ui-radius, --ui-radius-sm, --ui-radius-pill, --ui-border-width, --ui-border-style, --ui-border-color), topologia (--ui-shadow, --ui-shadow-sm, --ui-shadow-pressed, --ui-blur, --ui-surface-alpha), tipografia (--ui-font-family, --ui-font-display, --ui-letter-spacing, --ui-text-transform), fisica (--ui-duration, --ui-duration-slow, --ui-ease, --ui-spring, --ui-press-transform). Regla clave: los tokens estructurales COMPONEN tokens de color (ej. --ui-border-color usa var(--color-border-ink) o un rgba translucido) pero nunca definen matices.'
+        status: done
+        title: Definir taxonomia de tokens (capa color vs capa estructura)
+      SSE-T1.2:
+        assignee: cursor
+        description: 'Auditar y migrar todo el CSS/JS a tokens. Reemplazar radius/border/shadow/font/transition quemados en ui.module.css, Timer/styles/Timer.module.css, mantineTheme.ts, GlassPanel.tsx y app.css por var(--ui-*). Reemplazar colores quemados (rgba(255,255,255,...), #1a1a1a, etc.) por var(--color-*). El componente GlassPanel y los paneles/botones/modales deben quedar agnosticos de forma: su geometria sale 100% de variables.'
+        status: done
+        title: Migrar componentes a tokens abstractos (cero valores quemados)
+      SSE-T1.3:
+        assignee: cursor
+        description: 'Implementar el Enrutador de Estilos: store useUIStyleState (zustand + persist, key ui-style) con applyUIStyle(id) que hace document.documentElement.setAttribute("data-ui-style", id). Aplicar en carga inicial (modulo) y en cada cambio, igual que el patron applyTheme de ADR-0010 (cero re-render del DOM React). El bloque [data-ui-style="X"] en CSS solo sobre-escribe tokens --ui-* estructurales.'
+        status: done
+        title: Construir Style Router via atributo data-ui-style (zero re-render)
+      SSE-T1.4:
+        assignee: cursor
+        description: 'Desacoplar el motor de color existente del estructural. El actual data-theme/useThemeState (que mezcla color+forma) se divide: la informacion de color de los temas pasa a ser opcionalmente un "color scheme" independiente bajo --color-*, mientras que la forma migra a los 3 perfiles data-ui-style. Garantizar que setTheme (color) y setUIStyle (estructura) no interfieran y que ambos persistan por separado.'
+        status: done
+        title: Separar el motor de color del motor estructural (ejes ortogonales)
+  SSE-2:
+    name: 'Perfiles Estructurales Radicales y Superficie de Control'
+    objective: Definir tres perfiles estructurales que hagan sentir la app como tres softwares distintos usando exactamente los mismos colores. Cada perfil solo sobre-escribe tokens --ui-*. Exponer el control al usuario separado del control de color, y dar paridad estructural a superficies fuera del arbol React (PiP).
+    dod:
+    - 'Al cambiar data-ui-style entre mechanical/brutal/ethereal la interfaz muta su geometria y sus fisicas de interaccion al instante'
+    - 'Con el mismo --color-accent, los tres perfiles se ven radicalmente diferentes (forma, sombra, tipografia, fisica) sin alterar el matiz'
+    - 'El boton en perfil Brutalism se desplaza fisicamente al hacer click para cancelar su sombra proyectada; el perfil Neumorphism alterna extruido->hundido via inset; el perfil Ethereal usa spring fluido + scale'
+    - 'La ventana PiP refleja el perfil estructural activo (geometria, sombra, tipografia) reusando los tokens'
+    - 'El selector de Estilo/Forma esta separado del selector de Color en Settings y en el menu de click derecho'
+    tasks:
+      SSE-T2.1:
+        assignee: cursor
+        description: 'Perfil A "Mecanico / Neumorfismo Duro" (Hardware vibe). [data-ui-style="mechanical"]: --ui-radius:12px, --ui-border-width:0px, --ui-shadow dual extruido (6px 6px 12px sombra-oscura + -6px -6px 12px luz, derivadas de la luminancia de superficie, NO del acento), --ui-shadow-pressed inset (hundido), --ui-blur:none, fisica con peso --ui-ease cubic-bezier(0.4,0,0.6,1) lento (~0.4s), --ui-press-transform:none (el feedback es el swap a inset). Elementos parecen extruidos del fondo (plastico/metal).'
+        status: done
+        title: 'Perfil A: Mecanico / Neumorfismo Duro'
+      SSE-T2.2:
+        assignee: cursor
+        description: 'Perfil B "Brutalismo Tactil" (alta friccion positiva). [data-ui-style="brutal"]: --ui-radius:0px, --ui-border-width:3px, --ui-border-style:solid, --ui-border-color:var(--color-border-ink), --ui-shadow:4px 4px 0px var(--color-border-ink) (opaca, sin blur), --ui-blur:none, tipografia de alta densidad (monoespaciada/display rigida) con --ui-text-transform:uppercase y --ui-letter-spacing, fisica seca/instantanea (~0.08s o rebote mecanico), --ui-press-transform: translate(4px,4px) + --ui-shadow-pressed:0 0 0 (al click el boton se desplaza para cancelar su sombra).'
+        status: done
+        title: 'Perfil B: Brutalismo Tactil'
+      SSE-T2.3:
+        assignee: cursor
+        description: 'Perfil C "Etereo / Glassmorphism" (flujo y suspension). [data-ui-style="ethereal"]: --ui-radius:1.5rem y --ui-radius-pill:99px (pildoras), --ui-border-width:1px con --ui-border-color translucido (rgba sutil derivado de --color-text), --ui-blur:blur(20px) saturate(150%) (uso intensivo de backdrop-filter), sombras muy difusas y multicapa en el eje Z (0 16px 48px rgba muy suave), fisica de resorte fluida --ui-spring cubic-bezier(0.34,1.56,0.64,1) ~0.45s, --ui-press-transform:scale(0.96). Elementos flotan en capas.'
+        status: done
+        title: 'Perfil C: Etereo / Glassmorphism'
+      SSE-T2.4:
+        assignee: cursor
+        description: 'Superficie de control separada. En Settings dividir en dos controles distintos: "Forma/Estilo" (mechanical/brutal/ethereal -> setUIStyle) y "Color" (esquema de color -> setTheme/color scheme). Anadir submenu de Estilo en QuickMenu (click derecho) ademas del de Color. Previews que muestren la forma sin cambiar el color. Retirar el ThemeSwitcher de los botones superiores (ya hecho).'
+        status: done
+        title: Separar selectores de Forma y Color en Settings + click derecho
+      SSE-T2.5:
+        assignee: cursor
+        description: 'Paridad estructural en PiP. getPiPStyles debe recibir tokens divididos (color + estructura) del perfil activo y aplicarlos al documento PiP (radius, border, shadow, blur, font, press) ademas del color. Re-render del CSS PiP cuando cambia data-ui-style (clave de estilo que incluya el perfil estructural, no solo el modo).'
+        status: done
+        title: Propagar tokens estructurales a la ventana PiP
+      SSE-T2.6:
+        assignee: opencode
+        description: 'Verificar el DoD del motor: (1) mutacion instantanea al cambiar data-ui-style; (2) invariancia de color: capturar --color-accent y confirmar identico valor en los 3 perfiles; (3) performance: confirmar que el switch es solo cascada CSS, sin getComputedStyle por tick ni reflow forzado en JS; (4) npm run build limpio + arranque del contenedor.'
+        status: done
+        title: Verificar DoD (mutacion instantanea, invariancia de color, performance, build)

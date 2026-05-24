@@ -1,4 +1,4 @@
-import type { Timers, Behavior } from "./config";
+import type { Behavior, Timers } from "./config";
 
 export type DepthPresetKey = "deep" | "sustained" | "quick";
 
@@ -11,7 +11,9 @@ export interface DepthPreset {
 	timers: Timers;
 	behavior: Pick<
 		Behavior,
-		"pomodorosToLongBreak" | "sessionAdjustStepMinutes" | "skipCountsSessionMinProgressPercent"
+		| "pomodorosToLongBreak"
+		| "sessionAdjustStepMinutes"
+		| "skipCountsSessionMinProgressPercent"
 	>;
 }
 
@@ -66,7 +68,11 @@ export const DEPTH_PRESETS: Record<DepthPresetKey, DepthPreset> = {
 	},
 };
 
-export const DEPTH_PRESET_ORDER: DepthPresetKey[] = ["deep", "sustained", "quick"];
+export const DEPTH_PRESET_ORDER: DepthPresetKey[] = [
+	"deep",
+	"sustained",
+	"quick",
+];
 
 export function depthPresetTitle(preset: DepthPreset): string {
 	return `${preset.label} (${preset.subtitle})`;

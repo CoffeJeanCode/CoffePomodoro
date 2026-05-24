@@ -10,7 +10,7 @@ const TimerText: FC<TimerTextProps> = ({
 	remainingTimeText: _remainingTimeText,
 	sessionProgressPercent,
 }) => {
-	const minutesLeft = Math.ceil(sessionProgressPercent / 100 * 25);
+	const minutesLeft = Math.ceil((sessionProgressPercent / 100) * 25);
 	const progressLabel =
 		sessionProgressPercent < 25
 			? "Starting"

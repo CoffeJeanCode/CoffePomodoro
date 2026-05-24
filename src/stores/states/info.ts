@@ -40,7 +40,8 @@ export const useInfoState = create<InfoState>()(
 			setSessions: (sessions) => set(() => ({ sessions })),
 			setMode: (mode) => set(() => ({ mode })),
 			setEndWeek: (endWeek) => set(() => ({ endWeek })),
-			setSessionIntention: (sessionIntention) => set(() => ({ sessionIntention })),
+			setSessionIntention: (sessionIntention) =>
+				set(() => ({ sessionIntention })),
 			setIntentionConfirmed: (intentionConfirmed) =>
 				set(() => ({ intentionConfirmed })),
 			clearSessionIntention: () =>

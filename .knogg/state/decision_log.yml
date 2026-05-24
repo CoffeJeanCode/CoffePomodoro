@@ -47,3 +47,27 @@ decisions:
   status: accepted
   scope: product-architecture
   reason: Transformar Coffe Pomodoro de herramienta de productividad tradicional a plataforma de efectividad con atención plena. Contraarrestar la "sociedad del cansancio" eliminando urgencia visual, gamificación y autoexplotación. Enfoque en flow states, reducción de fatiga mental y diseño contemplativo.
+- id: ADR-0009
+  date: 2026-05-24
+  title: 'ADR-0009: PWA Architecture — CoffePomodoro as Focus Sanctuary'
+  status: proposed
+  scope: global
+  reason: 'Convert CoffePomodoro into a PWA to isolate users from browser visual noise (standalone/fullscreen mode) and enable 100% offline use. The strategic motivation is cognitive: removing distractions and internet dependency allows deep focus sessions. Three incremental stages: (1) Manifest + visual isolation, (2) Service Worker + offline caching, (3) Local state persistence hardening. Uses vite-plugin-pwa (Workbox) to align with the existing Vite build pipeline. All 6 Zustand stores already use persist middleware (5 localStorage, 1 IndexedDB) — Stage 3 will migrate the heaviest stores to IndexedDB and add graceful persistence guarantees without cloud dependency.'
+- id: ADR-0010
+  date: 2026-05-24
+  title: 'ADR-0010: Theme engine via CSS custom properties on :root'
+  status: superseded
+  scope: frontend
+  reason: All 7 themes defined in src/theme/themes.ts as CSS custom property maps. applyTheme() writes vars to document.documentElement.style — zero React re-renders on theme switch. useThemeState persisted store triggers applyTheme on load and on change. Mantine theme reads var(--ui-*) for colors, fonts, radius, shadows. Per-theme visual effects (Neo-Brutal offset shadow, Hardware neumorphic inset, Terminal scanline, Tesseract perspective) driven purely by CSS vars. Spring physics via --ui-spring-ease and --ui-spring-duration. UI sounds via Web Audio API with synthetic WAV decodes after first user interaction (iOS AudioContext policy). SUPERSEDED by ADR-0011 — this engine conflated color and shape under a single data-theme axis; the project pivots to a Structural Style Engine that decouples color tokens from structural tokens.
+- id: ADR-0011
+  date: 2026-05-24
+  title: 'ADR-0011: Structural Style Engine — decouple color from shape (Shape Language)'
+  status: accepted
+  scope: frontend
+  reason: 'Replace the color-coupled theme engine (ADR-0010) with a two-axis personalization model. Axis 1 = COLOR (--color-* tokens: bg, surface, text, accent, border-ink, semantic) that stays constant/independent. Axis 2 = STRUCTURE (--ui-* tokens: radius, border-width/style/color, shadow + shadow-pressed, blur, font-family/display, letter-spacing, text-transform, duration, ease, spring, press-transform) switched globally by a data-ui-style attribute on document.documentElement. Structural tokens COMPOSE color tokens (e.g. --ui-border-color references --color-border-ink) but never define hues, so changing the structural profile never alters the user color. Three radical base profiles: mechanical (hard neumorphism — extruded dual shadows, soft radius, no border, weighty ease), brutal (zero radius, thick solid borders, hard opaque offset shadow, dense/mono typography, press translates to cancel its shadow), ethereal (pill radii, 1px translucent borders, intensive backdrop-filter blur, very diffuse layered shadows, fluid spring physics). Router mirrors ADR-0010 mechanics: a persisted zustand store sets the data-attribute on :root with zero React re-render; the switch is pure CSS cascade with no per-tick getComputedStyle and no forced layout reflow. The app must feel like three different products using exactly the same colors.'
+- id: ADR-0012
+  date: 2026-05-24
+  title: 'ADR-0012: Shape Language Engine V2 — Color Fixed, Canvas Variable'
+  status: proposed
+  scope: global
+  reason: 'The theme engine decouples color (fixed R/G/B accents for timer modes) from structure (3 shape languages: Ciberpunk, Rustico, Minimal). Color tokens are immutable CSS vars; structural tokens switch via data-ui-style attribute on :root. Three vertical delivery stages (A/B/C) + validation stage (V). Mantine forces --ui-* vars over native dark/light. Icons, sounds, physics all follow the structural style.'

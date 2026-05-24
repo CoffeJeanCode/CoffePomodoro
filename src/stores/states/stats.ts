@@ -2,8 +2,8 @@ import {
 	type DailyStats,
 	type FocusMetrics,
 	type Stats,
-	type WeeklyStats,
 	Weekday,
+	type WeeklyStats,
 } from "@/models/stats";
 import { indexedDBStorage } from "@/utils/storage";
 import { create } from "zustand";
@@ -113,8 +113,7 @@ export const useStatsState = create<StatsState>()(
 				const newDistribution = {
 					...get().focusMetrics.timeDistribution,
 					[timeOfDay]:
-						(get().focusMetrics.timeDistribution[timeOfDay] ?? 0) +
-						daily.time,
+						(get().focusMetrics.timeDistribution[timeOfDay] ?? 0) + daily.time,
 				};
 
 				set({

@@ -1,10 +1,14 @@
 import { AppToolbarButton } from "@/components/ui/AppToolbarButton";
 import { GlassStatCard } from "@/components/ui/GlassStatCard";
 import { useStatsState } from "@/stores/states/stats";
-import { DRAWER_BOTTOM_TRANSITION, UI_ACCENT, UI_CHART } from "@/theme/uiTokens";
+import ui from "@/styles/ui.module.css";
+import {
+	DRAWER_BOTTOM_TRANSITION,
+	UI_ACCENT,
+	UI_CHART,
+} from "@/theme/uiTokens";
 import { calculateProductivityImprovement } from "@/utils/stats.utils";
 import { secondsToMinutes } from "@/utils/time.util";
-import ui from "@/styles/ui.module.css";
 import { Box, Drawer, Flex, Grid, Text } from "@mantine/core";
 import * as Plot from "@observablehq/plot";
 import { keys } from "ramda";

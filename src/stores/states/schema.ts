@@ -6,8 +6,9 @@ import {
 import type { Schemas, TimerSchema } from "@/models/schemas";
 import { createId } from "@/utils/extra.utils";
 import { normalizeTimerSchema } from "@/utils/normalizeConfiguration";
+import { indexedDBStorage } from "@/utils/storage";
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { createJSONStorage, persist } from "zustand/middleware";
 import { storeVersion } from "../config";
 import { ALARMS } from "../constants";
 
@@ -22,7 +23,11 @@ export interface SchemasState extends Schemas {
 
 const NOTIFICATION_BY_PRESET = {
 	deep: { alarm: ALARMS.Rise, desktopNotification: true, volume: 70 },
-	sustained: { alarm: ALARMS.Micellaneus, desktopNotification: true, volume: 50 },
+	sustained: {
+		alarm: ALARMS.Micellaneus,
+		desktopNotification: true,
+		volume: 50,
+	},
 	quick: { alarm: ALARMS.Shake, desktopNotification: false, volume: 30 },
 } as const;
 
@@ -96,6 +101,7 @@ export const useSchemasState = create<SchemasState>()(
 		{
 			name: "schemas",
 			version: storeVersion,
+			storage: createJSONStorage(() => indexedDBStorage),
 			merge: (persisted, current) => {
 				const p = (persisted ?? {}) as Partial<SchemasState>;
 				let raw = p.schemas ?? current.schemas;
