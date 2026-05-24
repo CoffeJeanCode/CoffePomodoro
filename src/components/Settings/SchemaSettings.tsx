@@ -1,18 +1,11 @@
 import type { Configuration } from "@/models";
+import type { DepthPresetValue } from "@/models/depth";
 import { DEPTH_PRESETS } from "@/models/depth";
 import type { TimerSchema } from "@/models/schemas";
 import { useDepthState, useSchemasState, useTimerState } from "@/stores";
 import { SCHEMA_KEYS } from "@/stores/constants";
 import { secondsToMinutes } from "@/utils/time.util";
-import {
-	Box,
-	Button,
-	Flex,
-	Input,
-	Select,
-	Text,
-	Title,
-} from "@mantine/core";
+import { Box, Button, Flex, Input, Select, Text, Title } from "@mantine/core";
 import { getHotkeyHandler } from "@mantine/hooks";
 import type { FC } from "react";
 import { useState } from "react";
@@ -20,12 +13,21 @@ import { FaCheck, FaEdit, FaPlus, FaTrash } from "react-icons/fa";
 
 interface Props {
 	configuration: Configuration | TimerSchema;
-	setConfigValue: (path: string, value: any) => void;
+	setConfigValue: (
+		path: string,
+		value: DepthPresetValue | string | number | boolean,
+	) => void;
 }
 
 const SchemaSettings: FC<Props> = ({ configuration }) => {
-	const { schemas, currentSchemaId, addSchema, setCurrentSchema, updateSchema, deleteSchema } =
-		useSchemasState();
+	const {
+		schemas,
+		currentSchemaId,
+		addSchema,
+		setCurrentSchema,
+		updateSchema,
+		deleteSchema,
+	} = useSchemasState();
 	const setActivePreset = useDepthState((s) => s.setActivePreset);
 	const resetForNext = useTimerState((state) => state.resetForNext);
 	const [isEditing, setIsEditing] = useState(false);
@@ -102,16 +104,16 @@ const SchemaSettings: FC<Props> = ({ configuration }) => {
 					gap="xs"
 					align="center"
 					justify="space-between"
-				style={(theme) => ({
-					borderRadius: theme.radius.sm,
-					background: isEditing
-						? "var(--mantine-color-dark-6)"
-						: "var(--ui-glass-bg)",
-					border: isEditing
-						? "1px solid var(--mantine-color-red-8)"
-						: "1px solid transparent",
-					transition: "background 150ms, border-color 150ms",
-				})}
+					style={(theme) => ({
+						borderRadius: theme.radius.sm,
+						background: isEditing
+							? "var(--mantine-color-dark-6)"
+							: "var(--ui-glass-bg)",
+						border: isEditing
+							? "1px solid var(--mantine-color-red-8)"
+							: "1px solid transparent",
+						transition: "background 150ms, border-color 150ms",
+					})}
 				>
 					<Flex align="center" gap="xs" style={{ flex: 1, minWidth: 0 }}>
 						{isEditing ? (

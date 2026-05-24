@@ -94,7 +94,13 @@ const usePictureInPicture = ({
 		const colors = getModeHexColors(mode);
 		const ambient = buildAmbientBackground(mode, sessionProgressPercent);
 
-		updatePiPTimeElements(doc, timerState, timerState.remainingTimeText, mode, sessionIntention);
+		updatePiPTimeElements(
+			doc,
+			timerState,
+			timerState.remainingTimeText,
+			mode,
+			sessionIntention,
+		);
 		updatePiPAmbient(doc, ambient);
 		updatePiPProgressRing(doc, sessionProgressPercent, colors.btnMain);
 

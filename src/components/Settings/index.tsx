@@ -1,19 +1,11 @@
+import { AppDrawer } from "@/components/ui/AppDrawer";
+import { AppToolbarButton } from "@/components/ui/AppToolbarButton";
 import { type ConfigurationState, useConfigState } from "@/stores";
 import { SCHEMA_KEYS } from "@/stores/constants";
 import { useSchemasState } from "@/stores/states/schema";
-import { AppDrawer } from "@/components/ui/AppDrawer";
-import { AppToolbarButton } from "@/components/ui/AppToolbarButton";
-import { DRAWER_LEFT_TRANSITION } from "@/theme/uiTokens";
 import ui from "@/styles/ui.module.css";
-import {
-	Box,
-	Button,
-	Divider,
-	Flex,
-	Stack,
-	Tabs,
-	Text,
-} from "@mantine/core";
+import { DRAWER_LEFT_TRANSITION } from "@/theme/uiTokens";
+import { Box, Button, Divider, Flex, Stack, Tabs, Text } from "@mantine/core";
 import { getHotkeyHandler, useHotkeys } from "@mantine/hooks";
 import { memo, useState } from "react";
 import { FaWrench } from "react-icons/fa";
@@ -81,21 +73,21 @@ const Settings = () => {
 				title="Settings"
 				onClose={() => setIsOpen(false)}
 				transitionProps={DRAWER_LEFT_TRANSITION}
-			styles={{
-				content: {
-					overflowX: "hidden",
-					borderLeft: "none",
-					borderRight: "1px solid var(--ui-glass-border)",
-				},
-				body: {
-					maxWidth: "100%",
-					display: "flex",
-					flexDirection: "column",
-					flex: 1,
-					overflow: "hidden",
-					paddingBottom: 0,
-				},
-			}}
+				styles={{
+					content: {
+						overflowX: "hidden",
+						borderLeft: "none",
+						borderRight: "1px solid var(--ui-glass-border)",
+					},
+					body: {
+						maxWidth: "100%",
+						display: "flex",
+						flexDirection: "column",
+						flex: 1,
+						overflow: "hidden",
+						paddingBottom: 0,
+					},
+				}}
 				onKeyDown={getHotkeyHandler([
 					["shift+k+s", handleSaveChangesSettings, { preventDefault: true }],
 					["shift+k+c", handleCancelChangesSettings, { preventDefault: true }],
@@ -181,7 +173,11 @@ const Settings = () => {
 							>
 								Discard
 							</Button>
-							<Button color="red" variant="light" onClick={handleSaveChangesSettings}>
+							<Button
+								color="red"
+								variant="light"
+								onClick={handleSaveChangesSettings}
+							>
 								Save changes
 							</Button>
 						</Flex>

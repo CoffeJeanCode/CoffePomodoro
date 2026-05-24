@@ -1,8 +1,8 @@
-import { Mode } from "@/models";
 import RotatingTip from "@/components/ui/RotatingTip";
+import { Mode } from "@/models";
+import ui from "@/styles/ui.module.css";
 import { getModeTitle } from "@/utils/modeLabels";
 import { secondsToMinutes } from "@/utils/time.util";
-import ui from "@/styles/ui.module.css";
 import { Box, Button, Collapse, Stack, Text, Title } from "@mantine/core";
 import { type FC, memo, useState } from "react";
 import { FaLightbulb } from "react-icons/fa";
@@ -86,8 +86,15 @@ const BreakRestScreen: FC<BreakRestScreenProps> = ({
 					</Text>
 				)}
 				<BreathingCircle large={large} isAnimating={isRunning} />
-				<Text size="xs" c="dimmed" ta="center" style={{ opacity: 0.45, maxWidth: 240, lineHeight: 1.5 }}>
-					{isLong ? "Look away · Stretch · Do nothing" : "Breathe · Release · Recover"}
+				<Text
+					size="xs"
+					c="dimmed"
+					ta="center"
+					style={{ opacity: 0.45, maxWidth: 240, lineHeight: 1.5 }}
+				>
+					{isLong
+						? "Look away · Stretch · Do nothing"
+						: "Breathe · Release · Recover"}
 				</Text>
 				<Button
 					variant="subtle"

@@ -1,6 +1,6 @@
+import ui from "@/styles/ui.module.css";
 import { Box, Text } from "@mantine/core";
 import { type FC, memo } from "react";
-import ui from "@/styles/ui.module.css";
 
 interface BreathingCircleProps {
 	large?: boolean;

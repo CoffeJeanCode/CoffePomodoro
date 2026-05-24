@@ -63,9 +63,8 @@
 	box-shadow: none;
 	backdrop-filter: none;
 	-webkit-backdrop-filter: none;
-	transition:
-		background var(--ui-duration-slow) var(--ui-ease),
-		opacity var(--ui-duration-slow) var(--ui-ease);
+	transition: background var(--ui-duration-slow) var(--ui-ease), opacity
+		var(--ui-duration-slow) var(--ui-ease);
 }
 
 .glassInset {
@@ -73,9 +72,8 @@
 	border: 1px solid var(--ui-glass-border);
 	border-radius: var(--ui-radius-sm);
 	backdrop-filter: blur(12px);
-	transition:
-		background var(--ui-duration) var(--ui-ease),
-		border-color var(--ui-duration) var(--ui-ease);
+	transition: background var(--ui-duration) var(--ui-ease), border-color
+		var(--ui-duration) var(--ui-ease);
 }
 
 .tipCard {
@@ -165,9 +163,8 @@
 	border: 1px solid var(--ui-glass-border);
 	border-radius: var(--ui-radius-sm);
 	backdrop-filter: blur(12px);
-	transition:
-		background var(--ui-duration) var(--ui-ease),
-		border-color var(--ui-duration) var(--ui-ease);
+	transition: background var(--ui-duration) var(--ui-ease), border-color
+		var(--ui-duration) var(--ui-ease);
 }
 
 .sectionTitle {
