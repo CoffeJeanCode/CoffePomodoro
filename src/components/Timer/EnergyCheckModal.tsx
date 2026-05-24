@@ -35,7 +35,7 @@ const EnergyCheckModal: FC<EnergyCheckModalProps> = ({
 				</Text>
 				<Group grow gap="sm">
 					<Button variant="light" color="gray" onClick={onContinue}>
-						 Aún tengo claridad
+						Aún tengo claridad
 					</Button>
 					<Button variant="filled" color="gray" onClick={onDownshift}>
 						Necesito una pausa

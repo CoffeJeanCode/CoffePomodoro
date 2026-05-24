@@ -10,6 +10,7 @@ import { Center, Container, Flex, Loader, Stack, Title } from "@mantine/core";
 const Helps = lazy(() => import("@/components/Helps"));
 const QuickMenu = lazy(() => import("@/components/QuickMenu"));
 const BrainDump = lazy(() => import("@/components/BrainDump"));
+const DataDropZone = lazy(() => import("@/components/DataDropZone"));
 const Settings = lazy(() => import("@/components/Settings"));
 const Stats = lazy(() => import("@/components/Stats"));
 const Shutdown = lazy(() => import("@/components/Shutdown"));
@@ -82,6 +83,7 @@ const Home = () => {
 			<QuickMenu />
 			<BrainDump />
 			<Shutdown />
+			<DataDropZone />
 		</Suspense>
 	);
 };

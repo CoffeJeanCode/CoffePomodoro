@@ -43,7 +43,9 @@ export function normalizeConfiguration(
 	};
 }
 
-export function normalizeTimerSchema(schema: Partial<TimerSchema> & Pick<TimerSchema, "id" | "title">): TimerSchema {
+export function normalizeTimerSchema(
+	schema: Partial<TimerSchema> & Pick<TimerSchema, "id" | "title">,
+): TimerSchema {
 	return {
 		id: schema.id,
 		title: schema.title,

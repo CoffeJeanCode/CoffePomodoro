@@ -1,0 +1,45 @@
+.overlay {
+	position: fixed;
+	inset: 0;
+	z-index: 9000;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 2rem;
+	text-align: center;
+	background: rgba(12, 11, 10, 0.82);
+	backdrop-filter: blur(10px);
+	animation: dropFade 0.18s var(--ui-ease, ease) both;
+}
+
+@keyframes dropFade {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
+}
+
+.frame {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 1rem;
+	padding: 2.5rem 3rem;
+	border-radius: var(--ui-radius, 12px);
+	border: 2px dashed rgba(151, 117, 250, 0.6);
+	background: rgba(151, 117, 250, 0.06);
+	color: rgba(255, 255, 255, 0.82);
+	pointer-events: none;
+}
+
+.title {
+	font-size: 1.05rem;
+	font-weight: 600;
+}
+
+.sub {
+	font-size: 0.82rem;
+	color: rgba(255, 255, 255, 0.5);
+}

@@ -1,4 +1,4 @@
-import { downloadExportedData, importAllData } from "@/utils/dataExport";
+import { downloadExportedData, importDataFromFile } from "@/utils/dataExport";
 import {
 	Alert,
 	Box,
@@ -21,18 +21,13 @@ const DataSettings: FC = () => {
 		if (!importingFile) return;
 		setImportError(null);
 		setImportSuccess(false);
-		try {
-			const text = await importingFile.text();
-			const result = importAllData(text);
-			if (result.success) {
-				setImportSuccess(true);
-				setImportingFile(null);
-				setTimeout(() => window.location.reload(), 1500);
-			} else {
-				setImportError(result.error ?? "Import failed");
-			}
-		} catch (e) {
-			setImportError(String(e));
+		const result = await importDataFromFile(importingFile);
+		if (result.success) {
+			setImportSuccess(true);
+			setImportingFile(null);
+			setTimeout(() => window.location.reload(), 1500);
+		} else {
+			setImportError(result.error ?? "Import failed");
 		}
 	};
 

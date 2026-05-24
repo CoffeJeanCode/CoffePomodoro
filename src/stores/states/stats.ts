@@ -181,7 +181,8 @@ export const useStatsState = create<StatsState>()(
 
 					if (daysDiff === 0) {
 						return;
-					} else if (daysDiff === 1) {
+					}
+					if (daysDiff === 1) {
 						newStreak += 1;
 					} else {
 						newStreak = 1;

@@ -12,7 +12,10 @@ import { FaCheck, FaEdit, FaPlus, FaTrash } from "react-icons/fa";
 
 interface Props {
 	configuration: Configuration | TimerSchema;
-	setConfigValue: (path: string, value: Configuration[keyof Configuration]) => void;
+	setConfigValue: (
+		path: string,
+		value: Configuration[keyof Configuration],
+	) => void;
 }
 
 const SchemaSettings: FC<Props> = ({ configuration }) => {

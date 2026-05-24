@@ -48,6 +48,21 @@ export function downloadExportedData() {
 	URL.revokeObjectURL(url);
 }
 
+export async function importDataFromFile(file: File): Promise<{
+	success: boolean;
+	error?: string;
+}> {
+	if (!file.name.toLowerCase().endsWith(".json")) {
+		return { success: false, error: "Please drop a .json backup file" };
+	}
+	try {
+		const text = await file.text();
+		return importAllData(text);
+	} catch (e) {
+		return { success: false, error: String(e) };
+	}
+}
+
 export function importAllData(json: string): {
 	success: boolean;
 	error?: string;
