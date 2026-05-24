@@ -186,7 +186,6 @@ export const getPiPStyles = (colors: PiPColors) => `
 
     /* ── intention badge ── */
     .intention-text {
-        display: none;
         font-size: clamp(0.62rem, 3vmin, 0.78rem);
         font-weight: 400;
         font-style: italic;
@@ -195,9 +194,9 @@ export const getPiPStyles = (colors: PiPColors) => `
         color: rgba(255, 255, 255, 0.72);
         max-width: 220px;
         overflow: hidden;
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        display: block;
         padding: 4px 10px;
         border-radius: 6px;
         background: rgba(255, 255, 255, 0.06);
@@ -206,7 +205,7 @@ export const getPiPStyles = (colors: PiPColors) => `
     }
 
     .intention-text.visible {
-        display: -webkit-box;
+        display: block;
     }
 
     /* ── linear progress fallback (very small windows) ── */
@@ -295,63 +294,59 @@ export const getPiPStyles = (colors: PiPColors) => `
             flex-direction: row;
             align-items: center;
             justify-content: space-between;
-            padding: 8px 10px;
+            padding: 6px 8px;
             border-radius: 0;
             border: none;
-            gap: 10px;
+            gap: 8px;
         }
 
         .pip-content {
             flex: 1;
             flex-direction: column;
-            align-items: flex-start;
+            align-items: stretch;
             justify-content: center;
-            gap: 5px;
+            gap: 4px;
             min-width: 0;
         }
 
         .pip-ring-wrap { display: none; }
 
-        .pip-ring-linear {
-            display: block;
-            width: 100%;
-            max-width: 100%;
-            height: 4px;
-            border-radius: 2px;
-        }
-
         .pip-mode-label { display: none; }
 
-        .pip-ring-linear { order: 1; }
-
         .intention-text {
-            order: 2;
+            order: 0;
             max-width: 100%;
             text-align: left;
-            border-radius: 4px;
-            padding: 2px 6px;
+            padding: 0;
             font-size: 0.6rem;
+        }
+
+        .pip-ring-linear {
+            display: block;
+            order: 1;
+            width: 100%;
+            max-width: 100%;
+            height: 3px;
         }
 
         .controls {
             flex-shrink: 0;
-            flex-direction: column;
-            gap: 6px;
+            flex-direction: row;
+            align-items: center;
+            justify-content: flex-end;
+            width: auto;
         }
 
-        .controls-center {
-            flex-direction: column;
-            gap: 6px;
-        }
+        .controls-center { flex-direction: row; gap: 6px; justify-content: flex-end; }
 
         .btn-main {
-            width: clamp(28px, 9vmin, 38px);
-            height: clamp(28px, 9vmin, 38px);
+            width: clamp(32px, 11vmin, 44px);
+            height: clamp(32px, 11vmin, 44px);
         }
 
         .btn-sub {
-            width: clamp(24px, 7.5vmin, 32px);
-            height: clamp(24px, 7.5vmin, 32px);
+            width: clamp(26px, 9vmin, 36px);
+            height: clamp(26px, 9vmin, 36px);
         }
     }
 `;
