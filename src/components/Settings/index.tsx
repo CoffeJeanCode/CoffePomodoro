@@ -10,7 +10,6 @@ import { getHotkeyHandler, useHotkeys } from "@mantine/hooks";
 import { memo, useState } from "react";
 import { FaWrench } from "react-icons/fa";
 import { useConfiguration } from "../../hooks/useConfiguracion";
-import BehaviorSettings from "./BehaviorSettings";
 import NotificationSettings from "./NotificationSettings";
 import SchemaSettings from "./SchemaSettings";
 import TimerSettings from "./TimerSettings";
@@ -119,7 +118,6 @@ const Settings = () => {
 					>
 						<Tabs.List grow>
 							<Tabs.Tab value="timer">Timer</Tabs.Tab>
-							<Tabs.Tab value="behavior">Behavior</Tabs.Tab>
 							<Tabs.Tab value="notifications">Notifications</Tabs.Tab>
 						</Tabs.List>
 
@@ -135,13 +133,8 @@ const Settings = () => {
 									setConfigValue={setConfigValue}
 								/>
 							</Stack>
-						</Tabs.Panel>
-						<Tabs.Panel value="behavior" pt="md">
-							<BehaviorSettings
-								configuration={config}
-								setConfigValue={setConfigValue}
-							/>
-						</Tabs.Panel>
+</Tabs.Panel>
+
 						<Tabs.Panel value="notifications" pt="md">
 							<NotificationSettings
 								configuration={config}
