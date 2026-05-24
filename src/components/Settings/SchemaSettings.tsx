@@ -1,5 +1,4 @@
 import type { Configuration } from "@/models";
-import type { DepthPresetValue } from "@/models/depth";
 import { DEPTH_PRESETS } from "@/models/depth";
 import type { TimerSchema } from "@/models/schemas";
 import { useDepthState, useSchemasState, useTimerState } from "@/stores";
@@ -13,10 +12,7 @@ import { FaCheck, FaEdit, FaPlus, FaTrash } from "react-icons/fa";
 
 interface Props {
 	configuration: Configuration | TimerSchema;
-	setConfigValue: (
-		path: string,
-		value: DepthPresetValue | string | number | boolean,
-	) => void;
+	setConfigValue: (path: string, value: Configuration[keyof Configuration]) => void;
 }
 
 const SchemaSettings: FC<Props> = ({ configuration }) => {
