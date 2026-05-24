@@ -253,6 +253,7 @@ const Timer = () => {
 							handlePictureInPicture={handlePictureInPicture}
 							handleFullScreen={handleFullScreen}
 							isPiPOpen={isPiPOpen}
+							isFullScreen={isFullScreen}
 						/>
 					</Box>
 				</GlassPanel>
