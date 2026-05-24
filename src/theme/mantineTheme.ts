@@ -54,12 +54,14 @@ export const appTheme = createTheme({
 			styles: {
 				content: {
 					background: "var(--ui-surface)",
+					opacity: "1 !important",
 					border: "var(--ui-border-width) solid var(--ui-surface-border)",
 					borderRight: "none",
 					borderLeft: "var(--ui-border-width) solid var(--ui-surface-border)",
 				},
 				header: {
 					background: "var(--ui-surface)",
+					opacity: "1 !important",
 					borderBottom: "var(--ui-border-width) solid var(--ui-surface-border)",
 				},
 				title: {
@@ -72,6 +74,7 @@ export const appTheme = createTheme({
 			styles: {
 				dropdown: {
 					background: "var(--ui-surface)",
+					opacity: "1 !important",
 					border: "var(--ui-border-width) solid var(--ui-surface-border)",
 					borderRadius: "var(--ui-radius-sm)",
 					boxShadow: "var(--ui-shadow)",
