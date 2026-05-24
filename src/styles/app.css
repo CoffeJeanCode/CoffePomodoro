@@ -155,7 +155,26 @@ body {
 	pointer-events: none;
 }
 
-/* ── Minimal: ghost elements — transparent bg, accent border ── */
+/* ── Ciberpunk: flat timer bg, dot grid, no gradient ── */
+[data-ui-style="ciberpunk"] .timerSquare {
+	background: var(--ui-surface) !important;
+	backdrop-filter: none !important;
+	-webkit-backdrop-filter: none !important;
+}
+
+/* ── Minimal: transparent timer with mode-color border, no gradient ── */
+[data-ui-style="minimal"] .timerSquare {
+	background: transparent !important;
+	backdrop-filter: none !important;
+	-webkit-backdrop-filter: none !important;
+	border: var(--ui-border-width) solid var(--ui-surface-border) !important;
+}
+
+/* ── Minimal: immersive mode gets accent border ── */
+[data-ui-style="minimal"] .timerFullscreen {
+	border-color: var(--color-accent) !important;
+	border-width: 2px !important;
+}
 [data-ui-style="minimal"] .glassPanel {
 	background: transparent !important;
 	backdrop-filter: none !important;
