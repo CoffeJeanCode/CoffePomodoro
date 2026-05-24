@@ -1,26 +1,25 @@
 /*
- * Capa 1 — COLOR FIJO (ADR-0012).
+ * Color tokens — FIXED semantic anchors (ADR-0012 V3 revision).
  *
- * The three semantic accents (Red/Green/Blue) are the only "color" that
- * carries meaning: Red = focus (work), Green = short break, Blue = long break.
- * These never change when the structural style switches.
+ * The base R/G/B values here are the DEFAULT palette (ambient-ai).
+ * Each [data-ui-style] block in tokens-shape-root.css OVERRIDES these
+ * with style-mutated hues so the mode colors feel native to each ecosystem.
  *
- * The canvas (bg, surface, text, border) is defined per structural style in
- * tokens-shape-root.css, not here.
+ * Mode logic:
+ *   --color-mode-work  = --color-red   (focus, danger)
+ *   --color-mode-short = --color-green (short break, success)
+ *   --color-mode-long  = --color-blue  (long break, info)
  *
- * Every other token that consumes colour composes via CSS var() / color-mix()
- * in app.css :root, so that switching data-ui-style only swaps structure.
+ * These aliases NEVER change — only the underlying hex values mutate.
  */
 :root {
-	/* ── Semantic mode accents (immutable) ── */
-	--color-red: #fa5252;
-	--color-green: #40c057;
-	--color-blue: #4dabf7;
+	--color-red: #ff4d6d;
+	--color-green: #51e898;
+	--color-blue: #6ea8fe;
 	--color-red-on: #ffffff;
-	--color-green-on: #ffffff;
-	--color-blue-on: #0b0c10;
+	--color-green-on: #05050a;
+	--color-blue-on: #05050a;
 
-	/* ── Mode aliases (what components consume) ── */
 	--color-mode-work: var(--color-red);
 	--color-mode-short: var(--color-green);
 	--color-mode-long: var(--color-blue);
@@ -28,11 +27,10 @@
 	--color-mode-short-on: var(--color-green-on);
 	--color-mode-long-on: var(--color-blue-on);
 
-	/* ── Fixed palette mirrors (consumed by PiP, ambient bg, etc.) ── */
 	--color-accent: var(--color-red);
 	--color-accent-contrast: var(--color-red-on);
-	--color-info: #74c0fc;
-	--color-success: #51cf66;
+	--color-info: var(--color-blue);
+	--color-success: var(--color-green);
 	--color-warning: #fcc419;
 	--color-border-ink: #e8ecf4;
 	--color-ring-track: rgba(255, 255, 255, 0.08);

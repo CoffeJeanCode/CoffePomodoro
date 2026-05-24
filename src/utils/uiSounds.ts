@@ -1,9 +1,7 @@
 import { type UIStyleId, getActiveUIStyleId } from "@/theme/activeStyle";
 
-/** UI sound events mapped to style-specific synthesis profiles. */
 type UIEvent = "click" | "toggle" | "fulfill" | "transition";
 
-/** Per-style synthesis config */
 interface SoundProfile {
 	oscType: OscillatorType;
 	frequency: number;
@@ -48,56 +46,56 @@ const PROFILES: Record<string, Record<UIEvent, SoundProfile>> = {
 			volume: 0.05,
 		},
 	},
-	rustico: {
+	"ambient-ai": {
 		click: {
 			oscType: "sine",
-			frequency: 220,
-			duration: 0.08,
+			frequency: 660,
+			duration: 0.18,
 			attack: 0.01,
-			decay: 0.07,
+			decay: 0.17,
 			volume: 0.06,
 		},
 		toggle: {
 			oscType: "sine",
-			frequency: 330,
-			duration: 0.12,
+			frequency: 880,
+			duration: 0.22,
 			attack: 0.008,
-			decay: 0.112,
+			decay: 0.212,
 			volume: 0.05,
 		},
 		fulfill: {
 			oscType: "triangle",
-			frequency: 440,
-			duration: 0.25,
-			attack: 0.02,
-			decay: 0.23,
+			frequency: 523.25,
+			duration: 0.35,
+			attack: 0.015,
+			decay: 0.335,
 			volume: 0.08,
 		},
 		transition: {
 			oscType: "sine",
-			frequency: 165,
-			duration: 0.15,
-			attack: 0.01,
-			decay: 0.14,
+			frequency: 392,
+			duration: 0.2,
+			attack: 0.012,
+			decay: 0.188,
 			volume: 0.04,
 		},
 	},
 	minimal: {
 		click: {
-			oscType: "sine",
+			oscType: "triangle",
 			frequency: 1200,
 			duration: 0.02,
 			attack: 0.001,
 			decay: 0.019,
-			volume: 0.04,
+			volume: 0.03,
 		},
 		toggle: {
-			oscType: "sine",
+			oscType: "triangle",
 			frequency: 900,
-			duration: 0.03,
+			duration: 0.025,
 			attack: 0.001,
-			decay: 0.029,
-			volume: 0.035,
+			decay: 0.024,
+			volume: 0.025,
 		},
 		fulfill: {
 			oscType: "sine",
@@ -105,15 +103,15 @@ const PROFILES: Record<string, Record<UIEvent, SoundProfile>> = {
 			duration: 0.06,
 			attack: 0.002,
 			decay: 0.058,
-			volume: 0.06,
+			volume: 0.04,
 		},
 		transition: {
 			oscType: "sine",
 			frequency: 440,
-			duration: 0.04,
+			duration: 0.03,
 			attack: 0.001,
-			decay: 0.039,
-			volume: 0.03,
+			decay: 0.029,
+			volume: 0.02,
 		},
 	},
 };
@@ -154,14 +152,12 @@ function synthesize(profile: SoundProfile): void {
 	}
 }
 
-/** Play a UI sound with style-specific timbre. */
 export function playUI(event: UIEvent, style?: UIStyleId): void {
 	const s = style ?? getActiveUIStyleId();
-	const profile = PROFILES[s]?.[event] ?? PROFILES.ciberpunk[event];
+	const profile = PROFILES[s]?.[event] ?? PROFILES["ambient-ai"][event];
 	if (profile) synthesize(profile);
 }
 
-/** Shortcut aliases for backward compatibility. */
 export function playClick(style?: UIStyleId) {
 	playUI("click", style);
 }

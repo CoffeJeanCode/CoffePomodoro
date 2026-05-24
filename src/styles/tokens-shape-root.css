@@ -1,159 +1,165 @@
 /*
- * Capa 2 — ESTRUCTURA POR ESTILO (ADR-0012).
+ * Structural tokens — default values (ambient-ai) to prevent FOUC.
  *
- * Each [data-ui-style] block defines the structural palette: canvas, geometry,
- * topology, typography, physics, and icon set. Color is NEVER defined here —
- * it lives in tokens-color-root.css.
- *
- * The ciberpunk defaults are on :root to prevent FOUC before the style store
- * hydrates from localStorage.
+ * applyUIStyle() writes ALL style vars from uiStyles.ts to :root
+ * on module load, so these defaults only flash briefly before JS hydrates.
+ * The [data-ui-style] selectors below contain the SAME values as uiStyles.ts
+ * for CSS-only consumers (PiP, etc.) but are NOT the source of truth —
+ * the JS object is.
  */
 
-/* ═══════════════════════════════════════════════════════════════════════════
- * CIBERPUNK / BRUTALISTA — Dark, hard-edged, instant, HUD
- * ═══════════════════════════════════════════════════════════════════════════ */
 :root,
-[data-ui-style="ciberpunk"] {
-	/* ── Lienzo ── */
-	--ui-bg: #07090d;
-	--ui-surface: #0d1117;
-	--ui-surface-2: #151a24;
-	--ui-surface-border: rgba(255, 255, 255, 0.1);
-	--ui-text: #e6f0ff;
-	--ui-text-muted: #5a7090;
-	--ui-texture: none;
+[data-ui-style="ambient-ai"] {
+	--color-red: #ff4d6d;
+	--color-green: #51e898;
+	--color-blue: #6ea8fe;
+	--color-red-on: #ffffff;
+	--color-green-on: #05050a;
+	--color-blue-on: #05050a;
 
-	/* ── Geometría ── */
+	--ui-bg: #05050a;
+	--ui-surface: rgba(255, 255, 255, 0.04);
+	--ui-surface-2: rgba(255, 255, 255, 0.07);
+	--ui-surface-border: rgba(255, 255, 255, 0.1);
+	--ui-text: #eef0f6;
+	--ui-text-muted: #8892a8;
+	--ui-texture: none;
+	--ui-bg-pattern: none;
+	--ui-radius: 24px;
+	--ui-radius-sm: 16px;
+	--ui-radius-pill: 999px;
+	--ui-clip: none;
+	--ui-border-width: 1px;
+	--ui-border-style: solid;
+	--ui-border-color: rgba(255, 255, 255, 0.1);
+	--ui-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+	--ui-shadow-sm: 0 4px 16px rgba(0, 0, 0, 0.25);
+	--ui-shadow-pressed: 0 2px 8px rgba(0, 0, 0, 0.3);
+	--ui-blur: blur(22px) saturate(160%);
+	--ui-surface-alpha: 6%;
+	--ui-surface-alpha-strong: 10%;
+	--ui-accent-fill: none;
+	--ui-accent-border: none;
+	--ui-accent-glow: 0 0 60px 20px
+		color-mix(in srgb, var(--color-accent) 18%, transparent);
+	--ui-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+		sans-serif;
+	--ui-font-display: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+		sans-serif;
+	--ui-letter-spacing: -0.01em;
+	--ui-text-transform: none;
+	--ui-duration: 0.5s;
+	--ui-duration-slow: 1.2s;
+	--ui-ease: cubic-bezier(0.4, 0, 0.2, 1);
+	--ui-spring-ease: cubic-bezier(0.34, 1.56, 0.64, 1);
+	--ui-spring-duration: 0.45s;
+	--ui-press-transform: scale(0.96);
+	--ui-icon-set: line;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+ * CIBERPUNK — industrial HUD, rigid, mechanical glitch
+ * ═══════════════════════════════════════════════════════════════════════════ */
+[data-ui-style="ciberpunk"] {
+	--color-red: #e63c3c;
+	--color-green: #3daa5c;
+	--color-blue: #4a9fe5;
+
+	--ui-bg: #0a0a0c;
+	--ui-surface: #1a1c20;
+	--ui-surface-2: #22252a;
+	--ui-surface-border: rgba(255, 255, 255, 0.08);
+	--ui-text: #d8dce6;
+	--ui-text-muted: #5a6878;
+	--ui-texture: none;
+	--ui-bg-pattern: radial-gradient(
+		circle,
+		rgba(255, 255, 255, 0.03) 1px,
+		transparent 1px
+	);
 	--ui-radius: 0px;
 	--ui-radius-sm: 0px;
 	--ui-radius-pill: 0px;
-	--ui-clip: none;
+	--ui-clip: polygon(
+		0 12px,
+		12px 0,
+		calc(100% - 12px) 0,
+		100% 12px,
+		100% calc(100% - 12px),
+		calc(100% - 12px) 100%,
+		12px 100%,
+		0 calc(100% - 12px)
+	);
 	--ui-border-width: 2px;
 	--ui-border-style: solid;
 	--ui-border-color: #000000;
-
-	/* ── Topología ── */
 	--ui-shadow: 4px 4px 0px #000000;
 	--ui-shadow-sm: 3px 3px 0px #000000;
 	--ui-shadow-pressed: 0px 0px 0px #000000;
 	--ui-blur: none;
 	--ui-surface-alpha: 100%;
 	--ui-surface-alpha-strong: 100%;
-
-	/* ── Tipografía ── */
+	--ui-accent-fill: none;
+	--ui-accent-border: none;
+	--ui-accent-glow: none;
 	--ui-font-family: "Fira Code", "Cascadia Mono", "JetBrains Mono", ui-monospace,
 		monospace;
 	--ui-font-display: "Fira Code", "Cascadia Mono", "JetBrains Mono",
 		ui-monospace, monospace;
-	--ui-letter-spacing: 0.04em;
+	--ui-letter-spacing: 0.06em;
 	--ui-text-transform: uppercase;
-
-	/* ── Física ── */
-	--ui-duration: 0.08s;
-	--ui-duration-slow: 0.14s;
-	--ui-ease: cubic-bezier(0.3, 0, 0.1, 1);
-	--ui-spring-ease: cubic-bezier(0.3, 0, 0.1, 1);
+	--ui-duration: 0.1s;
+	--ui-duration-slow: 0.18s;
+	--ui-ease: steps(3, end);
+	--ui-spring-ease: steps(2, end);
 	--ui-spring-duration: 0.08s;
-	--ui-press-transform: translate(4px, 4px);
-
-	/* ── Iconos ── */
+	--ui-press-transform: translate(3px, 3px);
 	--ui-icon-set: hud;
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
- * RÚSTICO / ILUSTRATIVO — Dark-warm, organic, hand-drawn, slow
- * ═══════════════════════════════════════════════════════════════════════════ */
-[data-ui-style="rustico"] {
-	/* ── Lienzo (dark-warm) ── */
-	--ui-bg: #14110d;
-	--ui-surface: #1c1812;
-	--ui-surface-2: #241f18;
-	--ui-surface-border: rgba(180, 160, 120, 0.14);
-	--ui-text: #e8dcc8;
-	--ui-text-muted: #8b7d6d;
-	--ui-texture: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-
-	/* ── Geometría ── */
-	--ui-radius: 60% 40% 55% 45% / 55% 45% 60% 40%;
-	--ui-radius-sm: 50% 45% 55% 50% / 45% 55% 50% 48%;
-	--ui-radius-pill: 60% 40% 55% 45% / 55% 45% 60% 40%;
-	--ui-clip: none;
-	--ui-border-width: 1px;
-	--ui-border-style: dashed;
-	--ui-border-color: #6b5c3f;
-
-	/* ── Topología ── */
-	--ui-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
-	--ui-shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.22);
-	--ui-shadow-pressed: 0 2px 6px rgba(0, 0, 0, 0.28);
-	--ui-blur: none;
-	--ui-surface-alpha: 100%;
-	--ui-surface-alpha-strong: 100%;
-
-	/* ── Tipografía ── */
-	--ui-font-family: "Playfair Display", "Georgia", "Times New Roman", serif;
-	--ui-font-display: "Playfair Display", "Georgia", "Times New Roman", serif;
-	--ui-letter-spacing: 0.01em;
-	--ui-text-transform: none;
-
-	/* ── Física ── */
-	--ui-duration: 0.6s;
-	--ui-duration-slow: 1.6s;
-	--ui-ease: cubic-bezier(0.22, 1, 0.36, 1);
-	--ui-spring-ease: cubic-bezier(0.22, 1, 0.36, 1);
-	--ui-spring-duration: 0.6s;
-	--ui-press-transform: scale(0.97);
-
-	/* ── Iconos ── */
-	--ui-icon-set: doodle;
-}
-
-/* ═══════════════════════════════════════════════════════════════════════════
- * MÍNIMAL / GRABADO — Dark-cool, clean lines, snappy spring
+ * MINIMAL — wireframe black, surgical, snappy
  * ═══════════════════════════════════════════════════════════════════════════ */
 [data-ui-style="minimal"] {
-	/* ── Lienzo (dark-cool) ── */
-	--ui-bg: #0e0f12;
-	--ui-surface: #14161a;
-	--ui-surface-2: #1a1c21;
-	--ui-surface-border: rgba(255, 255, 255, 0.06);
-	--ui-text: #e0e2e8;
-	--ui-text-muted: #6b7280;
-	--ui-texture: none;
+	--color-red: #ff0000;
+	--color-green: #00ff66;
+	--color-blue: #4da6ff;
 
-	/* ── Geometría ── */
+	--ui-bg: #000000;
+	--ui-surface: #000000;
+	--ui-surface-2: #000000;
+	--ui-surface-border: rgba(255, 255, 255, 0.08);
+	--ui-text: #e8eaed;
+	--ui-text-muted: #5a5f6b;
+	--ui-texture: none;
+	--ui-bg-pattern: none;
 	--ui-radius: 3px;
 	--ui-radius-sm: 3px;
 	--ui-radius-pill: 999px;
 	--ui-clip: none;
 	--ui-border-width: 1px;
 	--ui-border-style: solid;
-	--ui-border-color: #2a2d33;
-
-	/* ── Topología ── */
-	--ui-shadow: 0 4px 16px rgba(0, 0, 0, 0.32);
-	--ui-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
-	--ui-shadow-pressed: 0 1px 4px rgba(0, 0, 0, 0.24);
+	--ui-border-color: rgba(255, 255, 255, 0.12);
+	--ui-shadow: none;
+	--ui-shadow-sm: none;
+	--ui-shadow-pressed: none;
 	--ui-blur: none;
-	--ui-surface-alpha: 100%;
-	--ui-surface-alpha-strong: 100%;
-
-	/* ── Tipografía ── */
+	--ui-surface-alpha: 0%;
+	--ui-surface-alpha-strong: 0%;
+	--ui-accent-fill: none;
+	--ui-accent-border: 1px solid var(--color-accent);
+	--ui-accent-glow: none;
 	--ui-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
 		"Inter", sans-serif;
 	--ui-font-display: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
 		"Inter", sans-serif;
-	--ui-letter-spacing: -0.01em;
+	--ui-letter-spacing: -0.02em;
 	--ui-text-transform: none;
-
-	/* ── Física ── */
-	--ui-duration: 0.25s;
-	--ui-duration-slow: 0.5s;
+	--ui-duration: 0.15s;
+	--ui-duration-slow: 0.25s;
 	--ui-ease: cubic-bezier(0.16, 1, 0.3, 1);
-	--ui-spring-ease: cubic-bezier(0.34, 1.56, 0.64, 1);
-	--ui-spring-duration: 0.3s;
-	--ui-press-transform: scale(0.96);
-
-	/* ── Iconos ── */
+	--ui-spring-ease: cubic-bezier(0.16, 1, 0.3, 1);
+	--ui-spring-duration: 0.15s;
+	--ui-press-transform: scale(0.97);
 	--ui-icon-set: line;
 }

@@ -8,7 +8,6 @@ export interface UIStyleState {
 	setStyle: (id: UIStyleId) => void;
 }
 
-/** Writes structural --ui-* tokens to :root and tags data-ui-style — zero React re-render. */
 const applyUIStyle = (id: UIStyleId) => {
 	const style = UI_STYLES[id];
 	if (!style) return;
@@ -20,11 +19,11 @@ const applyUIStyle = (id: UIStyleId) => {
 	setActiveUIStyleId(id);
 };
 
-/** Migrate legacy style IDs to their ADR-0012 equivalents. */
 const migrateStyle = (id: string | null): UIStyleId => {
 	if (id && Object.hasOwn(UI_STYLES, id as UIStyleId)) return id as UIStyleId;
-	if (id === "ethereal") return "ciberpunk";
-	if (id === "mechanical") return "rustico";
+	if (id === "rustico") return "ambient-ai";
+	if (id === "ethereal") return "ambient-ai";
+	if (id === "mechanical") return "ciberpunk";
 	if (id === "brutal") return "minimal";
 	return DEFAULT_UI_STYLE;
 };
@@ -44,7 +43,7 @@ export const useUIStyleState = create<UIStyleState>()(
 		}),
 		{
 			name: "ui-style",
-			version: 2,
+			version: 3,
 			merge: (persisted, current) => {
 				const p = (persisted ?? {}) as Partial<UIStyleState>;
 				return {

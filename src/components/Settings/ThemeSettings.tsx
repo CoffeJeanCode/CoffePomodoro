@@ -1,6 +1,6 @@
 import { useAppearance } from "@/hooks/useAppearance";
 import { type UIStyleId, UI_STYLES, UI_STYLE_ORDER } from "@/theme/uiStyles";
-import { Badge, Box, Group, Stack, Text } from "@mantine/core";
+import { Box, Group, Stack, Text } from "@mantine/core";
 import type { CSSProperties, FC } from "react";
 
 const optionStyle = (isActive: boolean): CSSProperties =>
@@ -15,7 +15,7 @@ const optionStyle = (isActive: boolean): CSSProperties =>
 		textAlign: "left",
 		width: "100%",
 		transition: "all var(--ui-duration) var(--ui-ease)",
-		color: isActive ? "#fff" : "var(--ui-text)",
+		color: isActive ? "var(--color-accent-contrast)" : "var(--ui-text)",
 	}) as CSSProperties;
 
 const StyleOption: FC<{
@@ -50,16 +50,21 @@ const ThemeSettings: FC = () => {
 		<Stack gap="md">
 			<Box>
 				<Text size="sm" fw={500}>
-					Interface style
+					Shape language
 				</Text>
 				<Text size="xs" c="dimmed" mt={2}>
-					Reshapes the whole app — geometry, depth, type and motion. Colors stay
-					the same.
+					Reshapes the whole app — geometry, physics, sound, and color tone. The
+					mode meaning (Work/Short/Long) stays constant.
 				</Text>
 				{boundToPreset && (
-					<Badge mt="xs" variant="light" color="red" radius="sm">
+					<Text
+						size="xs"
+						mt={4}
+						fw={500}
+						style={{ color: "var(--color-accent)" }}
+					>
 						Saved with the selected preset
-					</Badge>
+					</Text>
 				)}
 			</Box>
 

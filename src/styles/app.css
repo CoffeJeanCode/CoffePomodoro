@@ -1,24 +1,19 @@
 /*
- * Structural Style Engine V2 (ADR-0012).
+ * Shape Language Engine V3 (ADR-0012 final).
  *
- * Three layers, fully decoupled:
+ * Three layers:
+ *   1. COLOR   → tokens-color-root.css (mutable R/G/B per style)
+ *   2. SHAPE  → tokens-shape-root.css (canvas/geo/topo/physics per style)
+ *   3. COMPOSED aliases below (color ⊗ structure — what components consume)
  *
- *   1. COLOR   → tokens-color-root.css    (immutable R/G/B + mode aliases)
- *   2. SHAPE  → tokens-shape-root.css     (canvas/geo/topo/typo/physics per style)
- *   3. COMPOSED aliases below             (color ⊗ structure — what components eat)
- *
- * Components consume ONLY the composed --ui-* aliases below, never raw --color-*
- * or raw structural tokens directly. Switching data-ui-style swaps the structural
- * axis; the color axis never flips.
+ * Switching data-ui-style swaps the structural axis AND mutates semantic colors.
  */
 
 @import "./tokens-color-root.css";
 @import "./tokens-shape-root.css";
 
 :root {
-	/* ── COMPOSED aliases (color ⊗ structure) ── */
-
-	/* Surface composition: opaque for ciberpunk/rustico/minimal (surface-alpha = 100%) */
+	/* ── COMPOSED aliases ── */
 	--ui-glass-bg: color-mix(
 		in srgb,
 		var(--ui-surface) var(--ui-surface-alpha),
@@ -32,8 +27,6 @@
 	--ui-glass-border: var(--ui-border-color);
 	--ui-glass-border-top: var(--ui-border-color);
 	--ui-glass-blur: var(--ui-blur);
-
-	/* Accent composition: fixed colors projected into UI aliases */
 	--ui-accent-primary: var(--color-accent);
 	--ui-accent-info: var(--color-info);
 	--ui-accent-success: var(--color-success);
@@ -50,25 +43,9 @@
 		transparent
 	);
 	--ui-ring-track: var(--color-ring-track);
-
-	/* Page: structural canvas + fixed glow color */
 	--ui-page-bg: var(--ui-bg);
 	--ui-page-glow: color-mix(in srgb, var(--color-accent) 7%, transparent);
-
-	/* Typography passthrough */
 	--ui-font-body: var(--ui-font-family);
-
-	/* Per-style ambient background will be set by body rules below */
-	--ui-ambient-bg: radial-gradient(
-			ellipse 80% 60% at 50% 0%,
-			var(--ui-page-glow) 0%,
-			transparent 55%
-		),
-		radial-gradient(
-			ellipse 60% 50% at 80% 100%,
-			var(--ui-page-glow) 0%,
-			transparent 50%
-		);
 }
 
 html,
@@ -80,7 +57,7 @@ body,
 body {
 	margin: 0;
 	background-color: var(--ui-bg);
-	background-image: var(--ui-ambient-bg);
+	background-image: var(--ui-bg-pattern);
 	background-attachment: fixed;
 	color: var(--ui-text);
 	font-family: var(--ui-font-family);
@@ -93,13 +70,12 @@ body {
 	transition-timing-function: var(--ui-ease);
 }
 
-/* ── Per-style ambient backgrounds ── */
-
-[data-ui-style="ciberpunk"] body {
+/* ── Ambient AI: mode-responsive glow ── */
+[data-ui-style="ambient-ai"] body {
 	background-image: radial-gradient(
-			ellipse 80% 60% at 50% 0%,
+			ellipse 100% 80% at 50% 0%,
 			var(--ui-page-glow) 0%,
-			transparent 55%
+			transparent 60%
 		),
 		radial-gradient(
 			ellipse 60% 50% at 80% 100%,
@@ -108,44 +84,29 @@ body {
 		);
 }
 
-[data-ui-style="rustico"] body {
-	background-image: radial-gradient(
-			ellipse 80% 60% at 50% 30%,
-			rgba(139, 100, 59, 0.06) 0%,
-			transparent 55%
-		),
-		radial-gradient(
-			ellipse 60% 50% at 20% 80%,
-			rgba(100, 80, 40, 0.04) 0%,
-			transparent 50%
-		);
-	background-color: var(--ui-bg);
+[data-ui-style="ambient-ai"] .glassPanel::before {
+	background: var(--glass-ambient, transparent);
+	opacity: 0.85;
 }
 
-[data-ui-style="minimal"] body {
-	background-image: none;
-	background-color: var(--ui-bg);
+/* ── Ciberpunk: grid texture dot pattern ── */
+[data-ui-style="ciberpunk"] body {
+	background-size: 24px 24px;
+	background-image: var(--ui-bg-pattern);
 }
 
-/* ── Rustico: paper texture overlay ── */
-
-[data-ui-style="rustico"] body::before {
-	content: "";
-	position: fixed;
-	inset: 0;
-	pointer-events: none;
-	z-index: 9999;
-	background: var(--ui-texture);
-	opacity: 1;
-	mix-blend-mode: multiply;
+[data-ui-style="ciberpunk"] .pageTitle {
+	font-weight: 700;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
 }
 
 /* ── Ciberpunk: glitch keyframes ── */
-
 @keyframes cyberGlitch {
 	0%,
 	100% {
 		clip-path: none;
+		transform: none;
 	}
 	7% {
 		clip-path: inset(40% 0 61% 0);
@@ -159,6 +120,56 @@ body {
 		clip-path: none;
 		transform: none;
 	}
+}
+
+/* ── Ciberpunk: chamfered panels via clip-path ── */
+[data-ui-style="ciberpunk"] .glassPanel {
+	clip-path: var(--ui-clip);
+}
+
+/* ── Ciberpunk: hard-shadow press ── */
+[data-ui-style="ciberpunk"] .spring-click:active {
+	transform: translate(3px, 3px);
+	box-shadow: 0px 0px 0px var(--ui-border-color) !important;
+}
+
+/* ── Ciberpunk: HUD pseudo-element decorator ── */
+[data-ui-style="ciberpunk"] .glassPanel::after {
+	content: "";
+	position: absolute;
+	top: 0;
+	right: 0;
+	width: 8px;
+	height: 8px;
+	border-top: 2px solid var(--color-accent);
+	border-right: 2px solid var(--color-accent);
+	opacity: 0.4;
+	pointer-events: none;
+}
+
+/* ── Minimal: ghost elements — borders only, no background ── */
+[data-ui-style="minimal"] .glassPanel {
+	background: transparent !important;
+	backdrop-filter: none !important;
+	-webkit-backdrop-filter: none !important;
+}
+
+[data-ui-style="minimal"] .glassInset {
+	background: transparent !important;
+	backdrop-filter: none !important;
+	-webkit-backdrop-filter: none !important;
+}
+
+[data-ui-style="minimal"] .mantine-Button-root[data-variant="light"],
+[data-ui-style="minimal"] .mantine-ActionIcon-root[data-variant="light"] {
+	background: transparent !important;
+}
+
+/* ── Minimal: accent as border, not fill ── */
+[data-ui-style="minimal"] .mantine-Button-root[data-variant="filled"] {
+	background: transparent !important;
+	border: 1px solid var(--color-accent) !important;
+	color: var(--color-accent) !important;
 }
 
 /* ── Interactive physics ── */
@@ -207,19 +218,7 @@ body {
 	box-shadow: var(--ui-shadow-pressed);
 }
 
-/* ── Ciberpunk: hard-shadow offset press ── */
-[data-ui-style="ciberpunk"] .spring-click:active {
-	transform: translate(4px, 4px);
-	box-shadow: 0px 0px 0px var(--ui-border-color) !important;
-}
-
-/* ── Ciberpunk: rigid headings ── */
-[data-ui-style="ciberpunk"] .pageTitle {
-	font-weight: 700;
-}
-
 /* ── Reduced motion ── */
-
 @media (prefers-reduced-motion: reduce) {
 	* {
 		animation-duration: 0.01ms !important;
