@@ -1,4 +1,6 @@
+import { useAppearance } from "@/hooks/useAppearance";
 import { useSchemasState, useTimerState } from "@/stores";
+import { UI_STYLES, UI_STYLE_ORDER } from "@/theme/uiStyles";
 import { Menu } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useEffect, useState } from "react";
@@ -9,6 +11,7 @@ const QuickMenu = () => {
 	const [opened, { open, close }] = useDisclosure(false);
 	const { schemas, setCurrentSchema, currentSchemaId } = useSchemasState();
 	const resetForNext = useTimerState((s) => s.resetForNext);
+	const { activeStyle, setUIStyle } = useAppearance();
 
 	useEffect(() => {
 		const handleQuickMenu = (evt: MouseEvent) => {
@@ -33,14 +36,17 @@ const QuickMenu = () => {
 	return (
 		<Menu
 			opened={opened}
-			width={220}
+			width={230}
 			zIndex={300}
 			withinPortal
+			closeOnItemClick={false}
 			styles={{
 				dropdown: {
 					position: "fixed",
 					top: menuPosition.top,
 					left: menuPosition.left,
+					maxHeight: "80vh",
+					overflowY: "auto",
 				},
 			}}
 		>
@@ -61,6 +67,24 @@ const QuickMenu = () => {
 							}}
 						>
 							{schema.title}
+						</Menu.Item>
+					);
+				})}
+
+				<Menu.Divider />
+				<Menu.Label>Style</Menu.Label>
+				{UI_STYLE_ORDER.map((id) => {
+					const style = UI_STYLES[id];
+					const isActive = id === activeStyle;
+					return (
+						<Menu.Item
+							key={id}
+							leftSection={<span aria-hidden>{style.icon}</span>}
+							color={isActive ? "red" : undefined}
+							variant={isActive ? "light" : "subtle"}
+							onClick={() => setUIStyle(id)}
+						>
+							{style.label}
 						</Menu.Item>
 					);
 				})}

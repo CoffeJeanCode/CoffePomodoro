@@ -83,6 +83,8 @@ export function normalizeTimerSchema(
 	return {
 		id: schema.id,
 		title: schema.title,
+		...(schema.presetKey ? { presetKey: schema.presetKey } : {}),
+		...(schema.appearance ? { appearance: schema.appearance } : {}),
 		timers: { ...defaultTimers, ...schema.timers },
 		notification: {
 			...defaultNotification,

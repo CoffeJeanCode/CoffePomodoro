@@ -23,7 +23,7 @@
 	background: var(--ui-glass-bg);
 	backdrop-filter: var(--ui-glass-blur);
 	-webkit-backdrop-filter: var(--ui-glass-blur);
-	border: 1px solid var(--ui-glass-border);
+	border: var(--ui-border-width) solid var(--ui-glass-border);
 	border-top-color: var(--ui-glass-border-top);
 	box-shadow: var(--ui-shadow);
 	transition:
@@ -31,7 +31,7 @@
 		border-color var(--ui-duration) var(--ui-ease),
 		box-shadow var(--ui-duration) var(--ui-ease),
 		opacity var(--ui-duration-slow) var(--ui-ease),
-		transform var(--ui-duration) var(--ui-ease);
+		transform var(--ui-spring-duration) var(--ui-spring-ease);
 }
 
 .glassPanel::before {
@@ -63,26 +63,25 @@
 	box-shadow: none;
 	backdrop-filter: none;
 	-webkit-backdrop-filter: none;
-	transition:
-		background var(--ui-duration-slow) var(--ui-ease),
-		opacity var(--ui-duration-slow) var(--ui-ease);
+	transition: background var(--ui-duration-slow) var(--ui-ease), opacity
+		var(--ui-duration-slow) var(--ui-ease);
 }
 
 .glassInset {
 	background: var(--ui-glass-bg);
-	border: 1px solid var(--ui-glass-border);
+	border: var(--ui-border-width) var(--ui-border-style) var(--ui-glass-border);
 	border-radius: var(--ui-radius-sm);
-	backdrop-filter: blur(12px);
-	transition:
-		background var(--ui-duration) var(--ui-ease),
-		border-color var(--ui-duration) var(--ui-ease);
+	backdrop-filter: var(--ui-glass-blur);
+	-webkit-backdrop-filter: var(--ui-glass-blur);
+	transition: background var(--ui-duration) var(--ui-ease), border-color
+		var(--ui-duration) var(--ui-ease);
 }
 
 .tipCard {
 	padding: 0.5rem 0.75rem;
 	border-radius: var(--ui-radius-sm);
 	background: var(--ui-glass-bg);
-	border: 1px solid var(--ui-glass-border);
+	border: var(--ui-border-width) var(--ui-border-style) var(--ui-glass-border);
 	text-align: center;
 	transition: background var(--ui-duration) var(--ui-ease);
 }
@@ -154,20 +153,20 @@
 .pageTitle {
 	color: var(--ui-text);
 	font-weight: 600;
-	letter-spacing: -0.02em;
+	letter-spacing: var(--ui-letter-spacing);
+	text-transform: var(--ui-text-transform);
 	text-align: center;
-	font-family: "Playfair Display", "Georgia", "Times New Roman", serif;
-	font-style: italic;
+	font-family: var(--ui-font-display);
 }
 
 .statCard {
 	background: var(--ui-glass-bg);
-	border: 1px solid var(--ui-glass-border);
+	border: var(--ui-border-width) var(--ui-border-style) var(--ui-glass-border);
 	border-radius: var(--ui-radius-sm);
-	backdrop-filter: blur(12px);
-	transition:
-		background var(--ui-duration) var(--ui-ease),
-		border-color var(--ui-duration) var(--ui-ease);
+	backdrop-filter: var(--ui-glass-blur);
+	-webkit-backdrop-filter: var(--ui-glass-blur);
+	transition: background var(--ui-duration) var(--ui-ease), border-color
+		var(--ui-duration) var(--ui-ease);
 }
 
 .sectionTitle {
@@ -177,9 +176,9 @@
 
 .pillTag {
 	padding: 0.35rem 0.65rem;
-	border-radius: var(--ui-radius-sm);
+	border-radius: var(--ui-radius-pill);
 	background: var(--ui-glass-bg);
-	border: 1px solid var(--ui-glass-border);
+	border: var(--ui-border-width) var(--ui-border-style) var(--ui-glass-border);
 	font-size: 0.875rem;
 }
 
@@ -206,7 +205,12 @@
 		var(--ui-glass-bg-strong) 0%,
 		transparent 70%
 	);
-	box-shadow: 0 0 24px rgba(250, 82, 82, 0.12);
+	box-shadow: 0 0 24px
+		color-mix(
+			in srgb,
+			var(--breath-color, var(--ui-ring-accent)) 14%,
+			transparent
+		);
 	animation: breathe 5.5s var(--ui-ease) infinite;
 }
 
@@ -219,12 +223,22 @@
 	100% {
 		transform: scale(0.88);
 		opacity: 0.5;
-		box-shadow: 0 0 12px rgba(250, 82, 82, 0.08);
+		box-shadow: 0 0 12px
+			color-mix(
+				in srgb,
+				var(--breath-color, var(--ui-ring-accent)) 10%,
+				transparent
+			);
 	}
 	50% {
 		transform: scale(1.06);
 		opacity: 1;
-		box-shadow: 0 0 28px rgba(250, 82, 82, 0.2);
+		box-shadow: 0 0 28px
+			color-mix(
+				in srgb,
+				var(--breath-color, var(--ui-ring-accent)) 24%,
+				transparent
+			);
 	}
 }
 

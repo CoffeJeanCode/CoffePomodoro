@@ -1,12 +1,13 @@
-import { Mode } from "@/models";
 import RotatingTip from "@/components/ui/RotatingTip";
+import { Mode } from "@/models";
+import ui from "@/styles/ui.module.css";
 import { getModeTitle } from "@/utils/modeLabels";
 import { secondsToMinutes } from "@/utils/time.util";
-import ui from "@/styles/ui.module.css";
 import { Box, Button, Collapse, Stack, Text, Title } from "@mantine/core";
 import { type FC, memo, useState } from "react";
 import { FaLightbulb } from "react-icons/fa";
 import BreathingCircle from "./BreathingCircle";
+import { getModeHexColors } from "./utils/timer";
 
 const SHORT_BREAK_SUGGESTIONS = [
 	"Look away from the screen",
@@ -45,6 +46,7 @@ const BreakRestScreen: FC<BreakRestScreenProps> = ({
 		: 0;
 	const [showTips, setShowTips] = useState(false);
 	const bonusMinutes = secondsToMinutes(savedTimeBonus);
+	const accent = getModeHexColors(mode).btnMain;
 
 	return (
 		<Box pos="relative" w="100%" style={{ maxWidth: large ? 400 : 280 }}>
@@ -63,10 +65,9 @@ const BreakRestScreen: FC<BreakRestScreenProps> = ({
 			>
 				<Title
 					order={large ? 2 : 4}
-					c="white"
 					fw={500}
 					ta="center"
-					style={{ letterSpacing: "0.05em" }}
+					style={{ letterSpacing: "0.05em", color: "var(--ui-text)" }}
 				>
 					{title}
 				</Title>
@@ -81,13 +82,28 @@ const BreakRestScreen: FC<BreakRestScreenProps> = ({
 						: "No clock — just rest."}
 				</Text>
 				{bonusMinutes > 0 && (
-					<Text size="xs" c="blue.4" ta="center" style={{ opacity: 0.8 }}>
+					<Text
+						size="xs"
+						ta="center"
+						style={{ opacity: 0.8, color: "var(--ui-accent-info)" }}
+					>
 						Extended break +{bonusMinutes} min for early completion
 					</Text>
 				)}
-				<BreathingCircle large={large} isAnimating={isRunning} />
-				<Text size="xs" c="dimmed" ta="center" style={{ opacity: 0.45, maxWidth: 240, lineHeight: 1.5 }}>
-					{isLong ? "Look away · Stretch · Do nothing" : "Breathe · Release · Recover"}
+				<BreathingCircle
+					large={large}
+					isAnimating={isRunning}
+					accent={accent}
+				/>
+				<Text
+					size="xs"
+					c="dimmed"
+					ta="center"
+					style={{ opacity: 0.45, maxWidth: 240, lineHeight: 1.5 }}
+				>
+					{isLong
+						? "Look away · Stretch · Do nothing"
+						: "Breathe · Release · Recover"}
 				</Text>
 				<Button
 					variant="subtle"

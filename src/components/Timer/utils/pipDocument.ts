@@ -31,13 +31,14 @@ export function updatePiPProgressRing(
 	sessionProgressPercent: number,
 	accentColor: string,
 ) {
-	const circle = doc.getElementById("pip-ring-progress") as SVGCircleElement | null;
+	const circle = doc.getElementById(
+		"pip-ring-progress",
+	) as SVGCircleElement | null;
 	if (!circle) return;
 
 	const radius = Number(circle.getAttribute("r") ?? 0);
 	const circumference = 2 * Math.PI * radius;
-	const offset =
-		circumference - (sessionProgressPercent / 100) * circumference;
+	const offset = circumference - (sessionProgressPercent / 100) * circumference;
 	circle.setAttribute("stroke-dasharray", String(circumference));
 	circle.setAttribute("stroke-dashoffset", String(offset));
 	circle.setAttribute("stroke", accentColor);
@@ -57,7 +58,8 @@ export function updatePiPTimeElements(
 	sessionIntention?: string,
 ) {
 	const root = doc.getElementById("pip-root");
-	if (root) root.setAttribute("data-running", timerState.isRunning ? "true" : "false");
+	if (root)
+		root.setAttribute("data-running", timerState.isRunning ? "true" : "false");
 
 	const modeLabelEl = doc.getElementById("pip-mode-label");
 	if (modeLabelEl) modeLabelEl.textContent = MODE_LABEL[mode] ?? "Focus";
@@ -70,15 +72,21 @@ export function updatePiPTimeElements(
 
 	const pausedEl = doc.getElementById("pip-paused-mark");
 	if (pausedEl) {
-		pausedEl.className = timerState.isRunning ? "pip-paused-mark hidden" : "pip-paused-mark";
+		pausedEl.className = timerState.isRunning
+			? "pip-paused-mark hidden"
+			: "pip-paused-mark";
 	}
 
 	const showIntention =
 		mode === Mode.Pomodoro && Boolean(sessionIntention?.trim().length);
 	const intentionEl = doc.getElementById("intention-text");
 	if (intentionEl) {
-		intentionEl.textContent = showIntention ? (sessionIntention?.trim() ?? "") : "";
-		intentionEl.className = showIntention ? "intention-text visible" : "intention-text";
+		intentionEl.textContent = showIntention
+			? (sessionIntention?.trim() ?? "")
+			: "";
+		intentionEl.className = showIntention
+			? "intention-text visible"
+			: "intention-text";
 	}
 }
 
@@ -132,7 +140,7 @@ export function mountOrUpdatePiPControls(
 	if (controlsEl.getAttribute("data-state") !== stateKey) {
 		controlsEl.setAttribute("data-state", stateKey);
 		controlsEl.innerHTML = buildPiPControlsHtml({
-			isPaused: !controlState.isPaused,
+			isPaused: controlState.isPaused,
 		});
 
 		doc
@@ -142,11 +150,11 @@ export function mountOrUpdatePiPControls(
 	}
 }
 
-export function syncPiPTheme(doc: Document, mode: Mode, cssText: string) {
+export function syncPiPTheme(doc: Document, styleKey: string, cssText: string) {
 	const styleEl = doc.getElementById("pip-css");
-	if (styleEl && styleEl.getAttribute("data-mode") !== String(mode)) {
+	if (styleEl && styleEl.getAttribute("data-style-key") !== styleKey) {
 		styleEl.textContent = cssText;
-		styleEl.setAttribute("data-mode", String(mode));
+		styleEl.setAttribute("data-style-key", styleKey);
 	}
 }
 

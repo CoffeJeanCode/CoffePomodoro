@@ -1,10 +1,14 @@
 import { Suspense, lazy, useLayoutEffect } from "react";
 
+import InstallPrompt from "@/components/ui/InstallPrompt";
+import PersistenceIndicator from "@/components/ui/PersistenceIndicator";
+import { useApplyPresetAppearance } from "@/hooks/useAppearance";
+import { useSessionRecovery } from "@/hooks/useSessionRecovery";
 import { useInfoState, useTimerState } from "@/stores";
 import { useBrainDumpState } from "@/stores/states/brainDump";
 import { useStatsState } from "@/stores/states/stats";
-import { getEndOfWeek, isToday } from "@/utils/time.util";
 import ui from "@/styles/ui.module.css";
+import { getEndOfWeek, isToday } from "@/utils/time.util";
 import { Center, Container, Flex, Loader, Stack, Title } from "@mantine/core";
 
 const Helps = lazy(() => import("@/components/Helps"));
@@ -19,6 +23,13 @@ const Home = () => {
 	const resetStats = useStatsState((stats) => stats.resetStats);
 	const resetTimer = useTimerState((state) => state.resetTimer);
 	const autoPurgeBrainDump = useBrainDumpState((s) => s.autoPurge);
+
+	useSessionRecovery();
+	useApplyPresetAppearance();
+
+	useLayoutEffect(() => {
+		autoPurgeBrainDump();
+	}, [autoPurgeBrainDump]);
 
 	useLayoutEffect(() => {
 		const todayDate = new Date(date.raw);
@@ -35,7 +46,15 @@ const Home = () => {
 			const expireDate = new Date().setDate(new Date().getDate() + 8);
 			setEndWeek(getEndOfWeek(new Date(expireDate), 1));
 		}
-	}, [date, endWeek, resetTimer, resetInfo, resetStats, setEndWeek, autoPurgeBrainDump]);
+	}, [
+		date,
+		endWeek,
+		resetTimer,
+		resetInfo,
+		resetStats,
+		setEndWeek,
+		autoPurgeBrainDump,
+	]);
 
 	return (
 		<Suspense
@@ -55,6 +74,7 @@ const Home = () => {
 							<Settings />
 							<Stats />
 							<Helps />
+							<InstallPrompt />
 						</Flex>
 						<Timer />
 					</Stack>
@@ -62,6 +82,7 @@ const Home = () => {
 			</Container>
 			<QuickMenu />
 			<BrainDump />
+			<PersistenceIndicator />
 		</Suspense>
 	);
 };

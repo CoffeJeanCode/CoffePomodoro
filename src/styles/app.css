@@ -1,24 +1,74 @@
+/*
+ * Structural Style Engine V2 (ADR-0012).
+ *
+ * Three layers, fully decoupled:
+ *
+ *   1. COLOR   → tokens-color-root.css    (immutable R/G/B + mode aliases)
+ *   2. SHAPE  → tokens-shape-root.css     (canvas/geo/topo/typo/physics per style)
+ *   3. COMPOSED aliases below             (color ⊗ structure — what components eat)
+ *
+ * Components consume ONLY the composed --ui-* aliases below, never raw --color-*
+ * or raw structural tokens directly. Switching data-ui-style swaps the structural
+ * axis; the color axis never flips.
+ */
+
+@import "./tokens-color-root.css";
+@import "./tokens-shape-root.css";
+
 :root {
-	--ui-page-bg: #0a0e14;
-	--ui-page-glow: rgba(255, 107, 107, 0.12);
-	--ui-text: #f1f3f5;
-	--ui-text-muted: #868e96;
-	--ui-glass-bg: rgba(255, 255, 255, 0.06);
-	--ui-glass-bg-strong: rgba(255, 255, 255, 0.09);
-	--ui-glass-border: rgba(255, 255, 255, 0.14);
-	--ui-glass-border-top: rgba(255, 255, 255, 0.22);
-	--ui-glass-blur: blur(22px) saturate(150%);
-	--ui-shadow: 0 16px 48px rgba(0, 0, 0, 0.35);
-	--ui-radius: 1.25rem;
-	--ui-radius-sm: 0.65rem;
-	--ui-ease: cubic-bezier(0.4, 0, 0.2, 1);
-	--ui-duration: 0.45s;
-	--ui-duration-slow: 1.2s;
-	/* Palette: neutral glass + red primary actions */
-	--ui-accent-primary: #5131e0;
-	--ui-accent-info: #74c0fc;
-	--ui-accent-success: #51cf66;
-	--ui-accent-warning: #ff922b;
+	/* ── COMPOSED aliases (color ⊗ structure) ── */
+
+	/* Surface composition: opaque for ciberpunk/rustico/minimal (surface-alpha = 100%) */
+	--ui-glass-bg: color-mix(
+		in srgb,
+		var(--ui-surface) var(--ui-surface-alpha),
+		transparent
+	);
+	--ui-glass-bg-strong: color-mix(
+		in srgb,
+		var(--ui-surface) var(--ui-surface-alpha-strong),
+		transparent
+	);
+	--ui-glass-border: var(--ui-border-color);
+	--ui-glass-border-top: var(--ui-border-color);
+	--ui-glass-blur: var(--ui-blur);
+
+	/* Accent composition: fixed colors projected into UI aliases */
+	--ui-accent-primary: var(--color-accent);
+	--ui-accent-info: var(--color-info);
+	--ui-accent-success: var(--color-success);
+	--ui-accent-warning: var(--color-warning);
+	--ui-ring-accent: var(--color-accent);
+	--ui-ring-accent-soft: color-mix(
+		in srgb,
+		var(--color-accent) 15%,
+		transparent
+	);
+	--ui-ring-accent-glow: color-mix(
+		in srgb,
+		var(--color-accent) 28%,
+		transparent
+	);
+	--ui-ring-track: var(--color-ring-track);
+
+	/* Page: structural canvas + fixed glow color */
+	--ui-page-bg: var(--ui-bg);
+	--ui-page-glow: color-mix(in srgb, var(--color-accent) 7%, transparent);
+
+	/* Typography passthrough */
+	--ui-font-body: var(--ui-font-family);
+
+	/* Per-style ambient background will be set by body rules below */
+	--ui-ambient-bg: radial-gradient(
+			ellipse 80% 60% at 50% 0%,
+			var(--ui-page-glow) 0%,
+			transparent 55%
+		),
+		radial-gradient(
+			ellipse 60% 50% at 80% 100%,
+			var(--ui-page-glow) 0%,
+			transparent 50%
+		);
 }
 
 html,
@@ -29,24 +79,151 @@ body,
 
 body {
 	margin: 0;
-	background-color: var(--ui-page-bg);
-	background-image:
-		radial-gradient(
+	background-color: var(--ui-bg);
+	background-image: var(--ui-ambient-bg);
+	background-attachment: fixed;
+	color: var(--ui-text);
+	font-family: var(--ui-font-family);
+	transition: color var(--ui-duration) var(--ui-ease), font-family
+		var(--ui-duration) var(--ui-ease), background-color var(--ui-duration-slow)
+		var(--ui-ease);
+}
+
+* {
+	transition-timing-function: var(--ui-ease);
+}
+
+/* ── Per-style ambient backgrounds ── */
+
+[data-ui-style="ciberpunk"] body {
+	background-image: radial-gradient(
 			ellipse 80% 60% at 50% 0%,
 			var(--ui-page-glow) 0%,
 			transparent 55%
 		),
 		radial-gradient(
 			ellipse 60% 50% at 80% 100%,
-			rgba(116, 192, 252, 0.08) 0%,
+			var(--ui-page-glow) 0%,
 			transparent 50%
-		),
-		linear-gradient(180deg, #0c1018 0%, var(--ui-page-bg) 100%);
-	background-attachment: fixed;
-	color: var(--ui-text);
-	transition: background-image var(--ui-duration-slow) var(--ui-ease);
+		);
 }
 
-* {
-	transition-timing-function: var(--ui-ease);
+[data-ui-style="rustico"] body {
+	background-image: radial-gradient(
+			ellipse 80% 60% at 50% 30%,
+			rgba(139, 100, 59, 0.06) 0%,
+			transparent 55%
+		),
+		radial-gradient(
+			ellipse 60% 50% at 20% 80%,
+			rgba(100, 80, 40, 0.04) 0%,
+			transparent 50%
+		);
+	background-color: var(--ui-bg);
+}
+
+[data-ui-style="minimal"] body {
+	background-image: none;
+	background-color: var(--ui-bg);
+}
+
+/* ── Rustico: paper texture overlay ── */
+
+[data-ui-style="rustico"] body::before {
+	content: "";
+	position: fixed;
+	inset: 0;
+	pointer-events: none;
+	z-index: 9999;
+	background: var(--ui-texture);
+	opacity: 1;
+	mix-blend-mode: multiply;
+}
+
+/* ── Ciberpunk: glitch keyframes ── */
+
+@keyframes cyberGlitch {
+	0%,
+	100% {
+		clip-path: none;
+	}
+	7% {
+		clip-path: inset(40% 0 61% 0);
+		transform: translate(-2px, 1px);
+	}
+	10% {
+		clip-path: inset(92% 0 1% 0);
+		transform: translate(2px, -1px);
+	}
+	13% {
+		clip-path: none;
+		transform: none;
+	}
+}
+
+/* ── Interactive physics ── */
+
+.mantine-Button-root,
+.mantine-ActionIcon-root {
+	border-radius: var(--ui-radius-sm) !important;
+	transition: transform var(--ui-spring-duration) var(--ui-spring-ease),
+		box-shadow var(--ui-duration) var(--ui-ease), background var(--ui-duration)
+		var(--ui-ease);
+}
+
+.mantine-Button-root[data-variant="light"],
+.mantine-Button-root[data-variant="filled"],
+.mantine-Button-root[data-variant="default"],
+.mantine-ActionIcon-root[data-variant="light"],
+.mantine-ActionIcon-root[data-variant="filled"],
+.mantine-ActionIcon-root[data-variant="default"] {
+	border: var(--ui-border-width) var(--ui-border-style) var(--ui-border-color);
+	box-shadow: var(--ui-shadow-sm);
+	backdrop-filter: var(--ui-glass-blur);
+	-webkit-backdrop-filter: var(--ui-glass-blur);
+}
+
+.mantine-Button-root:active,
+.mantine-ActionIcon-root:active {
+	transform: var(--ui-press-transform);
+}
+
+.mantine-Button-root[data-variant="light"]:active,
+.mantine-Button-root[data-variant="filled"]:active,
+.mantine-Button-root[data-variant="default"]:active,
+.mantine-ActionIcon-root[data-variant="light"]:active,
+.mantine-ActionIcon-root[data-variant="filled"]:active,
+.mantine-ActionIcon-root[data-variant="default"]:active {
+	box-shadow: var(--ui-shadow-pressed);
+}
+
+.spring-click {
+	transition: transform var(--ui-spring-duration) var(--ui-spring-ease),
+		box-shadow var(--ui-spring-duration) var(--ui-spring-ease);
+}
+
+.spring-click:active {
+	transform: var(--ui-press-transform);
+	box-shadow: var(--ui-shadow-pressed);
+}
+
+/* ── Ciberpunk: hard-shadow offset press ── */
+[data-ui-style="ciberpunk"] .spring-click:active {
+	transform: translate(4px, 4px);
+	box-shadow: 0px 0px 0px var(--ui-border-color) !important;
+}
+
+/* ── Ciberpunk: rigid headings ── */
+[data-ui-style="ciberpunk"] .pageTitle {
+	font-weight: 700;
+}
+
+/* ── Reduced motion ── */
+
+@media (prefers-reduced-motion: reduce) {
+	* {
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.01ms !important;
+	}
 }
