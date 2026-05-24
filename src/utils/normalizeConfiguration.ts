@@ -1,4 +1,4 @@
-import type { Behavior, Configuration, Notification, Timers } from "@/models";
+import type { Configuration, Notification, Timers } from "@/models";
 import { Mode } from "@/models";
 import type { TimerSchema } from "@/models/schemas";
 import { ALARMS } from "@/stores/constants";
@@ -22,7 +22,6 @@ const alarmByTitle = new Map(
 	Object.values(ALARMS).map((alarm) => [alarm.title, alarm]),
 );
 
-/** Maps persisted alarm choice to a bundled asset (drops removed/missing files). */
 export function normalizeAlarm(
 	alarm: Notification["alarm"] | undefined,
 ): Notification["alarm"] {
@@ -30,32 +29,10 @@ export function normalizeAlarm(
 	return alarmByTitle.get(alarm.title) ?? defaultNotification.alarm;
 }
 
-export const defaultBehavior: Behavior = {
-	canAutoPlay: false,
-	pomodorosToLongBreak: 4,
-	sessionAdjustStepMinutes: 5,
-};
-
-export function normalizeBehavior(raw?: Partial<Behavior> | null): Behavior {
-	return {
-		canAutoPlay: raw?.canAutoPlay ?? defaultBehavior.canAutoPlay,
-		pomodorosToLongBreak:
-			raw?.pomodorosToLongBreak ?? defaultBehavior.pomodorosToLongBreak,
-		sessionAdjustStepMinutes:
-			raw?.sessionAdjustStepMinutes ?? defaultBehavior.sessionAdjustStepMinutes,
-	};
-}
-
-type PersistedConfiguration = Partial<Configuration> & {
-	behaviur?: Partial<Behavior>;
-};
-
-/** Single source for runtime config shape; maps legacy `behaviur` → `behavior`. */
 export function normalizeConfiguration(
-	partial: PersistedConfiguration | null | undefined,
+	partial: Partial<Configuration> | null | undefined,
 ): Configuration {
 	const p = partial ?? {};
-	const behaviorSource = p.behavior ?? p.behaviur;
 	return {
 		timers: { ...defaultTimers, ...p.timers },
 		notification: {
@@ -63,19 +40,10 @@ export function normalizeConfiguration(
 			...p.notification,
 			alarm: normalizeAlarm(p.notification?.alarm),
 		},
-		behavior: normalizeBehavior(behaviorSource),
 	};
 }
 
-type PersistedTimerSchema = Partial<TimerSchema> &
-	Pick<TimerSchema, "id" | "title"> & {
-		behaviur?: Partial<Behavior>;
-	};
-
-export function normalizeTimerSchema(
-	schema: PersistedTimerSchema,
-): TimerSchema {
-	const legacy = (schema as { behaviur?: Partial<Behavior> }).behaviur;
+export function normalizeTimerSchema(schema: Partial<TimerSchema> & Pick<TimerSchema, "id" | "title">): TimerSchema {
 	return {
 		id: schema.id,
 		title: schema.title,
@@ -85,6 +53,5 @@ export function normalizeTimerSchema(
 			...schema.notification,
 			alarm: normalizeAlarm(schema.notification?.alarm),
 		},
-		behavior: normalizeBehavior(schema.behavior ?? legacy),
 	};
 }

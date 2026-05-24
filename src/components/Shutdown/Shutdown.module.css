@@ -1,0 +1,85 @@
+.trigger {
+	position: fixed;
+	left: 1rem;
+	bottom: 1rem;
+	z-index: 200;
+	opacity: 0.4;
+	transition: opacity var(--ui-duration, 0.2s) var(--ui-ease, ease);
+}
+
+.trigger:hover {
+	opacity: 0.9;
+}
+
+.lockOverlay {
+	position: fixed;
+	inset: 0;
+	z-index: 10000;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 2rem;
+	text-align: center;
+	background: radial-gradient(
+		circle at 50% 40%,
+		rgba(24, 22, 20, 0.96) 0%,
+		rgba(12, 11, 10, 0.99) 100%
+	);
+	backdrop-filter: blur(18px);
+	animation: lockFade 1.2s var(--ui-ease, ease) both;
+}
+
+@keyframes lockFade {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
+}
+
+.lockMessage {
+	max-width: 30rem;
+	font-size: 1.05rem;
+	line-height: 1.7;
+	letter-spacing: 0.02em;
+	color: rgba(255, 255, 255, 0.78);
+}
+
+.lockSub {
+	margin-top: 0.75rem;
+	font-size: 0.85rem;
+	color: rgba(255, 255, 255, 0.42);
+}
+
+.list {
+	display: flex;
+	flex-direction: column;
+	gap: 0.4rem;
+	width: 100%;
+	max-height: 240px;
+	overflow-y: auto;
+}
+
+.noteItem {
+	font-size: 0.8rem;
+	line-height: 1.45;
+	color: rgba(255, 255, 255, 0.72);
+	padding: 0.4rem 0.55rem;
+	border-radius: 4px;
+	background: rgba(255, 255, 255, 0.04);
+	border-left: 2px solid rgba(250, 82, 82, 0.35);
+	word-break: break-word;
+}
+
+.intentionItem {
+	font-size: 0.9rem;
+	font-style: italic;
+	line-height: 1.5;
+	color: rgba(255, 255, 255, 0.82);
+	padding: 0.5rem 0.65rem;
+	border-radius: 4px;
+	background: rgba(255, 255, 255, 0.03);
+	border-left: 2px solid rgba(64, 192, 87, 0.4);
+	word-break: break-word;
+}

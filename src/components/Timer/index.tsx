@@ -1,11 +1,13 @@
 import { GlassPanel } from "@/components/ui/GlassPanel";
 import { Mode } from "@/models";
-import { useInfoState } from "@/stores";
+import { useDepthState, useInfoState, useSchemasState } from "@/stores";
 import { useBrainDumpState } from "@/stores/states/brainDump";
+import { useTimerState } from "@/stores/states/timer";
 import { secondsToMinutes } from "@/utils/time.util";
 import { Box, Container } from "@mantine/core";
-import { memo, useEffect, useRef, useState } from "react";
+import { memo, useCallback, useEffect, useRef, useState } from "react";
 import BreakRestScreen from "./BreakRestScreen";
+import EnergyCheckModal from "./EnergyCheckModal";
 import IntentionComplete from "./IntentionComplete";
 import SessionComplete from "./SessionComplete";
 import SessionIntention from "./SessionIntention";
@@ -35,7 +37,6 @@ const Timer = () => {
 		cancelIntentionFulfillment,
 		confirmIntentionFulfillment,
 		dismissCycleAck,
-		handleAdjustSessionByMinutes,
 		handleIntentionFulfilled,
 		handleNextTimer,
 		handleStopTimer,
@@ -46,20 +47,68 @@ const Timer = () => {
 		isRunning,
 		remainingTime,
 		savedTimeBonus,
-		sessionAdjustStepMinutes,
 		sessionProgressPercent,
 	} = useTimer();
 	const {
 		mode,
 		sessionIntention,
 		intentionConfirmed,
+		consecutiveHighIntensitySessions,
+		resetHighIntensity,
 		setSessionIntention,
 		setIntentionConfirmed,
 		clearSessionIntention,
 	} = useInfoState();
 	const brainDumpNotes = useBrainDumpState((s) => s.notes);
 	const discardAllBrainDump = useBrainDumpState((s) => s.discardAll);
+	const setActivePreset = useDepthState((s) => s.setActivePreset);
+	const setCurrentSchema = useSchemasState((s) => s.setCurrentSchema);
+	const resetForNext = useTimerState((s) => s.resetForNext);
 	const timerRef = useRef<HTMLDivElement>(null);
+
+	const HIGH_INTENSITY_THRESHOLD = 2;
+	const [energyCheckOpen, setEnergyCheckOpen] = useState(false);
+	const pendingStartRef = useRef<(() => void) | null>(null);
+
+	// Gate the main Play action: starting a fresh focus block after two
+	// back-to-back high-intensity cycles requires a conscious energy check.
+	const guardedToggle = useCallback(() => {
+		const startingFreshFocus =
+			mode === Mode.Pomodoro && !isRunning && sessionProgressPercent === 0;
+		if (
+			startingFreshFocus &&
+			consecutiveHighIntensitySessions >= HIGH_INTENSITY_THRESHOLD
+		) {
+			pendingStartRef.current = handleToggleTimer;
+			setEnergyCheckOpen(true);
+			return;
+		}
+		handleToggleTimer();
+	}, [
+		mode,
+		isRunning,
+		sessionProgressPercent,
+		consecutiveHighIntensitySessions,
+		handleToggleTimer,
+	]);
+
+	const handleEnergyContinue = () => {
+		setEnergyCheckOpen(false);
+		const start = pendingStartRef.current;
+		pendingStartRef.current = null;
+		start?.();
+	};
+
+	const handleEnergyDownshift = () => {
+		setEnergyCheckOpen(false);
+		pendingStartRef.current = null;
+		// Switch to the shortest preset (25-min) and clear the load count, then
+		// leave the block paused so the user starts the lighter cycle consciously.
+		setCurrentSchema("");
+		setActivePreset("quick");
+		resetHighIntensity();
+		resetForNext();
+	};
 
 	const [isEditingIntention, setIsEditingIntention] = useState(false);
 	const [phaseOpacity, setPhaseOpacity] = useState(1);
@@ -98,21 +147,18 @@ const Timer = () => {
 		handleToggleTimer,
 		handleStopTimer,
 		handleNextTimer,
-		handleAdjustSessionByMinutes,
-		sessionAdjustStepMinutes,
 		mode,
 		sessionProgressPercent: progressPercent,
 	});
 
 	useTimerDocumentAndHotkeys({
 		mode,
-		handleToggleTimer,
+		handleToggleTimer: guardedToggle,
 		handleStopTimer,
 		handleIntentionFulfilled,
 		handleNextTimer,
 		handleFullScreen,
 		handlePictureInPicture,
-		handleAdjustSessionByMinutes,
 	});
 
 	const handleConfirmIntention = (intention: string) => {
@@ -120,7 +166,7 @@ const Timer = () => {
 		setSessionIntention(intention);
 		setIntentionConfirmed(true);
 		setIsEditingIntention(false);
-		if (isFirstIntention) handleToggleTimer();
+		if (isFirstIntention) guardedToggle();
 	};
 
 	const handleEditIntention = () => {
@@ -148,12 +194,7 @@ const Timer = () => {
 				>
 					{!awaitingCycleAck && !awaitingIntentionFulfillment && !onBreak && (
 						<Box className={styles.timerHeader}>
-							<TimerHeader
-								mode={mode}
-								sessionAdjustStepMinutes={sessionAdjustStepMinutes}
-								onAddMinute={() => handleAdjustSessionByMinutes(1)}
-								onSubtractMinute={() => handleAdjustSessionByMinutes(-1)}
-							/>
+							<TimerHeader mode={mode} />
 						</Box>
 					)}
 
@@ -234,7 +275,7 @@ const Timer = () => {
 							) : (
 								<TimerControllers
 									mode={mode}
-									handleToggleTimer={handleToggleTimer}
+									handleToggleTimer={guardedToggle}
 									isPlaying={isRunning}
 									onSkipBreak={handleSkipBreak}
 									onIntentionFulfilled={handleIntentionFulfilled}
@@ -256,6 +297,12 @@ const Timer = () => {
 					</Box>
 				</GlassPanel>
 			</Box>
+			<EnergyCheckModal
+				opened={energyCheckOpen}
+				onClose={() => setEnergyCheckOpen(false)}
+				onContinue={handleEnergyContinue}
+				onDownshift={handleEnergyDownshift}
+			/>
 		</Container>
 	);
 };

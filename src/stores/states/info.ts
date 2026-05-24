@@ -13,6 +13,9 @@ interface InfoState extends Info {
 	setSessionIntention: (sessionIntention: string) => void;
 	setIntentionConfirmed: (intentionConfirmed: boolean) => void;
 	clearSessionIntention: () => void;
+	incrementHighIntensity: () => void;
+	resetHighIntensity: () => void;
+	logCompletedIntention: (intention: string) => void;
 	resetInfo: () => void;
 }
 
@@ -29,6 +32,8 @@ const initialState: Info = {
 	sessions: 1,
 	sessionIntention: "",
 	intentionConfirmed: false,
+	consecutiveHighIntensitySessions: 0,
+	completedIntentions: [],
 };
 
 export const useInfoState = create<InfoState>()(
@@ -46,6 +51,23 @@ export const useInfoState = create<InfoState>()(
 				set(() => ({ intentionConfirmed })),
 			clearSessionIntention: () =>
 				set(() => ({ sessionIntention: "", intentionConfirmed: false })),
+			incrementHighIntensity: () =>
+				set((state) => ({
+					consecutiveHighIntensitySessions:
+						state.consecutiveHighIntensitySessions + 1,
+				})),
+			resetHighIntensity: () =>
+				set(() => ({ consecutiveHighIntensitySessions: 0 })),
+			logCompletedIntention: (intention) =>
+				set((state) => {
+					const trimmed = intention.trim();
+					if (!trimmed || state.completedIntentions.includes(trimmed)) {
+						return state;
+					}
+					return {
+						completedIntentions: [...state.completedIntentions, trimmed],
+					};
+				}),
 			resetInfo: () => set(initialState),
 		}),
 		{
@@ -58,6 +80,9 @@ export const useInfoState = create<InfoState>()(
 					...p,
 					sessionIntention: p.sessionIntention ?? "",
 					intentionConfirmed: p.intentionConfirmed ?? false,
+					consecutiveHighIntensitySessions:
+						p.consecutiveHighIntensitySessions ?? 0,
+					completedIntentions: p.completedIntentions ?? [],
 				};
 			},
 		},

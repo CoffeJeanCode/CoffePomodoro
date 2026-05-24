@@ -39,10 +39,6 @@ const defaultSchemasRaw: Omit<TimerSchema, "id">[] = DEPTH_PRESET_ORDER.map(
 			presetKey: key,
 			timers: preset.timers,
 			notification: NOTIFICATION_BY_PRESET[key],
-			behavior: {
-				canAutoPlay: false,
-				...preset.behavior,
-			},
 		};
 	},
 );

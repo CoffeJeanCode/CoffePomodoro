@@ -1,10 +1,10 @@
 import { Suspense, lazy, useLayoutEffect } from "react";
 
-import { useInfoState, useTimerState } from "@/stores";
+import { useInfoState, useShutdownState, useTimerState } from "@/stores";
 import { useBrainDumpState } from "@/stores/states/brainDump";
 import { useStatsState } from "@/stores/states/stats";
 import ui from "@/styles/ui.module.css";
-import { getEndOfWeek, isToday } from "@/utils/time.util";
+import { getDate, getEndOfWeek, isToday } from "@/utils/time.util";
 import { Center, Container, Flex, Loader, Stack, Title } from "@mantine/core";
 
 const Helps = lazy(() => import("@/components/Helps"));
@@ -12,6 +12,7 @@ const QuickMenu = lazy(() => import("@/components/QuickMenu"));
 const BrainDump = lazy(() => import("@/components/BrainDump"));
 const Settings = lazy(() => import("@/components/Settings"));
 const Stats = lazy(() => import("@/components/Stats"));
+const Shutdown = lazy(() => import("@/components/Shutdown"));
 const Timer = lazy(() => import("@/components/Timer"));
 
 const Home = () => {
@@ -19,6 +20,9 @@ const Home = () => {
 	const resetStats = useStatsState((stats) => stats.resetStats);
 	const resetTimer = useTimerState((state) => state.resetTimer);
 	const autoPurgeBrainDump = useBrainDumpState((s) => s.autoPurge);
+	const isShutDown = useShutdownState((s) => s.isShutDown);
+	const shutDownDate = useShutdownState((s) => s.shutDownDate);
+	const clearShutdown = useShutdownState((s) => s.clearShutdown);
 
 	useLayoutEffect(() => {
 		const todayDate = new Date(date.raw);
@@ -28,6 +32,10 @@ const Home = () => {
 			resetTimer();
 			resetInfo();
 			autoPurgeBrainDump();
+		}
+		// Lift the shutdown lock once a new day begins.
+		if (isShutDown && shutDownDate !== getDate(new Date())) {
+			clearShutdown();
 		}
 		if (todayDate.getTime() > endWeekDate.getTime()) {
 			resetStats();
@@ -43,6 +51,9 @@ const Home = () => {
 		resetStats,
 		setEndWeek,
 		autoPurgeBrainDump,
+		isShutDown,
+		shutDownDate,
+		clearShutdown,
 	]);
 
 	return (
@@ -70,6 +81,7 @@ const Home = () => {
 			</Container>
 			<QuickMenu />
 			<BrainDump />
+			<Shutdown />
 		</Suspense>
 	);
 };

@@ -11,6 +11,8 @@ interface TimerState extends Timer {
 	setFinishTime: (time: number) => void;
 	setIsRunning: (isRunning: boolean) => void;
 	setSavedTimeBonus: (seconds: number) => void;
+	incrementHighIntensitySessions: () => void;
+	resetHighIntensitySessions: () => void;
 	resetTimer: () => void;
 	resetForNext: () => void;
 }
@@ -24,6 +26,7 @@ const initialState: Timer = {
 	remainingTimeText: "00:00",
 	isRunning: false,
 	savedTimeBonus: 0,
+	consecutiveHighIntensitySessions: 0,
 };
 
 export const useTimerState = create<TimerState>()(
@@ -39,6 +42,13 @@ export const useTimerState = create<TimerState>()(
 			setIsRunning: (isRunning) => set(() => ({ isRunning })),
 			setResumedTime: (resumedTime) => set(() => ({ resumedTime })),
 			setSavedTimeBonus: (savedTimeBonus) => set(() => ({ savedTimeBonus })),
+			incrementHighIntensitySessions: () =>
+				set((state) => ({
+					consecutiveHighIntensitySessions:
+						state.consecutiveHighIntensitySessions + 1,
+				})),
+			resetHighIntensitySessions: () =>
+				set({ consecutiveHighIntensitySessions: 0 }),
 			resetForNext: () =>
 				set({
 					resumedTime: 0,

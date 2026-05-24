@@ -12,7 +12,6 @@ interface UseTimerDocumentAndHotkeysParams {
 	handleNextTimer: (args: { isSkip: boolean }) => void;
 	handleFullScreen: () => void | Promise<void>;
 	handlePictureInPicture: () => void | Promise<void>;
-	handleAdjustSessionByMinutes: (delta: 1 | -1) => void;
 }
 
 export function useTimerDocumentAndHotkeys({
@@ -23,7 +22,6 @@ export function useTimerDocumentAndHotkeys({
 	handleNextTimer,
 	handleFullScreen,
 	handlePictureInPicture,
-	handleAdjustSessionByMinutes,
 }: UseTimerDocumentAndHotkeysParams) {
 	const { favIcon, setFavIcon } = useInfoState();
 
@@ -70,7 +68,5 @@ export function useTimerDocumentAndHotkeys({
 		],
 		["F", () => void handleFullScreen()],
 		["shift+I", () => void handlePictureInPicture()],
-		["+", () => handleAdjustSessionByMinutes(1)],
-		["-", () => handleAdjustSessionByMinutes(-1)],
 	]);
 }

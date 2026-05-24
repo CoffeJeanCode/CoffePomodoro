@@ -1,18 +1,5 @@
 import { Mode } from "@/models";
 
-/** Next mode: after Nth pomodoro → long break; after other pomodoros → short break; after any break → pomodoro. */
-export const getNewMode = (
-	mode: Mode,
-	pomodoros: number,
-	pomodorosToLongBreak: number,
-) =>
-	mode === Mode.Pomodoro
-		? pomodoros === pomodorosToLongBreak
-			? Mode.LongBreak
-			: Mode.ShortBreak
-		: Mode.Pomodoro;
-
-/** Base Mantine color key per mode: red (work), green (short break), blue (long break). */
 export const getColorMode = (mode: Mode): "red" | "green" | "blue" => {
 	switch (mode) {
 		case Mode.Pomodoro:
@@ -24,13 +11,11 @@ export const getColorMode = (mode: Mode): "red" | "green" | "blue" => {
 	}
 };
 
-/** Mantine color prop e.g. "red.8" for buttons, backgrounds. */
 export const getColorModeKey = (
 	mode: Mode,
 	shade = 8,
 ): `${"red" | "green" | "blue"}.${number}` => `${getColorMode(mode)}.${shade}`;
 
-/** Hex colors for PiP / raw CSS (gradients, buttons). Mantine-aligned. */
 const MODE_HEX: Record<
 	"red" | "green" | "blue",
 	{ gradient: [string, string]; btn: string; btnHover: string }

@@ -8,11 +8,8 @@ import {
 	useTimerState,
 } from "@/stores";
 import { useSchemasState } from "@/stores";
-import {
-	getToday,
-	minutesToSeconds,
-	secondsToMilliseconds,
-} from "@/utils/time.util";
+import { POMODOROS_TO_LONG_BREAK } from "@/stores/constants";
+import { getToday, secondsToMilliseconds } from "@/utils/time.util";
 import { useEffect, useMemo, useRef, useState } from "react";
 import useSound from "use-sound";
 import { useTimerTick } from "./useTimerTick";
@@ -27,9 +24,13 @@ const useTimer = () => {
 		mode,
 		pomodoros,
 		sessions,
+		sessionIntention,
 		setMode,
 		setPomodoros,
 		setSessions,
+		incrementHighIntensity,
+		resetHighIntensity,
+		logCompletedIntention,
 	} = useInfoState();
 	const {
 		remainingTime,
@@ -55,14 +56,9 @@ const useTimer = () => {
 
 	const depthPreset = DEPTH_PRESETS[activePreset];
 	const currentSchema = currentSchemaId !== "" ? findCurrentSchema() : null;
-	const { timers, behavior } = currentSchema ?? depthPreset;
+	const { timers } = currentSchema ?? depthPreset;
 
 	const notification = config.notification;
-
-	const sessionAdjustStepMinutes = Math.min(
-		30,
-		Math.max(1, behavior.sessionAdjustStepMinutes ?? 5),
-	);
 
 	function recordPomodoroSessionStats(isCompleted: boolean) {
 		const elapsedTime = sessionSegmentTotalSeconds - remainingTime;
@@ -79,6 +75,10 @@ const useTimer = () => {
 			isCompleted,
 		);
 		updateStreak(date.formated);
+		if (isCompleted) {
+			incrementHighIntensity();
+			logCompletedIntention(sessionIntention);
+		}
 	}
 
 	const [playNotification, { stop: stopNotification }] = useSound(
@@ -113,7 +113,6 @@ const useTimer = () => {
 		}
 	};
 
-	const { pomodorosToLongBreak } = behavior;
 	const nextRemainingTime = useMemo(() => timers[mode], [mode, timers]);
 
 	const sessionProgressPercent = useMemo(() => {
@@ -153,7 +152,7 @@ const useTimer = () => {
 
 	const getNewMode = () => {
 		if (mode === Mode.Pomodoro) {
-			return pomodoros === pomodorosToLongBreak
+			return pomodoros === POMODOROS_TO_LONG_BREAK
 				? Mode.LongBreak
 				: Mode.ShortBreak;
 		}
@@ -163,6 +162,11 @@ const useTimer = () => {
 	const handleNextTimer = ({ isSkip }: { isSkip: boolean }) => {
 		if (isSkip && mode === Mode.Pomodoro) {
 			recordPomodoroSessionStats(false);
+		}
+
+		// Finishing a long break clears accumulated cognitive load.
+		if (mode === Mode.LongBreak) {
+			resetHighIntensity();
 		}
 
 		const newMode = isSkip
@@ -197,23 +201,6 @@ const useTimer = () => {
 		handleNextTimer({ isSkip: true });
 	};
 
-	const handleAdjustSessionByMinutes = (delta: 1 | -1) => {
-		const stepSeconds = minutesToSeconds(sessionAdjustStepMinutes);
-		const deltaSeconds = delta * stepSeconds;
-		const effectiveTotal =
-			sessionSegmentTotalSeconds > 0
-				? sessionSegmentTotalSeconds
-				: Math.max(remainingTime, nextRemainingTime);
-		const nextTotal = Math.max(2, effectiveTotal + deltaSeconds);
-		const next = Math.max(2, remainingTime + deltaSeconds);
-		setSessionSegmentTotalSeconds(nextTotal);
-		setRemainingTime(next);
-		setResumedTime(next);
-		if (isRunning) {
-			setFinishTime(Date.now() + secondsToMilliseconds(next));
-		}
-	};
-
 	const handleIntentionFulfilled = () => {
 		if (mode !== Mode.Pomodoro) return;
 		recordPomodoroSessionStats(true);
@@ -229,7 +216,9 @@ const useTimer = () => {
 		setSavedTimeBonus(0);
 		if (bonus > 0) {
 			const breakMode =
-				pomodoros === pomodorosToLongBreak ? Mode.LongBreak : Mode.ShortBreak;
+				pomodoros === POMODOROS_TO_LONG_BREAK
+					? Mode.LongBreak
+					: Mode.ShortBreak;
 			const baseDuration = timers[breakMode];
 			const extendedDuration = baseDuration + bonus;
 			setRemainingTime(extendedDuration);
@@ -272,7 +261,9 @@ const useTimer = () => {
 		setSavedTimeBonus(0);
 		if (bonus > 0) {
 			const breakMode =
-				pomodoros === pomodorosToLongBreak ? Mode.LongBreak : Mode.ShortBreak;
+				pomodoros === POMODOROS_TO_LONG_BREAK
+					? Mode.LongBreak
+					: Mode.ShortBreak;
 			const baseDuration = timers[breakMode];
 			const extendedDuration = baseDuration + bonus;
 			setRemainingTime(extendedDuration);
@@ -313,7 +304,6 @@ const useTimer = () => {
 		handleNextTimer,
 		handleStopTimer,
 		handleSkipBreak,
-		handleAdjustSessionByMinutes,
 		getNewMode,
 		handleToggleTimer,
 		handleIntentionFulfilled,
@@ -328,7 +318,6 @@ const useTimer = () => {
 		finishTimeText,
 		sessionProgressPercent,
 		breakProgressPercent,
-		sessionAdjustStepMinutes,
 		sessionSegmentTotalSeconds,
 		savedTimeBonus,
 		awaitingCycleAck,

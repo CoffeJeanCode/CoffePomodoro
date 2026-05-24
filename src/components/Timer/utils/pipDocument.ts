@@ -17,8 +17,6 @@ export const pipControlIcons = {
 	Pause: `<svg viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>`,
 	Stop: `<svg viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>`,
 	Skip: `<svg viewBox="0 0 24 24"><path d="M5 4l10 8-10 8V4zM19 5v14h-2V5h2z"/></svg>`,
-	Minus: `<svg viewBox="0 0 24 24"><path d="M5 11h14v2H5z"/></svg>`,
-	Plus: `<svg viewBox="0 0 24 24"><path d="M11 5h2v6h6v2h-6v6h-2v-6H5v-2h6V5z"/></svg>`,
 } as const;
 
 export function updatePiPAmbient(doc: Document, ambientBackground: string) {
@@ -80,9 +78,7 @@ export function updatePiPTimeElements(
 	const showIntention =
 		mode === Mode.Pomodoro ? Boolean(sessionIntention?.trim().length) : true;
 	const intentionText =
-		mode === Mode.Pomodoro
-			? (sessionIntention?.trim() ?? "")
-			: "Take a break";
+		mode === Mode.Pomodoro ? (sessionIntention?.trim() ?? "") : "Take a break";
 	const intentionEl = doc.getElementById("intention-text");
 	if (intentionEl) {
 		intentionEl.textContent = showIntention ? intentionText : "";
@@ -110,16 +106,12 @@ export function buildPiPControlsHtml(control: {
 }
 
 export interface PiPControlHandlers {
-	onAdjust: (delta: 1 | -1) => void;
 	onToggle: () => void;
 	onSkip: () => void;
 	onStop: () => void;
 }
 
-function secondaryControlTitle(
-	mode: Mode,
-	isRunning: boolean,
-): string {
+function secondaryControlTitle(mode: Mode, isRunning: boolean): string {
 	const { showSkip } = getTimerControlState(mode, isRunning);
 	return showSkip ? getSkipButtonTitle(mode) : "Stop <S>";
 }
@@ -154,18 +146,4 @@ export function syncPiPTheme(doc: Document, mode: Mode, cssText: string) {
 		styleEl.textContent = cssText;
 		styleEl.setAttribute("data-mode", String(mode));
 	}
-}
-
-export function updatePiPAdjustButtonTitles(
-	doc: Document,
-	sessionAdjustStepMinutes: number,
-) {
-	const stepLabel =
-		sessionAdjustStepMinutes === 1
-			? "1 minute"
-			: `${sessionAdjustStepMinutes} minutes`;
-	doc
-		.getElementById("btn-minus")
-		?.setAttribute("title", `Subtract ${stepLabel} (−)`);
-	doc.getElementById("btn-plus")?.setAttribute("title", `Add ${stepLabel} (+)`);
 }

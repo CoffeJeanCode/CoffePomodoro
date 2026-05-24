@@ -62,16 +62,6 @@ const TimerSettings: FC<Props> = ({ configuration, setConfigValue }) => {
 
 			<Divider my="md" />
 
-			<NumberInput
-				label="Pomodoros per long break"
-				size="xs"
-				min={2}
-				value={configuration.behavior.pomodorosToLongBreak}
-				onChange={(value) =>
-					setConfigValue("behavior.pomodorosToLongBreak", value)
-				}
-			/>
-
 			<Title order={4}>Session Preview</Title>
 			<SessionViewer configuration={configuration} />
 		</Box>

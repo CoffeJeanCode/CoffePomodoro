@@ -6,7 +6,6 @@ import { buildAmbientBackground } from "../utils/ambientBackground";
 import {
 	mountOrUpdatePiPControls,
 	syncPiPTheme,
-	updatePiPAdjustButtonTitles,
 	updatePiPAmbient,
 	updatePiPProgressRing,
 	updatePiPTimeElements,
@@ -18,8 +17,6 @@ interface UsePictureInPictureProps {
 	handleToggleTimer: () => void;
 	handleStopTimer: () => void;
 	handleNextTimer: ({ isSkip }: { isSkip: boolean }) => void;
-	handleAdjustSessionByMinutes: (delta: 1 | -1) => void;
-	sessionAdjustStepMinutes: number;
 	mode: Mode;
 	sessionProgressPercent: number;
 }
@@ -61,13 +58,9 @@ const usePictureInPicture = ({
 	handleToggleTimer,
 	handleStopTimer,
 	handleNextTimer,
-	handleAdjustSessionByMinutes,
-	sessionAdjustStepMinutes,
 	mode,
 	sessionProgressPercent,
 }: UsePictureInPictureProps) => {
-	const adjustRef = useRef(handleAdjustSessionByMinutes);
-	adjustRef.current = handleAdjustSessionByMinutes;
 	const toggleRef = useRef(handleToggleTimer);
 	toggleRef.current = handleToggleTimer;
 	const stopRef = useRef(handleStopTimer);
@@ -102,27 +95,14 @@ const usePictureInPicture = ({
 		updatePiPAmbient(doc, ambient);
 		updatePiPProgressRing(doc, sessionProgressPercent, colors.btnMain);
 
-		mountOrUpdatePiPControls(
-			doc,
-			mode,
-			timerState.isRunning,
-			{
-				onAdjust: (delta) => adjustRef.current(delta),
-				onToggle: () => toggleRef.current(),
-				onSkip: () => nextRef.current({ isSkip: true }),
-				onStop: () => stopRef.current(),
-			},
-		);
+		mountOrUpdatePiPControls(doc, mode, timerState.isRunning, {
+			onToggle: () => toggleRef.current(),
+			onSkip: () => nextRef.current({ isSkip: true }),
+			onStop: () => stopRef.current(),
+		});
 
-		updatePiPAdjustButtonTitles(doc, sessionAdjustStepMinutes);
 		syncPiPTheme(doc, mode, getPiPStyles(colors));
-	}, [
-		mode,
-		sessionAdjustStepMinutes,
-		sessionProgressPercent,
-		sessionIntention,
-		timerState,
-	]);
+	}, [mode, sessionProgressPercent, sessionIntention, timerState]);
 
 	const handlePictureInPicture = async () => {
 		if (!("documentPictureInPicture" in window)) return;

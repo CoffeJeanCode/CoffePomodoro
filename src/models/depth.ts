@@ -1,4 +1,4 @@
-import type { Behavior, Timers } from "./config";
+import type { Timers } from "./config";
 
 export type DepthPresetKey = "deep" | "sustained" | "quick";
 
@@ -6,13 +6,8 @@ export interface DepthPreset {
 	key: DepthPresetKey;
 	label: string;
 	subtitle: string;
-	/** Short line for selectors and preset cards */
 	description: string;
 	timers: Timers;
-	behavior: Pick<
-		Behavior,
-		"pomodorosToLongBreak" | "sessionAdjustStepMinutes"
-	>;
 }
 
 export const DEPTH_PRESETS: Record<DepthPresetKey, DepthPreset> = {
@@ -26,10 +21,6 @@ export const DEPTH_PRESETS: Record<DepthPresetKey, DepthPreset> = {
 			"short break": 20 * 60,
 			"long break": 30 * 60,
 		},
-		behavior: {
-			pomodorosToLongBreak: 3,
-			sessionAdjustStepMinutes: 10,
-		},
 	},
 	sustained: {
 		key: "sustained",
@@ -41,10 +32,6 @@ export const DEPTH_PRESETS: Record<DepthPresetKey, DepthPreset> = {
 			"short break": 17 * 60,
 			"long break": 25 * 60,
 		},
-		behavior: {
-			pomodorosToLongBreak: 3,
-			sessionAdjustStepMinutes: 5,
-		},
 	},
 	quick: {
 		key: "quick",
@@ -55,10 +42,6 @@ export const DEPTH_PRESETS: Record<DepthPresetKey, DepthPreset> = {
 			pomodoro: 25 * 60,
 			"short break": 5 * 60,
 			"long break": 15 * 60,
-		},
-		behavior: {
-			pomodorosToLongBreak: 4,
-			sessionAdjustStepMinutes: 5,
 		},
 	},
 };

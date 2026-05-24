@@ -18,18 +18,7 @@ export interface Notification {
 	volume: number;
 }
 
-export interface Behavior {
-	canAutoPlay: boolean;
-	pomodorosToLongBreak: number;
-	/** Minutes added or removed per +/− adjust (buttons and hotkeys). */
-	sessionAdjustStepMinutes: number;
-}
-
 export interface Configuration {
 	timers: Timers;
 	notification: Notification;
-	behavior: Behavior;
 }
-
-/** @deprecated Legacy persisted key was `behaviur`; runtime shape is `behavior`. */
-export type LegacyBehaviorShape = Behavior;

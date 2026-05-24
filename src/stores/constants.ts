@@ -5,6 +5,8 @@ import Rise from "../assets/Rise.mp3";
 import Shake from "../assets/Shake.mp3";
 
 export const SCHEMA_KEYS = "1234567890".split("").map((key) => `digit${key}`);
+/** Number of focus sessions before a long break is offered. */
+export const POMODOROS_TO_LONG_BREAK = 4;
 export const DAYS = [
 	"Sunday",
 	"Monday",
