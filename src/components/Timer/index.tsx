@@ -1,6 +1,7 @@
 import { GlassPanel } from "@/components/ui/GlassPanel";
 import { Mode } from "@/models";
-import { useInfoState } from "@/stores";
+import { useInfoState, useSchemasState } from "@/stores";
+import { getModeAccent } from "./utils/timer";
 import { useBrainDumpState } from "@/stores/states/brainDump";
 import { secondsToMinutes } from "@/utils/time.util";
 import { Box, Container } from "@mantine/core";
@@ -143,6 +144,7 @@ const Timer = () => {
 				<GlassPanel
 					immersive={isFullScreen}
 					ambientBackground={isFullScreen ? fullscreenBg : ambient}
+					accentBorder={getModeAccent(mode)}
 					className={`${styles.timerSquare} ${onBreak ? styles.timerSquareBreak : ""} ${isFullScreen ? styles.timerFullscreen : ""}`}
 					padding={isFullScreen ? "2rem 1.5rem" : "1rem 1.25rem"}
 					innerClassName={styles.timerBody}

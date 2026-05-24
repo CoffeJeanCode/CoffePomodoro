@@ -11,6 +11,8 @@ interface GlassPanelProps {
 	padding?: string | number;
 	/** Full-viewport colorful mode (no glass overlay) */
 	immersive?: boolean;
+	/** Accent color for minimal wireframe border */
+	accentBorder?: string;
 }
 
 export function GlassPanel({
@@ -21,16 +23,21 @@ export function GlassPanel({
 	innerClassName,
 	padding,
 	immersive = false,
+	accentBorder,
 }: GlassPanelProps) {
+	const cssVars: Record<string, string> = {};
+	if (ambientBackground !== undefined) {
+		cssVars["--glass-ambient"] = ambientBackground;
+	}
+	if (accentBorder !== undefined) {
+		cssVars["--glass-accent-border"] = accentBorder;
+	}
+
 	if (immersive) {
 		return (
 			<Box
 				className={`${ui.immersivePanel} ${className ?? ""}`}
-				style={{
-					...style,
-					padding,
-					background: ambientBackground,
-				}}
+				style={{ ...style, ...cssVars, padding, background: ambientBackground }}
 			>
 				<Box className={`${ui.glassPanelInner} ${innerClassName ?? ""}`}>
 					{children}
@@ -42,13 +49,7 @@ export function GlassPanel({
 	return (
 		<Box
 			className={`${ui.glassPanel} ${className ?? ""}`}
-			style={
-				{
-					...style,
-					padding,
-					["--glass-ambient" as string]: ambientBackground ?? "transparent",
-				} as CSSProperties
-			}
+			style={{ ...style, ...cssVars }}
 		>
 			<Box className={`${ui.glassPanelInner} ${innerClassName ?? ""}`}>
 				{children}
