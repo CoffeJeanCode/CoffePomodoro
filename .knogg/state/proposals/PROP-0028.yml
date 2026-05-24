@@ -1,0 +1,29 @@
+id: PROP-0028
+status: applied
+target: state/active_context.yml
+reason: 'SSE-0/1/2/3 delivered: three dark ecosystems (ciberpunk/ambient-ai/minimal) with mutable semantic colors, per-style physics, CSS decorators, and sound profiles'
+created: 2026-05-24
+patch:
+  done:
+  - 'SSE-0: Foundation — tokens-color-root.css + tokens-shape-root.css (V3: mutable R/G/B per style)'
+  - 'SSE-0: uiStyles.ts rewritten with ciberpunk/ambient-ai/minimal (renamed rustico)'
+  - 'SSE-0: palette.ts updated — CSS var references for mode colors, defaults match ambient-ai'
+  - 'SSE-0: app.css rewritten — ambient glow, ciberpunk grid+glitch+clip-path, minimal ghost panels'
+  - 'SSE-0: uiStyle.ts store version 3 with migration ethereal→ambient-ai, mechanical→ciberpunk'
+  - 'SSE-0: uiSounds.ts rewritten with per-style timbre (square/chime/triangle)'
+  - 'SSE-3: Ciberpunk vertical — dot-grid bg-pattern, clip-path chamfer, offset shadow press, HUD ::after, glitch keyframes, uppercase+letter-spacing'
+  - 'SSE-1: Ambient AI vertical — mode-responsive radial glow, blur(22px) glass, spring cubic-bezier(0.34,1.56,0.64,1)'
+  - 'SSE-2: Minimal vertical — pure black bg, transparent ghost panels, border-only accent buttons, snappy cubic-bezier(0.16,1,0.3,1), no shadows'
+  focus:
+    stage: 'SSE-V: Validation'
+    status: in_progress
+    task: WCAG contrast audit, prefers-reduced-motion, final build verification
+  next_actions:
+  - 'SSE-V: Verify WCAG contrast for R/G/B on each dark canvas'
+  - 'SSE-V: Verify prefers-reduced-motion disables glitch/spring'
+  - 'SSE-V: PiP parity — inject --color-red/green/blue into PiP CSS'
+  - 'SSE-V: Verify build + lint clean'
+  recent_decisions:
+  - id: ADR-0012
+    status: accepted
+    title: Shape Language Engine V3 — Mutable R/G/B, Dark Canvases, Three Ecosystems

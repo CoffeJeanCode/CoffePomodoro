@@ -16,9 +16,14 @@
 }
 
 .fab {
-	opacity: 0.55;
-	transition: opacity var(--ui-duration) var(--ui-ease), transform
-		var(--ui-spring-duration) var(--ui-spring-ease);
+	opacity: 0.6;
+	transition: opacity var(--ui-duration) var(--ui-ease),
+		transform var(--ui-spring-duration) var(--ui-spring-ease);
+	border: var(--ui-border-width) var(--ui-border-style) var(--ui-border-color);
+	background: var(--ui-surface);
+	box-shadow: var(--ui-shadow-sm);
+	backdrop-filter: var(--ui-glass-blur);
+	-webkit-backdrop-filter: var(--ui-glass-blur);
 }
 
 .fab:hover,
@@ -31,9 +36,11 @@
 }
 
 .fab:active {
-	transform: scale(0.92);
+	transform: var(--ui-press-transform);
+	box-shadow: var(--ui-shadow-pressed);
 }
 
+/* ── Notepad panel — adapts to active style ── */
 .notepad {
 	width: min(292px, calc(100vw - 2rem));
 	max-height: min(360px, 52vh);
@@ -41,15 +48,11 @@
 	flex-direction: column;
 	border-radius: var(--ui-radius-sm) var(--ui-radius-sm) var(--ui-radius)
 		var(--ui-radius-sm);
-	border: 1px solid rgba(255, 255, 255, 0.14);
-	background: linear-gradient(
-		165deg,
-		rgba(42, 40, 36, 0.97) 0%,
-		rgba(28, 26, 24, 0.98) 100%
-	);
-	box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45), inset 0 1px 0
-		rgba(255, 255, 255, 0.08);
-	backdrop-filter: blur(16px);
+	border: var(--ui-border-width) var(--ui-border-style) var(--ui-border-color);
+	background: var(--ui-surface);
+	box-shadow: var(--ui-shadow);
+	backdrop-filter: var(--ui-glass-blur);
+	-webkit-backdrop-filter: var(--ui-glass-blur);
 	overflow: hidden;
 }
 
@@ -58,8 +61,8 @@
 	align-items: center;
 	justify-content: space-between;
 	padding: 0.45rem 0.65rem;
-	border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-	background: rgba(0, 0, 0, 0.2);
+	border-bottom: var(--ui-border-width) solid var(--ui-surface-border);
+	background: var(--ui-surface-2);
 }
 
 .notepadTitle {
@@ -67,7 +70,7 @@
 	font-weight: 600;
 	letter-spacing: 0.14em;
 	text-transform: uppercase;
-	color: rgba(255, 255, 255, 0.45);
+	color: var(--ui-text-muted);
 }
 
 .notepadBody {
@@ -86,20 +89,18 @@
 .writeArea :global(.mantine-Textarea-input) {
 	font-size: 0.82rem;
 	line-height: 1.55;
-	font-family: ui-monospace, "Cascadia Mono", "Segoe UI Mono", monospace;
-	background-color: rgba(0, 0, 0, 0.22) !important;
-	background-image: repeating-linear-gradient(
-		transparent,
-		transparent 1.48rem,
-		rgba(255, 255, 255, 0.06) 1.49rem
-	) !important;
-	border: 1px solid rgba(255, 255, 255, 0.1) !important;
-	border-radius: 4px !important;
-	color: rgba(255, 255, 255, 0.88) !important;
+	font-family: var(--ui-font-family);
+	background: var(--ui-surface-2) !important;
+	border: var(--ui-border-width) solid var(--ui-surface-border) !important;
+	border-radius: var(--ui-radius-sm) !important;
+	color: var(--ui-text) !important;
+	transition: border-color var(--ui-duration) var(--ui-ease),
+		background var(--ui-duration) var(--ui-ease);
 }
 
-.writeArea :global(.mantine-Textarea-input)::placeholder {
-	color: rgba(255, 255, 255, 0.32);
+.writeArea
+	:global(.mantine-Textarea-input)::placeholder {
+	color: var(--ui-text-muted);
 }
 
 .notesList {
@@ -119,11 +120,12 @@
 	gap: 0.35rem;
 	font-size: 0.75rem;
 	line-height: 1.4;
-	color: rgba(255, 255, 255, 0.7);
+	color: var(--ui-text);
 	padding: 0.3rem 0.4rem;
-	border-radius: 3px;
-	background: rgba(255, 255, 255, 0.04);
-	border-left: 2px solid rgba(250, 82, 82, 0.35);
+	border-radius: var(--ui-radius-sm);
+	background: var(--ui-surface-2);
+	border: var(--ui-border-width) solid var(--ui-surface-border);
+	border-left: 2px solid var(--color-accent);
 }
 
 .noteText {
@@ -134,7 +136,7 @@
 
 .notepadHint {
 	font-size: 0.58rem;
-	color: rgba(255, 255, 255, 0.35);
+	color: var(--ui-text-muted);
 	text-align: center;
 	letter-spacing: 0.02em;
 }
@@ -146,4 +148,61 @@
 	width: 100%;
 	max-height: 120px;
 	overflow-y: auto;
+}
+
+/* ── Ciberpunk: flat solid, chamfered corners ── */
+[data-ui-style="ciberpunk"] .notepad {
+	clip-path: polygon(
+		0 10px,
+		10px 0,
+		calc(100% - 10px) 0,
+		100% 10px,
+		100% calc(100% - 10px),
+		calc(100% - 10px) 100%,
+		10px 100%,
+		0 calc(100% - 10px)
+	);
+}
+
+/* ── Ciberpunk: HUD corner accent ── */
+[data-ui-style="ciberpunk"] .notepad::after {
+	content: "";
+	position: absolute;
+	top: 0;
+	right: 0;
+	width: 6px;
+	height: 6px;
+	border-top: 2px solid var(--color-accent);
+	border-right: 2px solid var(--color-accent);
+	pointer-events: none;
+}
+
+/* ── Minimal: ghost border only ── */
+[data-ui-style="minimal"] .notepad {
+	background: transparent !important;
+	backdrop-filter: none !important;
+	-webkit-backdrop-filter: none !important;
+	border-left: 2px solid var(--color-accent) !important;
+}
+
+[data-ui-style="minimal"] .noteItem {
+	background: transparent !important;
+	border: var(--ui-border-width) solid var(--ui-surface-border);
+	border-left: 2px solid var(--color-accent) !important;
+}
+
+[data-ui-style="minimal"] .writeArea :global(.mantine-Textarea-input) {
+	background: transparent !important;
+	border: var(--ui-border-width) solid var(--ui-surface-border) !important;
+}
+
+[data-ui-style="minimal"] .notepadHeader {
+	background: transparent;
+	border-bottom: var(--ui-border-width) solid var(--ui-surface-border);
+}
+
+/* ── Ciberpunk: hard press ── */
+[data-ui-style="ciberpunk"] .fab:active {
+	transform: translate(3px, 3px);
+	box-shadow: 0px 0px 0px var(--ui-border-color) !important;
 }

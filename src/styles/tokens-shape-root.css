@@ -18,9 +18,9 @@
 	--color-blue-on: #05050a;
 
 	--ui-bg: #05050a;
-	--ui-surface: rgba(255, 255, 255, 0.04);
-	--ui-surface-2: rgba(255, 255, 255, 0.07);
-	--ui-surface-border: rgba(255, 255, 255, 0.1);
+	--ui-surface: rgba(15, 15, 25, 0.85);
+	--ui-surface-2: rgba(25, 25, 40, 0.85);
+	--ui-surface-border: rgba(255, 255, 255, 0.10);
 	--ui-text: #eef0f6;
 	--ui-text-muted: #8892a8;
 	--ui-texture: none;
@@ -31,13 +31,13 @@
 	--ui-clip: none;
 	--ui-border-width: 1px;
 	--ui-border-style: solid;
-	--ui-border-color: rgba(255, 255, 255, 0.1);
-	--ui-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
-	--ui-shadow-sm: 0 4px 16px rgba(0, 0, 0, 0.25);
-	--ui-shadow-pressed: 0 2px 8px rgba(0, 0, 0, 0.3);
+	--ui-border-color: rgba(255, 255, 255, 0.10);
+	--ui-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+	--ui-shadow-sm: 0 4px 16px rgba(0, 0, 0, 0.30);
+	--ui-shadow-pressed: 0 2px 8px rgba(0, 0, 0, 0.35);
 	--ui-blur: blur(22px) saturate(160%);
-	--ui-surface-alpha: 6%;
-	--ui-surface-alpha-strong: 10%;
+	--ui-surface-alpha: 12%;
+	--ui-surface-alpha-strong: 16%;
 	--ui-accent-fill: none;
 	--ui-accent-border: none;
 	--ui-accent-glow: 0 0 60px 20px
@@ -66,8 +66,8 @@
 	--color-blue: #4a9fe5;
 
 	--ui-bg: #0a0a0c;
-	--ui-surface: #1a1c20;
-	--ui-surface-2: #22252a;
+	--ui-surface: #16181d;
+	--ui-surface-2: #1e2128;
 	--ui-surface-border: rgba(255, 255, 255, 0.08);
 	--ui-text: #d8dce6;
 	--ui-text-muted: #5a6878;

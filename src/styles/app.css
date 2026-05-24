@@ -84,12 +84,20 @@ body {
 		);
 }
 
+/* ── Ambient AI: ambient glow panel ── */
 [data-ui-style="ambient-ai"] .glassPanel::before {
 	background: var(--glass-ambient, transparent);
 	opacity: 0.85;
 }
 
-/* ── Ciberpunk: grid texture dot pattern ── */
+/* ── Ciberpunk: solid flat panels, no ambient ── */
+[data-ui-style="ciberpunk"] .glassPanel {
+	background: var(--ui-surface) !important;
+	backdrop-filter: none !important;
+	-webkit-backdrop-filter: none !important;
+}
+
+/* ── Ciberpunk: dot grid bg ── */
 [data-ui-style="ciberpunk"] body {
 	background-size: 24px 24px;
 	background-image: var(--ui-bg-pattern);
@@ -147,11 +155,12 @@ body {
 	pointer-events: none;
 }
 
-/* ── Minimal: ghost elements — borders only, no background ── */
+/* ── Minimal: ghost elements — transparent bg, accent border ── */
 [data-ui-style="minimal"] .glassPanel {
 	background: transparent !important;
 	backdrop-filter: none !important;
 	-webkit-backdrop-filter: none !important;
+	border: var(--ui-border-width) solid var(--ui-surface-border) !important;
 }
 
 [data-ui-style="minimal"] .glassInset {
@@ -163,13 +172,30 @@ body {
 [data-ui-style="minimal"] .mantine-Button-root[data-variant="light"],
 [data-ui-style="minimal"] .mantine-ActionIcon-root[data-variant="light"] {
 	background: transparent !important;
+	border: var(--ui-border-width) solid var(--ui-surface-border) !important;
 }
 
-/* ── Minimal: accent as border, not fill ── */
+/* ── Minimal: accent as border fill, not bg ── */
 [data-ui-style="minimal"] .mantine-Button-root[data-variant="filled"] {
 	background: transparent !important;
 	border: 1px solid var(--color-accent) !important;
 	color: var(--color-accent) !important;
+}
+
+/* ── Minimal: inputs use surface-border ── */
+[data-ui-style="minimal"] .mantine-Textarea-input,
+[data-ui-style="minimal"] .mantine-TextInput-input,
+[data-ui-style="minimal"] .mantine-NumberInput-input,
+[data-ui-style="minimal"] .mantine-Select-input {
+	background: transparent !important;
+	border: var(--ui-border-width) solid var(--ui-surface-border) !important;
+	color: var(--ui-text) !important;
+}
+
+[data-ui-style="minimal"]
+	.mantine-Textarea-input::placeholder,
+[data-ui-style="minimal"] .mantine-TextInput-input::placeholder {
+	color: var(--ui-text-muted) !important;
 }
 
 /* ── Interactive physics ── */

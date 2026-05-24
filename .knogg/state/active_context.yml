@@ -1,23 +1,22 @@
 done:
-- 'SSE-0 Foundation: tokens-color-root.css + tokens-shape-root.css created (2-layer architecture)'
-- 'SSE-0: uiStyles.ts rewritten with 3 new styles (ciberpunk/rustico/minimal)'
-- 'SSE-0: palette.ts updated with --color-red/green/blue + *-on variants + mode aliases'
-- 'SSE-0: app.css rewritten with composed aliases (--ui-bg/surface/text + color-mix)'
-- 'SSE-0: uiStyle.ts store updated with migration ethereal→ciberpunk, mechanical→rustico, brutal→minimal'
-- 'SSE-0: mantineTheme.ts glass surface border uses var(--ui-border-width/style/color)'
-- 'SSE-0: Icon.tsx component created with ICON_SETS registry (hud/doodle/line)'
-- 'SSE-0: uiSounds.ts rewritten with Web Audio API style-specific synthesis (square/sine/triangle per profile)'
-- 'SSE-0: pipStyles.ts updated to use --ui-bg/text-muted instead of old --color-*'
-- 'SSE-0: Build verified clean, lint clean (3 pre-existing errors only)'
+- 'SSE-0: Foundation — tokens-color-root.css + tokens-shape-root.css (V3: mutable R/G/B per style)'
+- 'SSE-0: uiStyles.ts rewritten with ciberpunk/ambient-ai/minimal (renamed rustico)'
+- 'SSE-0: palette.ts updated — CSS var references for mode colors, defaults match ambient-ai'
+- 'SSE-0: app.css rewritten — ambient glow, ciberpunk grid+glitch+clip-path, minimal ghost panels'
+- 'SSE-0: uiStyle.ts store version 3 with migration ethereal→ambient-ai, mechanical→ciberpunk'
+- 'SSE-0: uiSounds.ts rewritten with per-style timbre (square/chime/triangle)'
+- 'SSE-3: Ciberpunk vertical — dot-grid bg-pattern, clip-path chamfer, offset shadow press, HUD ::after, glitch keyframes, uppercase+letter-spacing'
+- 'SSE-1: Ambient AI vertical — mode-responsive radial glow, blur(22px) glass, spring cubic-bezier(0.34,1.56,0.64,1)'
+- 'SSE-2: Minimal vertical — pure black bg, transparent ghost panels, border-only accent buttons, snappy cubic-bezier(0.16,1,0.3,1), no shadows'
 next_actions:
-- 'SSE-A: Ciberpunk — glitch @keyframes, hard-shadow press, clip-path bevels, HUD-style headings, uppercase monospace'
-- 'SSE-B: Rustico — blob radius, dashed border overrides, paper texture ::after, draw-on SVG stroke-dashoffset animation'
-- 'SSE-C: Minimal — 3px radius enforcement, white surface overrides, clean shadow transitions'
-- 'SSE-V: Accessibility audit, prefers-reduced-motion, build verification'
+- 'SSE-V: Verify WCAG contrast for R/G/B on each dark canvas'
+- 'SSE-V: Verify prefers-reduced-motion disables glitch/spring'
+- 'SSE-V: PiP parity — inject --color-red/green/blue into PiP CSS'
+- 'SSE-V: Verify build + lint clean'
 focus:
-  stage: 'SSE-A: Vertical Ciberpunk'
+  stage: 'SSE-V: Validation'
   status: in_progress
-  task: SSE-0 foundation complete; implementing per-style visual effects
+  task: WCAG contrast audit, prefers-reduced-motion, final build verification
 implementation_notes:
 - 'Color axis source: src/theme/themes.ts (THEMES, --color-* only) + src/stores/states/theme.ts applyTheme'
 - 'Structure axis source: src/theme/uiStyles.ts (UI_STYLES, structural --ui-*) + src/stores/states/uiStyle.ts applyUIStyle'
@@ -28,7 +27,7 @@ implementation_notes:
 recent_decisions:
 - id: ADR-0012
   status: accepted
-  title: Shape Language Engine V2 — Color Fixed, Canvas Variable
+  title: Shape Language Engine V3 — Mutable R/G/B, Dark Canvases, Three Ecosystems
 structural_style_reference:
   mechanical:
     label: Mecanico / Neumorfismo Duro

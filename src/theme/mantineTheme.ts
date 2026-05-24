@@ -7,14 +7,9 @@ const glassSurface = {
 		"var(--ui-border-width) var(--ui-border-style) var(--ui-glass-border)",
 };
 
-/**
- * Opaque surface for layered overlays (drawers, menus). Translucent glass on
- * these elements lets content underneath bleed through and hurts legibility,
- * so they get a solid theme surface instead.
- */
 const solidSurface = {
 	background: "var(--ui-surface)",
-	border: "1px solid var(--ui-surface-border)",
+	border: "var(--ui-border-width) solid var(--ui-surface-border)",
 };
 
 export const appTheme = createTheme({
@@ -30,8 +25,10 @@ export const appTheme = createTheme({
 			styles: {
 				root: {
 					transition:
-						"background var(--ui-duration) var(--ui-ease), transform 0.2s var(--ui-spring-ease), box-shadow var(--ui-duration) ease",
+						"background var(--ui-duration) var(--ui-ease), transform var(--ui-spring-duration) var(--ui-spring-ease), box-shadow var(--ui-duration) var(--ui-ease)",
 					backdropFilter: "var(--ui-glass-blur)",
+					border: "var(--ui-border-width) var(--ui-border-style) var(--ui-border-color)",
+					boxShadow: "var(--ui-shadow-sm)",
 				},
 			},
 		},
@@ -45,6 +42,8 @@ export const appTheme = createTheme({
 					transition:
 						"all var(--ui-duration) var(--ui-ease), transform var(--ui-spring-duration) var(--ui-spring-ease)",
 					backdropFilter: "var(--ui-glass-blur)",
+					border: "var(--ui-border-width) var(--ui-border-style) var(--ui-border-color)",
+					boxShadow: "var(--ui-shadow-sm)",
 				},
 			},
 		},
@@ -54,13 +53,14 @@ export const appTheme = createTheme({
 			},
 			styles: {
 				content: {
-					...solidSurface,
+					background: "var(--ui-surface)",
+					border: "var(--ui-border-width) solid var(--ui-surface-border)",
 					borderRight: "none",
-					borderLeft: "1px solid var(--ui-surface-border)",
+					borderLeft: "var(--ui-border-width) solid var(--ui-surface-border)",
 				},
 				header: {
-					...solidSurface,
-					borderBottom: "1px solid var(--ui-surface-border)",
+					background: "var(--ui-surface)",
+					borderBottom: "var(--ui-border-width) solid var(--ui-surface-border)",
 				},
 				title: {
 					fontWeight: 600,
@@ -71,7 +71,8 @@ export const appTheme = createTheme({
 		Menu: {
 			styles: {
 				dropdown: {
-					...solidSurface,
+					background: "var(--ui-surface)",
+					border: "var(--ui-border-width) solid var(--ui-surface-border)",
 					borderRadius: "var(--ui-radius-sm)",
 					boxShadow: "var(--ui-shadow)",
 				},
@@ -94,8 +95,9 @@ export const appTheme = createTheme({
 		Textarea: {
 			styles: {
 				input: {
-					background: "var(--ui-glass-bg)",
-					border: "1px solid var(--ui-glass-border)",
+					background: "var(--ui-surface)",
+					border: "var(--ui-border-width) solid var(--ui-surface-border)",
+					color: "var(--ui-text)",
 					transition:
 						"border-color var(--ui-duration) var(--ui-ease), background var(--ui-duration) var(--ui-ease)",
 				},
@@ -104,24 +106,27 @@ export const appTheme = createTheme({
 		TextInput: {
 			styles: {
 				input: {
-					background: "var(--ui-glass-bg)",
-					border: "1px solid var(--ui-glass-border)",
+					background: "var(--ui-surface)",
+					border: "var(--ui-border-width) solid var(--ui-surface-border)",
+					color: "var(--ui-text)",
 				},
 			},
 		},
 		NumberInput: {
 			styles: {
 				input: {
-					background: "var(--ui-glass-bg)",
-					border: "1px solid var(--ui-glass-border)",
+					background: "var(--ui-surface)",
+					border: "var(--ui-border-width) solid var(--ui-surface-border)",
+					color: "var(--ui-text)",
 				},
 			},
 		},
 		Select: {
 			styles: {
 				input: {
-					background: "var(--ui-glass-bg)",
-					border: "1px solid var(--ui-glass-border)",
+					background: "var(--ui-surface)",
+					border: "var(--ui-border-width) solid var(--ui-surface-border)",
+					color: "var(--ui-text)",
 				},
 			},
 		},
