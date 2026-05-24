@@ -1,0 +1,53 @@
+id: PROP-0022
+status: applied
+target: state/active_context.yml
+reason: Update active context with completed PWA stages 1-3 and Theme Engine REQ 6.1-6.3 progress; set focus to Stage 6 remaining tasks
+created: 2026-05-24
+patch:
+  done:
+  - 'Stage 1: Intention Architecture'
+  - 'Stage 2: Temporal Abstraction'
+  - 'Stage 3: Energy Management (dynamic break bonus, analog break screens)'
+  - 'Stage 4: Brain Dump (ephemeral scratch pad, triage on intention fulfilled)'
+  - 'UI: SessionViewer time labels'
+  - 'UI: Drawer save/discard bar fixed'
+  - PiP intention text
+  - 'L10n: All text in English'
+  - 'TimerControllers: FaCheck icon + tooltip for Intention Fulfilled, circular skip in breaks'
+  - 'T4.1: BrainDump store with 24h auto-purge'
+  - 'T4.2: BrainDump FAB + Ctrl+Shift+D hotkey (bottom-right scratch pad)'
+  - 'T4.3: BrainDump capture panel (autofocus, Enter save, Escape close)'
+  - 'T4.4: IntentionComplete triage (discard / copy markdown)'
+  - 'T4.5: Auto-purge 24h and on day rollover'
+  - 'T5.1: Scientific depth presets (Deep Immersion 90/20, Sustained Rhythm 52/17, Quick Start 25/5)'
+  - 'T5.2: Timer model updated for depth presets'
+  - 'T5.4: useTimer reads from DEPTH_PRESETS, break bonus uses preset base duration'
+  - 'PWA-T1: vite-plugin-pwa, manifest, icons, meta tags, InstallPrompt (contextual, hidden during focus)'
+  - 'PWA-T2: Workbox precaching (50 entries), Playfair Display self-hosted, offline.html fallback, SW registration'
+  - 'PWA-T3: brainDump + schemas migrated to IndexedDB, useSessionRecovery hook, PersistenceIndicator FAB, DataSettings export/import, autoPurge'
+  - 'T6.1: 7-theme engine (gargantua/tinta/aurora/neobrutal/hardware/terminal/tesseract) with CSS custom properties on :root via applyTheme()'
+  - 'T6.1b: useThemeState store (persisted localStorage), ThemeSwitcher component, ThemeSettings tab in Settings'
+  - 'T6.2: app.css + mantineTheme.ts + ui.module.css + Timer.module.css all migrated to var(--ui-*) custom properties'
+  - 'T6.3: Spring physics CSS vars (--ui-spring-ease, --ui-spring-duration) + .spring-click utility, BrainDump FAB spring press'
+  - 'T6.3b: UI sounds (Web Audio API playClick/playToggle), synthetic WAV files, useUISounds hook'
+  focus:
+    stage: 'Stage 6: Motor Térmico y Micro-interacciones'
+    status: in_progress
+    task: Theme engine core done; wiring UI sounds + theme-specific visual effects
+  next_actions:
+  - 'REQ 6.3-wire: Wire playClick/playToggle to BrainDump open, Intention Fulfilled, theme switch, install prompt interactions'
+  - 'REQ 6.4: Aurora animated gradient (CSS @keyframes opacity shift, no GPU pixel movement)'
+  - 'REQ 6.5: Terminal theme typing effect (CSS steps() animation for intention text)'
+  - 'REQ 6.6: Tesseract theme timer ring 3D tilt (rotateX/rotateY CSS transforms)'
+  - 'REQ 6.7: Hardware theme mechanical dial animation for progress'
+  - 'REQ 6.8: Bundle Fira Code / JetBrains Mono for Terminal + Hardware themes'
+  - 'REQ 6.9: Update vite-plugin-pwa workbox globPatterns to include .wav UI sounds'
+  - 'FIX: 3 pre-existing lint errors (SchemaSettings any, TimerProgressRing SVG title, stats useless else)'
+  - 'BUILD: Verify clean build + Docker container starts'
+  recent_decisions:
+  - id: ADR-0009
+    status: accepted
+    title: PWA Architecture — CoffePomodoro as Focus Sanctuary
+  - id: ADR-0010
+    status: proposed
+    title: Theme engine uses CSS custom properties on :root — zero React re-renders on theme switch

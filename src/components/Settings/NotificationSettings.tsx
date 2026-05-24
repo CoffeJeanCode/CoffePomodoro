@@ -41,18 +41,15 @@ const NotificationSettings: FC<Props> = ({ configuration, setConfigValue }) => {
 					<FaBell />
 				</Button>
 				<Box style={{ flex: 1, minWidth: 0 }}>
-				<Select
-					label="Alarm"
-					w="100%"
-					value={configuration.notification.alarm.title}
-					data={keys(ALARMS)}
-					onChange={(title) => {
-						setConfigValue(
-							"notification.alarm",
-							ALARMS[title as AlarmTitle],
-						);
-					}}
-				/>
+					<Select
+						label="Alarm"
+						w="100%"
+						value={configuration.notification.alarm.title}
+						data={keys(ALARMS)}
+						onChange={(title) => {
+							setConfigValue("notification.alarm", ALARMS[title as AlarmTitle]);
+						}}
+					/>
 				</Box>
 			</Group>
 

@@ -1,16 +1,26 @@
 import { createTheme } from "@mantine/core";
 
 const glassSurface = {
-	background: "rgba(10, 14, 20, 0.88)",
+	background: "var(--ui-glass-bg)",
 	backdropFilter: "var(--ui-glass-blur)",
-	border: "1px solid var(--ui-glass-border)",
+	border:
+		"var(--ui-border-width) var(--ui-border-style) var(--ui-glass-border)",
+};
+
+/**
+ * Opaque surface for layered overlays (drawers, menus). Translucent glass on
+ * these elements lets content underneath bleed through and hurts legibility,
+ * so they get a solid theme surface instead.
+ */
+const solidSurface = {
+	background: "var(--ui-surface)",
+	border: "1px solid var(--ui-surface-border)",
 };
 
 export const appTheme = createTheme({
 	primaryColor: "red",
 	defaultRadius: "md",
-	fontFamily:
-		'-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+	fontFamily: "var(--ui-font-body)",
 	components: {
 		Button: {
 			defaultProps: {
@@ -20,8 +30,8 @@ export const appTheme = createTheme({
 			styles: {
 				root: {
 					transition:
-						"background var(--ui-duration) var(--ui-ease), transform 0.2s ease, box-shadow var(--ui-duration) ease",
-					backdropFilter: "blur(8px)",
+						"background var(--ui-duration) var(--ui-ease), transform 0.2s var(--ui-spring-ease), box-shadow var(--ui-duration) ease",
+					backdropFilter: "var(--ui-glass-blur)",
 				},
 			},
 		},
@@ -32,8 +42,9 @@ export const appTheme = createTheme({
 			},
 			styles: {
 				root: {
-					transition: "all var(--ui-duration) var(--ui-ease)",
-					backdropFilter: "blur(8px)",
+					transition:
+						"all var(--ui-duration) var(--ui-ease), transform var(--ui-spring-duration) var(--ui-spring-ease)",
+					backdropFilter: "var(--ui-glass-blur)",
 				},
 			},
 		},
@@ -43,13 +54,13 @@ export const appTheme = createTheme({
 			},
 			styles: {
 				content: {
-					...glassSurface,
+					...solidSurface,
 					borderRight: "none",
-					borderLeft: "1px solid var(--ui-glass-border)",
+					borderLeft: "1px solid var(--ui-surface-border)",
 				},
 				header: {
-					...glassSurface,
-					borderBottom: "1px solid rgba(255, 255, 255, 0.08)",
+					...solidSurface,
+					borderBottom: "1px solid var(--ui-surface-border)",
 				},
 				title: {
 					fontWeight: 600,
@@ -60,7 +71,8 @@ export const appTheme = createTheme({
 		Menu: {
 			styles: {
 				dropdown: {
-					...glassSurface,
+					...solidSurface,
+					borderRadius: "var(--ui-radius-sm)",
 					boxShadow: "var(--ui-shadow)",
 				},
 				item: {
@@ -116,7 +128,7 @@ export const appTheme = createTheme({
 		Badge: {
 			styles: {
 				root: {
-					backdropFilter: "blur(8px)",
+					backdropFilter: "var(--ui-glass-blur)",
 					textTransform: "none",
 					fontWeight: 500,
 				},

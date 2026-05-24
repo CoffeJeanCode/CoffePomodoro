@@ -51,7 +51,13 @@ const SessionViewer: React.FC<Props> = ({ configuration }) => {
 						title={`${label} – ${displayTime}m`}
 					>
 						{value >= 8 && (
-							<Progress.Label style={{ fontSize: "0.625rem", lineHeight: "24px", whiteSpace: "nowrap" }}>
+							<Progress.Label
+								style={{
+									fontSize: "0.625rem",
+									lineHeight: "24px",
+									whiteSpace: "nowrap",
+								}}
+							>
 								{displayTime}m
 							</Progress.Label>
 						)}

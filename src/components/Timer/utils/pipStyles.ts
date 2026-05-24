@@ -1,25 +1,41 @@
-interface PiPColors {
-	bgGradient: string;
-	btnMain: string;
-	btnMainHover: string;
+export interface PiPThemeTokens {
+	/** --color-* map of the active color scheme. */
+	colorVars: Record<string, string>;
+	/** --ui-* structural map of the active style profile. */
+	styleVars: Record<string, string>;
+	/** Mode accent (focus / short break / long break) for the active scheme. */
+	accent: string;
 }
 
-/** PiP window — vertical layout, matches app glass + ambient language */
-export const getPiPStyles = (colors: PiPColors) => `
+const serializeVars = (vars: Record<string, string>): string =>
+	Object.entries(vars)
+		.map(([k, v]) => `        ${k}: ${v};`)
+		.join("\n");
+
+/**
+ * PiP window styles. Injects BOTH axes (color + structure) into the PiP :root and
+ * recomposes the same aliases the app uses, so the floating window mirrors the
+ * active color scheme AND the active structural style.
+ */
+export const getPiPStyles = (t: PiPThemeTokens) => `
     :root {
-        --pip-page-bg: #0a0e14;
-        --pip-glass-bg: rgba(255, 255, 255, 0.06);
-        --pip-glass-border: rgba(255, 255, 255, 0.12);
-        --pip-glass-border-top: rgba(255, 255, 255, 0.20);
-        --pip-glass-blur: blur(20px) saturate(150%);
-        --pip-shadow: 0 12px 36px rgba(0, 0, 0, 0.4);
-        --pip-radius: 1rem;
-        --pip-btn: ${colors.btnMain};
-        --pip-btn-hover: ${colors.btnMainHover};
-        --pip-accent: ${colors.btnMain};
-        --pip-font: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        --pip-ease: cubic-bezier(0.4, 0, 0.2, 1);
-        --pip-duration: 0.45s;
+${serializeVars(t.colorVars)}
+${serializeVars(t.styleVars)}
+        /* composed aliases (color ⊗ structure) */
+        --ui-glass-bg: color-mix(in srgb, var(--ui-surface) var(--ui-surface-alpha), transparent);
+        --ui-glass-bg-strong: color-mix(in srgb, var(--ui-surface) var(--ui-surface-alpha-strong), transparent);
+        --ui-glass-border: var(--ui-border-color);
+        --ui-glass-border-top: var(--ui-border-color);
+        --ui-glass-blur: var(--ui-blur);
+        --ui-page-bg: var(--ui-bg);
+        --ui-page-glow: color-mix(in srgb, var(--color-accent) 7%, transparent);
+        --ui-ring-accent: var(--color-accent);
+        --ui-ring-accent-soft: color-mix(in srgb, var(--color-accent) 15%, transparent);
+        --ui-ring-accent-glow: color-mix(in srgb, var(--color-accent) 28%, transparent);
+        --ui-ring-track: var(--color-ring-track);
+        --pip-accent: ${t.accent};
+        --pip-ease: var(--ui-ease);
+        --pip-duration: var(--ui-duration);
         --btn-main-size: clamp(36px, 11vmin, 52px);
         --btn-sub-size: clamp(30px, 9vmin, 42px);
     }
@@ -27,12 +43,10 @@ export const getPiPStyles = (colors: PiPColors) => `
     * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
 
     body {
-        background-color: var(--pip-page-bg);
-        background-image:
-            radial-gradient(ellipse 80% 50% at 50% 0%, color-mix(in srgb, var(--pip-accent) 22%, transparent) 0%, transparent 60%),
-            linear-gradient(180deg, #0c1018 0%, var(--pip-page-bg) 100%);
-        color: #f1f3f5;
-        font-family: var(--pip-font);
+        background-color: var(--ui-bg);
+        background-image: radial-gradient(ellipse 80% 60% at 50% 0%, var(--ui-page-glow) 0%, transparent 55%);
+        color: var(--ui-text);
+        font-family: var(--ui-font-family);
         height: 100vh;
         width: 100vw;
         overflow: hidden;
@@ -52,13 +66,12 @@ export const getPiPStyles = (colors: PiPColors) => `
         height: 100%;
         gap: 6px;
         padding: 12px 14px;
-        border-radius: var(--pip-radius);
-        background: var(--pip-glass-bg);
-        border: 1px solid var(--pip-glass-border);
-        border-top-color: var(--pip-glass-border-top);
-        box-shadow: var(--pip-shadow);
-        backdrop-filter: var(--pip-glass-blur);
-        -webkit-backdrop-filter: var(--pip-glass-blur);
+        border-radius: var(--ui-radius);
+        background: var(--ui-glass-bg);
+        border: var(--ui-border-width) var(--ui-border-style) var(--ui-glass-border);
+        box-shadow: var(--ui-shadow);
+        backdrop-filter: var(--ui-glass-blur);
+        -webkit-backdrop-filter: var(--ui-glass-blur);
         overflow: hidden;
         transition:
             border-color var(--pip-duration) var(--pip-ease),
@@ -75,7 +88,6 @@ export const getPiPStyles = (colors: PiPColors) => `
         transition: background 1.2s var(--pip-ease);
     }
 
-    /* ── content column (ring + label + intention) ── */
     .pip-content {
         position: relative;
         z-index: 1;
@@ -89,18 +101,16 @@ export const getPiPStyles = (colors: PiPColors) => `
         min-height: 0;
     }
 
-    /* ── mode label ── */
     .pip-mode-label {
         font-size: clamp(0.6rem, 3vmin, 0.72rem);
         font-weight: 600;
         letter-spacing: 0.12em;
         text-transform: uppercase;
         color: var(--pip-accent);
-        opacity: 0.85;
+        opacity: 0.9;
         line-height: 1;
     }
 
-    /* ── ring ── */
     .pip-ring-wrap {
         position: relative;
         display: flex;
@@ -110,13 +120,11 @@ export const getPiPStyles = (colors: PiPColors) => `
         width: min-content;
     }
 
-    .pip-ring-svg {
-        transform: rotate(-90deg);
-    }
+    .pip-ring-svg { transform: rotate(-90deg); }
 
     .pip-ring-track {
         fill: none;
-        stroke: rgba(255, 255, 255, 0.08);
+        stroke: var(--color-ring-track);
     }
 
     .pip-ring-progress {
@@ -131,11 +139,8 @@ export const getPiPStyles = (colors: PiPColors) => `
         transition: stroke-dashoffset 0.6s var(--pip-ease);
     }
 
-    #pip-root[data-running="false"] .pip-ring-linear {
-        display: none !important;
-    }
+    #pip-root[data-running="false"] .pip-ring-linear { display: none !important; }
 
-    /* ── ring center overlay ── */
     .pip-time-overlay {
         position: absolute;
         inset: 0;
@@ -154,14 +159,11 @@ export const getPiPStyles = (colors: PiPColors) => `
         letter-spacing: -0.02em;
         text-align: center;
         font-size: clamp(1.05rem, 6.5vmin, 1.4rem);
-        text-shadow: 0 1px 8px rgba(0, 0, 0, 0.4);
-    }
+color: var(--ui-text);
+	}
 
-    #pip-root[data-running="false"] .time-text {
-        opacity: 0.7;
-    }
+	#pip-root[data-running="false"] .time-text { opacity: 0.7; }
 
-    /* ── paused bars ── */
     .pip-paused-mark {
         position: relative;
         width: 12px;
@@ -177,14 +179,13 @@ export const getPiPStyles = (colors: PiPColors) => `
         width: 3px;
         height: 10px;
         border-radius: 1.5px;
-        background: rgba(255, 255, 255, 0.45);
+        background: var(--ui-text-muted);
     }
 
     .pip-paused-mark::before { left: 1px; }
     .pip-paused-mark::after  { right: 1px; }
     .pip-paused-mark.hidden  { display: none; }
 
-    /* ── intention badge ── */
     .intention-text {
         display: none;
         font-size: clamp(0.62rem, 3vmin, 0.78rem);
@@ -192,31 +193,29 @@ export const getPiPStyles = (colors: PiPColors) => `
         font-style: italic;
         line-height: 1.35;
         text-align: center;
-        color: rgba(255, 255, 255, 0.72);
+        color: var(--ui-text-muted);
         max-width: 220px;
         overflow: hidden;
         display: -webkit-box;
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
         padding: 4px 10px;
-        border-radius: 6px;
-        background: rgba(255, 255, 255, 0.06);
-        border: 1px solid rgba(255, 255, 255, 0.09);
-        border-left: 2px solid ${colors.btnMain}88;
+        border-radius: var(--ui-radius-sm);
+        background: var(--ui-glass-bg);
+        border: var(--ui-border-width) var(--ui-border-style) var(--ui-glass-border);
+        border-left: 2px solid var(--pip-accent);
+        margin: 0 auto;
     }
 
-    .intention-text.visible {
-        display: -webkit-box;
-    }
+    .intention-text.visible { display: -webkit-box; }
 
-    /* ── linear progress fallback (very small windows) ── */
     .pip-ring-linear {
         display: none;
         width: 100%;
         max-width: 200px;
         height: 3px;
-        background: rgba(255, 255, 255, 0.1);
-        border-radius: 2px;
+        background: var(--color-ring-track);
+        border-radius: var(--ui-radius-pill);
         overflow: hidden;
     }
 
@@ -225,11 +224,10 @@ export const getPiPStyles = (colors: PiPColors) => `
         height: 100%;
         width: 0%;
         background: var(--pip-accent);
-        border-radius: 2px;
+        border-radius: var(--ui-radius-pill);
         transition: width 1s var(--pip-ease);
     }
 
-    /* ── controls row ── */
     .controls {
         position: relative;
         z-index: 1;
@@ -250,44 +248,46 @@ export const getPiPStyles = (colors: PiPColors) => `
     }
 
     .btn {
-        border: 1px solid var(--pip-glass-border);
+        border: var(--ui-border-width) var(--ui-border-style) var(--ui-glass-border);
         cursor: pointer;
         display: grid;
         place-items: center;
-        border-radius: 50%;
-        color: white;
+        border-radius: var(--ui-radius-pill);
+        color: var(--ui-text);
         transition:
-            transform 0.12s var(--pip-ease),
+            transform var(--ui-spring-duration) var(--ui-spring-ease),
             background var(--pip-duration) var(--pip-ease),
-            border-color var(--pip-duration) var(--pip-ease);
+            box-shadow var(--pip-duration) var(--pip-ease);
         flex-shrink: 0;
     }
 
-    .btn:active { transform: scale(0.90); }
+    .btn:active {
+        transform: var(--ui-press-transform);
+        box-shadow: var(--ui-shadow-pressed);
+    }
 
     .btn-main {
         width: var(--btn-main-size);
         height: var(--btn-main-size);
-        background: rgba(255, 255, 255, 0.15);
-        backdrop-filter: blur(8px);
-        border-color: var(--pip-glass-border-top);
-        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.28);
+        background: var(--pip-accent);
+        color: var(--color-accent-contrast);
+        border-color: var(--pip-accent);
+        box-shadow: var(--ui-shadow-sm);
     }
 
-    .btn-main:hover { background: rgba(255, 255, 255, 0.24); }
+    .btn-main:hover { filter: brightness(1.1); }
 
     .btn-sub {
         width: var(--btn-sub-size);
         height: var(--btn-sub-size);
-        background: var(--pip-glass-bg);
-        backdrop-filter: blur(8px);
+        background: var(--ui-glass-bg);
+        box-shadow: var(--ui-shadow-sm);
     }
 
-    .btn-sub:hover { background: rgba(255, 255, 255, 0.1); }
+    .btn-sub:hover { border-color: var(--pip-accent); }
 
     .btn svg { width: 44%; height: 44%; fill: currentColor; }
 
-    /* ── compact: short/narrow windows — content left, buttons right ── */
     @media (max-width: 220px), (max-height: 200px) {
         body { padding: 0; }
 
@@ -317,7 +317,6 @@ export const getPiPStyles = (colors: PiPColors) => `
             width: 100%;
             max-width: 100%;
             height: 4px;
-            border-radius: 2px;
         }
 
         .pip-mode-label { display: none; }
@@ -325,24 +324,21 @@ export const getPiPStyles = (colors: PiPColors) => `
         .pip-ring-linear { order: 1; }
 
         .intention-text {
-            order: 2;
+            order: 0;
             max-width: 100%;
-            text-align: left;
-            border-radius: 4px;
+            text-align: center;
             padding: 2px 6px;
             font-size: 0.6rem;
         }
 
         .controls {
             flex-shrink: 0;
-            flex-direction: column;
+            flex-direction: row;
+            align-items: center;
             gap: 6px;
         }
 
-        .controls-center {
-            flex-direction: column;
-            gap: 6px;
-        }
+        .controls-center { flex-direction: row; gap: 6px; }
 
         .btn-main {
             width: clamp(28px, 9vmin, 38px);

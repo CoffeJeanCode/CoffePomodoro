@@ -7,7 +7,11 @@ const Home = lazy(() => import("./pages/Home"));
 
 const App = () => {
 	return (
-		<MantineProvider theme={appTheme} defaultColorScheme="dark" withCssVariables>
+		<MantineProvider
+			theme={appTheme}
+			defaultColorScheme="dark"
+			withCssVariables
+		>
 			<Suspense
 				fallback={
 					<Center h="100vh">

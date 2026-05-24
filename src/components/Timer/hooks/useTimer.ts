@@ -50,7 +50,8 @@ const useTimer = () => {
 	const updateDailyStats = useStatsState((stats) => stats.updateDailyStats);
 	const updateStreak = useStatsState((stats) => stats.updateStreak);
 	const [awaitingCycleAck, setAwaitingCycleAck] = useState(false);
-	const [awaitingIntentionFulfillment, setAwaitingIntentionFulfillment] = useState(false);
+	const [awaitingIntentionFulfillment, setAwaitingIntentionFulfillment] =
+		useState(false);
 
 	const depthPreset = DEPTH_PRESETS[activePreset];
 	const currentSchema = currentSchemaId !== "" ? findCurrentSchema() : null;
@@ -237,9 +238,8 @@ const useTimer = () => {
 		const bonus = savedTimeBonus;
 		setSavedTimeBonus(0);
 		if (bonus > 0) {
-			const breakMode = pomodoros === pomodorosToLongBreak
-				? Mode.LongBreak
-				: Mode.ShortBreak;
+			const breakMode =
+				pomodoros === pomodorosToLongBreak ? Mode.LongBreak : Mode.ShortBreak;
 			const baseDuration = timers[breakMode];
 			const extendedDuration = baseDuration + bonus;
 			setRemainingTime(extendedDuration);
@@ -274,16 +274,15 @@ const useTimer = () => {
 		sendNotification();
 		setSavedTimeBonus(0);
 		handleNextTimer({ isSkip: false });
- };
+	};
 
 	const acknowledgeCycleAndContinue = () => {
 		setAwaitingCycleAck(false);
 		const bonus = savedTimeBonus;
 		setSavedTimeBonus(0);
 		if (bonus > 0) {
-			const breakMode = pomodoros === pomodorosToLongBreak
-				? Mode.LongBreak
-				: Mode.ShortBreak;
+			const breakMode =
+				pomodoros === pomodorosToLongBreak ? Mode.LongBreak : Mode.ShortBreak;
 			const baseDuration = timers[breakMode];
 			const extendedDuration = baseDuration + bonus;
 			setRemainingTime(extendedDuration);

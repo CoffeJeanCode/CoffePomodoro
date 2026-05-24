@@ -15,7 +15,11 @@ export const DAYS = [
 	"Saturday",
 ];
 export const ALARMS = {
-	Micellaneus: { title: "Micellaneus", url: Micellaneus, type: "alarm" as const },
+	Micellaneus: {
+		title: "Micellaneus",
+		url: Micellaneus,
+		type: "alarm" as const,
+	},
 	Interface: { title: "Interface", url: Interface, type: "alarm" as const },
 	Rise: { title: "Rise", url: Rise, type: "alarm" as const },
 	Shake: { title: "Shake", url: Shake, type: "alarm" as const },

@@ -24,8 +24,8 @@ const TimerSettings: FC<Props> = ({ configuration, setConfigValue }) => {
 			`timers.${mode}`,
 			// import.meta.env.MODE === "development"
 			// 	? Math.round(value / 2)
-			// 	: 
-				minutesToSeconds(value),
+			// 	:
+			minutesToSeconds(value),
 		);
 	};
 

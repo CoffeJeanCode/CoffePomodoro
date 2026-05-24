@@ -3,8 +3,8 @@ import { ActionIcon, Box, Tooltip } from "@mantine/core";
 import { useClickOutside, useHotkeys } from "@mantine/hooks";
 import { type Ref, memo, useCallback, useEffect, useState } from "react";
 import { FaBrain } from "react-icons/fa";
-import BrainDumpPanel from "./BrainDumpPanel";
 import styles from "./BrainDump.module.css";
+import BrainDumpPanel from "./BrainDumpPanel";
 
 const BrainDump = () => {
 	const [opened, setOpened] = useState(false);

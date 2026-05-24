@@ -26,7 +26,9 @@ export function formatBrainDumpMarkdown(notes: BrainDumpNote[]): string {
 	return ["## Brain dump", "", ...lines].join("\n");
 }
 
-export function copyBrainDumpToClipboard(notes: BrainDumpNote[]): Promise<void> {
+export function copyBrainDumpToClipboard(
+	notes: BrainDumpNote[],
+): Promise<void> {
 	const markdown = formatBrainDumpMarkdown(notes);
 	if (!markdown) return Promise.resolve();
 	return navigator.clipboard.writeText(markdown);

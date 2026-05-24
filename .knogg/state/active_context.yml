@@ -1,21 +1,127 @@
 done:
-- 'Stage 1: Intention Architecture'
-- 'Stage 2: Temporal Abstraction'
-- 'Stage 3: Energy Management (dynamic break bonus, analog break screens)'
-- 'Stage 4: Brain Dump (ephemeral scratch pad, triage on intention fulfilled)'
-- 'UI: SessionViewer time labels'
-- 'UI: Drawer save/discard bar fixed'
-- PiP intention text
-- 'L10n: All text in English'
-- 'TimerControllers: FaCheck icon + tooltip for Intention Fulfilled, circular skip in breaks'
-- 'T4.1: BrainDump store with 24h auto-purge'
-- 'T4.2: BrainDump FAB + Ctrl+Shift+D hotkey (bottom-right scratch pad)'
-- 'T4.3: BrainDump capture panel (autofocus, Enter save, Escape close)'
-- 'T4.4: IntentionComplete triage (discard / copy markdown)'
-- 'T4.5: Auto-purge 24h and on day rollover'
-- 'T5.1: Scientific depth presets (Deep Immersion 90/20, Sustained Rhythm 52/17, Quick Start 25/5)'
-- 'T5.2: Timer model updated for depth presets'
-- 'T5.4: useTimer reads from DEPTH_PRESETS, break bonus uses preset base duration'
+- 'SSE-0 Foundation: tokens-color-root.css + tokens-shape-root.css created (2-layer architecture)'
+- 'SSE-0: uiStyles.ts rewritten with 3 new styles (ciberpunk/rustico/minimal)'
+- 'SSE-0: palette.ts updated with --color-red/green/blue + *-on variants + mode aliases'
+- 'SSE-0: app.css rewritten with composed aliases (--ui-bg/surface/text + color-mix)'
+- 'SSE-0: uiStyle.ts store updated with migration ethereal→ciberpunk, mechanical→rustico, brutal→minimal'
+- 'SSE-0: mantineTheme.ts glass surface border uses var(--ui-border-width/style/color)'
+- 'SSE-0: Icon.tsx component created with ICON_SETS registry (hud/doodle/line)'
+- 'SSE-0: uiSounds.ts rewritten with Web Audio API style-specific synthesis (square/sine/triangle per profile)'
+- 'SSE-0: pipStyles.ts updated to use --ui-bg/text-muted instead of old --color-*'
+- 'SSE-0: Build verified clean, lint clean (3 pre-existing errors only)'
 next_actions:
-- 'cursor: T5.3 → Crear DepthSelector componente semántico (3 presets con iconos)'
-- 'cursor: T5.5 → Actualizar Settings UI para usar DepthSelector en lugar de SchemaSettings'
+- 'SSE-A: Ciberpunk — glitch @keyframes, hard-shadow press, clip-path bevels, HUD-style headings, uppercase monospace'
+- 'SSE-B: Rustico — blob radius, dashed border overrides, paper texture ::after, draw-on SVG stroke-dashoffset animation'
+- 'SSE-C: Minimal — 3px radius enforcement, white surface overrides, clean shadow transitions'
+- 'SSE-V: Accessibility audit, prefers-reduced-motion, build verification'
+focus:
+  stage: 'SSE-A: Vertical Ciberpunk'
+  status: in_progress
+  task: SSE-0 foundation complete; implementing per-style visual effects
+implementation_notes:
+- 'Color axis source: src/theme/themes.ts (THEMES, --color-* only) + src/stores/states/theme.ts applyTheme'
+- 'Structure axis source: src/theme/uiStyles.ts (UI_STYLES, structural --ui-*) + src/stores/states/uiStyle.ts applyUIStyle'
+- Composed aliases (--ui-glass-bg, --ui-text, etc.) live in src/styles/app.css :root via color-mix(); components keep consuming --ui-* unchanged
+- 'Registries: src/theme/activeTheme.ts + src/theme/activeStyle.ts feed render-time utils (timer ring, ambient, PiP) without React subscription'
+- 'Preset persistence: TimerSchema.appearance ({colorTheme, uiStyle}); src/hooks/useAppearance.ts routes Settings + QuickMenu changes into the active preset; new presets snapshot current look in SchemaSettings'
+- 'Control surface: Settings > Appearance tab (Shape + Color) and right-click QuickMenu (Shape + Color submenus); ThemeSwitcher removed from top toolbar'
+recent_decisions:
+- id: ADR-0012
+  status: accepted
+  title: Shape Language Engine V2 — Color Fixed, Canvas Variable
+structural_style_reference:
+  mechanical:
+    label: Mecanico / Neumorfismo Duro
+    attr: data-ui-style="mechanical"
+    geometry: radius 12px (soft), border-width 0px
+    topology: extruded dual shadow (6px 6px 12px dark + -6px -6px 12px light from surface luminance, NOT accent); pressed = inset (hundido)
+    typography: clean sans / mono display, normal case
+    physics: weighty ease-in-out cubic-bezier(0.4,0,0.6,1) ~0.4s; press feedback via inset swap (no transform)
+    feel: plastic/metal extruded from the surface
+  brutal:
+    label: Brutalismo Tactil
+    attr: data-ui-style="brutal"
+    geometry: radius 0px, border-width 3px solid var(--color-border-ink)
+    topology: hard opaque offset shadow 4px 4px 0px var(--color-border-ink), no blur
+    typography: high-density monospace/rigid display, uppercase, letter-spacing
+    physics: instant/dry ~0.08s; press = translate(4px,4px) + shadow -> 0 0 0 (button moves to cancel its shadow)
+    feel: high positive friction, tactile
+  ethereal:
+    label: Etereo / Glassmorphism
+    attr: data-ui-style="ethereal"
+    geometry: radius 1.5rem panels / 99px pills, border-width 1px translucent (rgba from --color-text)
+    topology: backdrop-filter blur(20px) saturate(150%); very diffuse multi-layer Z shadows (0 16px 48px soft)
+    typography: light sans
+    physics: fluid spring cubic-bezier(0.34,1.56,0.64,1) ~0.45s; press = scale(0.96)
+    feel: floating, suspended across Z layers
+theme_design_reference:
+  ' gargantua':
+    ' label': Gargantua
+    background: radial-gradient blue glow top-center + radial cyan glow bottom-right on dark
+    glass: blur(22px) saturate(150%), opacity 5%/8%, borders rgba(255,255,255,0.10/0.18)
+    motion: ease cubic-bezier(0.4,0,0.2,1), duration 0.45s/1.2s, spring cubic-bezier(0.34,1.56,0.64,1) 0.45s
+    palette: 'page-bg #08090d, text #e8ecf4, accent #5c7cfa (indigo-blue), muted #6b7a94'
+    shape: radius 1.25rem / 0.65rem, border-width 1px, shadow-style soft (0 16px 48px rgba(0,0,0,0.45))
+    special: DEFAULT theme; no overrides needed; glassmorphism with heavy blur
+    tagline: Deep space glassmorphism. Dark, vast, silent.
+    typography: 'display: SF Mono / Cascadia Mono / Fira Code monospace; body: system sans-serif'
+  aurora:
+    background: purple radial glow top-left + green radial glow bottom-right on deep indigo
+    glass: blur(24px) saturate(160%), opacity 6%/10%, borders rgba(255,255,255,0.12/0.20)
+    label: Aurora
+    motion: ease cubic-bezier(0.34,1.56,0.64,1) (bouncy!), duration 0.55s/1.5s (slow), spring same bouncy 0.55s
+    palette: 'page-bg #0f0a1a (deep indigo), text #f0e6ff (lavender), accent #a855f7 (purple), muted #9b8ab8'
+    shape: radius 2rem / 1rem (very rounded), border-width 1px, shadow-style soft (0 12px 40px rgba(120,50,200,0.20))
+    special: 'border-top-color override for glass; PLANNED: animated gradient opacity shift via CSS @keyframes (no GPU movement)'
+    tagline: Organic gradients. Soft, flowing, alive.
+    typography: 'display: Playfair Display serif; body: system sans-serif'
+  hardware:
+    background: warm amber glow center on beige-grey
+    glass: NO blur (blur(0px) saturate(90%)), neumorphic dual-shadow (6px 6px 12px dark + -6px -6px 12px light), borders rgba hidden
+    label: Consola Hardware
+    motion: ease cubic-bezier(0.4,0,0.6,1) (smooth), duration 0.5s/1.4s (slow analog dials), spring same smooth 0.5s
+    palette: 'page-bg #d4cfc4 (beige-grey), text #2c2c2c, accent #c4713b (amber), muted #7a756d'
+    shape: radius 1rem / 0.6rem, border-width 1px (borders REMOVED via !important), shadow-style neumorphic
+    special: 'NEUMORPHIC: border:none !important on glassPanel, dual box-shadow inset for 3D raised look; buttons get inset shadows too; PLANNED: mechanical dial animation for timer progress'
+    tagline: Synthesizer industrial. Neumorphic, tactile, analog warmth.
+    typography: 'display: SF Mono / Cascadia Mono / Fira Code monospace; body: system sans-serif'
+  neobrutal:
+    background: warm cream top gradient; NO backdrop-filter on glassPanel/glassInset
+    glass: 'NO blur (blur(0px)), SOLID bg #ffe8d6/#ffd6a5, borders SOLID #1a1a1a (not transparent)'
+    label: Neo-Brutalismo
+    motion: ease cubic-bezier(0.34,1.56,0.64,1) (bouncy!), duration 0.3s/0.6s (snappy), spring same bouncy 0.3s
+    palette: 'page-bg #fef9ef (warm cream), text #1a1a1a, accent #ff6b9d (hot pink), muted #555'
+    shape: 'radius 0.5rem / 0.35rem, border-width 2.5px (BOLD), shadow-style hard (4px 4px 0px #1a1a1a offset)'
+    special: 'hard-shadow offset press effect: active translate(3px,3px) + shadow shrinks to 1px 1px; border 2.5px solid black; NO blur anywhere'
+    tagline: Playful. Bold strokes, offset shadows, tactile clicks.
+    typography: 'display: system sans-serif; body: system sans-serif'
+  terminal:
+    background: background-image none (pure void black)
+    glass: NO blur (blur(0px)), opacity 4%/7%, borders rgba(0,255,65,0.15/0.22)
+    label: Terminal
+    motion: ease steps(2, end) (STEPPED, no smooth), duration 0.08s/0.15s (instantaneous), spring same stepped 0.08s
+    palette: 'page-bg #0a0a0a (true black), text #00ff41 (phosphor green), accent #00ff41, muted #00aa2a'
+    shape: radius 0px / 0px (SHARP, no curves), border-width 1px, shadow-style terminal (0 0 0 1px green outline)
+    special: 'NO backdrop-filter on glass; STEPPED transitions via steps() for retro CRT feel; .pageTitle gets uppercase + letter-spacing + monospace; PLANNED: typing effect via CSS steps() for intention text; PLANNED: scanline CSS overlay'
+    tagline: CLI minimalism. Phosphor green on void black. Zero noise.
+    typography: 'display: Fira Code / Cascadia Mono / JetBrains Mono monospace; body: same monospace everywhere'
+  tesseract:
+    background: HUD blue radial glow top-center + green radial glow bottom-left on void blue-black
+    glass: blur(26px) saturate(170%), blue-tinted rgba(70,130,220,0.06/0.10), borders rgba(100,180,255,0.12/0.22)
+    label: Tesseract
+    motion: ease cubic-bezier(0.16,1,0.3,1) (expo out), duration 0.5s/1.3s, spring same expo 0.5s
+    palette: 'page-bg #04070e (void blue-black), text #e4edff (stellar white), accent #64b5ff (HUD blue), muted #5a7ca8'
+    shape: radius 0.75rem / 0.4rem, border-width 1px, shadow-style glow (0 0 20px rgba(70,130,220,0.15) + 0 8px 32px dark)
+    special: ENHANCED backdrop-filter blur(30px) saturate(180%) on glass; .ringCore gets perspective:800px for 3D tilt; glow shadow with blue aura
+    tagline: Ocular HUD. Deep blue glass, stellar white, isometric depth.
+    typography: 'display: SF Mono / Cascadia Mono / Fira Code monospace; body: system sans-serif'
+  tinta:
+    background: warm cream gradient, no glow effects
+    glass: NO blur (blur(0px)), opacity 4%/7%, borders rgba(0,0,0,0.12/0.18)
+    label: Tinta Analgica
+    motion: ease cubic-bezier(0,0,1,1) (linear!), duration 0.12s/0.25s (instantaneous), spring same linear 0.12s
+    palette: 'page-bg #f5f0e8 (warm cream), text #1a1a1a (near-black), accent #1a1a1a, muted #6b6b6b'
+    shape: radius 2px / 1px (near-sharp), border-width 1px, shadow-style soft (0 2px 8px rgba(0,0,0,0.08))
+    special: NO backdrop-filter on glassPanel/glassInset; serif fonts throughout; feels like printed paper
+    tagline: E-ink minimalism. Monochrome, rigid, serene.
+    typography: 'display: Playfair Display / Georgia / Times New Roman serif; body: Georgia serif'

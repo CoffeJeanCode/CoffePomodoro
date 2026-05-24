@@ -1,0 +1,39 @@
+/*
+ * Capa 1 — COLOR FIJO (ADR-0012).
+ *
+ * The three semantic accents (Red/Green/Blue) are the only "color" that
+ * carries meaning: Red = focus (work), Green = short break, Blue = long break.
+ * These never change when the structural style switches.
+ *
+ * The canvas (bg, surface, text, border) is defined per structural style in
+ * tokens-shape-root.css, not here.
+ *
+ * Every other token that consumes colour composes via CSS var() / color-mix()
+ * in app.css :root, so that switching data-ui-style only swaps structure.
+ */
+:root {
+	/* ── Semantic mode accents (immutable) ── */
+	--color-red: #fa5252;
+	--color-green: #40c057;
+	--color-blue: #4dabf7;
+	--color-red-on: #ffffff;
+	--color-green-on: #ffffff;
+	--color-blue-on: #0b0c10;
+
+	/* ── Mode aliases (what components consume) ── */
+	--color-mode-work: var(--color-red);
+	--color-mode-short: var(--color-green);
+	--color-mode-long: var(--color-blue);
+	--color-mode-work-on: var(--color-red-on);
+	--color-mode-short-on: var(--color-green-on);
+	--color-mode-long-on: var(--color-blue-on);
+
+	/* ── Fixed palette mirrors (consumed by PiP, ambient bg, etc.) ── */
+	--color-accent: var(--color-red);
+	--color-accent-contrast: var(--color-red-on);
+	--color-info: #74c0fc;
+	--color-success: #51cf66;
+	--color-warning: #fcc419;
+	--color-border-ink: #e8ecf4;
+	--color-ring-track: rgba(255, 255, 255, 0.08);
+}

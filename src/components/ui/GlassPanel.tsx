@@ -1,6 +1,6 @@
+import ui from "@/styles/ui.module.css";
 import { Box } from "@mantine/core";
 import type { CSSProperties, ReactNode } from "react";
-import ui from "@/styles/ui.module.css";
 
 interface GlassPanelProps {
 	children: ReactNode;

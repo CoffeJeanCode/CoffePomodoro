@@ -1,0 +1,17 @@
+id: PROP-0025
+status: applied
+target: state/decision_log.yml
+reason: 'Record ADR-0011 (Structural Style Engine — decouple color from shape) and supersede ADR-0010. The personalization model moves from a single color-coupled data-theme axis to two orthogonal axes: an independent color layer and a structural layer switched by data-ui-style.'
+created: 2026-05-24
+patch:
+  decisions:
+  - id: ADR-0010
+    status: superseded
+    superseded_by: ADR-0011
+    note: 'Color/shape were conflated under a single data-theme axis. Superseded by the Structural Style Engine that separates color tokens from structural tokens.'
+  - id: ADR-0011
+    date: 2026-05-24
+    title: 'ADR-0011: Structural Style Engine — decouple color from shape (Shape Language)'
+    status: proposed
+    scope: frontend
+    reason: 'Replace the color-coupled theme engine (ADR-0010) with a two-axis personalization model. Axis 1 = COLOR (--color-* tokens: bg, surface, text, accent, border-ink, semantic) that stays constant/independent. Axis 2 = STRUCTURE (--ui-* tokens: radius, border-width/style/color, shadow + shadow-pressed, blur, font-family/display, letter-spacing, text-transform, duration, ease, spring, press-transform) switched globally by a data-ui-style attribute on document.documentElement. Structural tokens COMPOSE color tokens (e.g. --ui-border-color references --color-border-ink) but never define hues, so changing the structural profile never alters the user color. Three radical base profiles: mechanical (hard neumorphism — extruded dual shadows, soft radius, no border, weighty ease), brutal (zero radius, thick solid borders, hard opaque offset shadow, dense/mono typography, press translates to cancel its shadow), ethereal (pill radii, 1px translucent borders, intensive backdrop-filter blur, very diffuse layered shadows, fluid spring physics). Router mirrors ADR-0010 mechanics: a persisted zustand store sets the data-attribute on :root with zero React re-render; the switch is pure CSS cascade with no per-tick getComputedStyle and no forced layout reflow. The app must feel like three different products using exactly the same colors.'

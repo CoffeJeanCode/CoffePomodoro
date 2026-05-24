@@ -1,0 +1,53 @@
+id: PROP-0026
+status: applied
+target: state/active_context.yml
+reason: 'Shift active focus to the Structural Style Engine (Shape Language). Replaces the Stage 6 theme-engine focus/next_actions with the SSE-1/SSE-2 roadmap, records ADR-0010 superseded by ADR-0011, and documents the 3 structural profiles (mechanical/brutal/ethereal) as a design reference for any agent.'
+created: 2026-05-24
+patch:
+  focus:
+    stage: 'Stage SSE: Structural Style Engine (Shape Language)'
+    status: planned
+    task: 'Pivot from color-coupled themes to a two-axis engine: independent --color-* layer + structural --ui-* layer switched by data-ui-style. App must feel like 3 different products with identical colors. See PROP-0024 (plan) + PROP-0025 (ADR-0011).'
+  next_actions:
+  - 'SSE-T1.1: Define token taxonomy in app.css :root — split color layer (--color-*) from structural layer (--ui-*)'
+  - 'SSE-T1.2: Migrate ui.module.css, Timer.module.css, mantineTheme.ts, GlassPanel, app.css to tokens (no hardcoded shape/color)'
+  - 'SSE-T1.3: Build Style Router — useUIStyleState (zustand persist) writing data-ui-style on documentElement, zero re-render'
+  - 'SSE-T1.4: Decouple color engine from structural engine (orthogonal data-theme color scheme vs data-ui-style)'
+  - 'SSE-T2.1: Profile A mechanical (hard neumorphism — extruded dual shadows, inset on press)'
+  - 'SSE-T2.2: Profile B brutal (0 radius, 3px solid borders, hard offset shadow, press cancels shadow, dense typography)'
+  - 'SSE-T2.3: Profile C ethereal (pill radii, translucent 1px borders, backdrop-filter blur, diffuse layered shadows, spring)'
+  - 'SSE-T2.4: Split Shape/Style selector from Color selector in Settings + QuickMenu submenu'
+  - 'SSE-T2.5: Propagate split color+structure tokens into PiP document'
+  - 'SSE-T2.6: Verify DoD — instant mutation, color invariance across profiles, no JS reflow, clean build'
+  recent_decisions:
+  - id: ADR-0010
+    status: superseded
+    title: Theme engine uses CSS custom properties on :root (color+shape coupled) -- superseded by ADR-0011
+  - id: ADR-0011
+    status: proposed
+    title: Structural Style Engine -- decouple color from shape via data-ui-style (Shape Language)
+  structural_style_reference:
+    mechanical:
+      label: 'Mecanico / Neumorfismo Duro'
+      attr: 'data-ui-style="mechanical"'
+      geometry: 'radius 12px (soft), border-width 0px'
+      topology: 'extruded dual shadow (6px 6px 12px dark + -6px -6px 12px light from surface luminance, NOT accent); pressed = inset (hundido)'
+      typography: 'clean sans / mono display, normal case'
+      physics: 'weighty ease-in-out cubic-bezier(0.4,0,0.6,1) ~0.4s; press feedback via inset swap (no transform)'
+      feel: 'plastic/metal extruded from the surface'
+    brutal:
+      label: 'Brutalismo Tactil'
+      attr: 'data-ui-style="brutal"'
+      geometry: 'radius 0px, border-width 3px solid var(--color-border-ink)'
+      topology: 'hard opaque offset shadow 4px 4px 0px var(--color-border-ink), no blur'
+      typography: 'high-density monospace/rigid display, uppercase, letter-spacing'
+      physics: 'instant/dry ~0.08s; press = translate(4px,4px) + shadow -> 0 0 0 (button moves to cancel its shadow)'
+      feel: 'high positive friction, tactile'
+    ethereal:
+      label: 'Etereo / Glassmorphism'
+      attr: 'data-ui-style="ethereal"'
+      geometry: 'radius 1.5rem panels / 99px pills, border-width 1px translucent (rgba from --color-text)'
+      topology: 'backdrop-filter blur(20px) saturate(150%); very diffuse multi-layer Z shadows (0 16px 48px soft)'
+      typography: 'light sans'
+      physics: 'fluid spring cubic-bezier(0.34,1.56,0.64,1) ~0.45s; press = scale(0.96)'
+      feel: 'floating, suspended across Z layers'

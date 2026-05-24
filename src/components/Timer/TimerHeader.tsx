@@ -1,10 +1,10 @@
 import type { Mode } from "@/models/info";
 import ui from "@/styles/ui.module.css";
+import { getModeTitle } from "@/utils/modeLabels";
 import { ActionIcon, Box, Group, Text } from "@mantine/core";
 import { type FC, memo } from "react";
 import { FaMinus, FaPlus } from "react-icons/fa";
-import { getModeTitle } from "@/utils/modeLabels";
-import { getColorMode, getModeHexColors } from "./utils/timer";
+import { getModeHexColors } from "./utils/timer";
 
 interface TimerHeaderProps {
 	mode: Mode;
@@ -19,7 +19,6 @@ const TimerHeader: FC<TimerHeaderProps> = ({
 	onAddMinute,
 	onSubtractMinute,
 }) => {
-	const base = getColorMode(mode);
 	const { btnMain } = getModeHexColors(mode);
 	const stepLabel =
 		sessionAdjustStepMinutes === 1
@@ -27,7 +26,13 @@ const TimerHeader: FC<TimerHeaderProps> = ({
 			: `${sessionAdjustStepMinutes} minutes`;
 
 	return (
-		<Group justify="space-between" align="center" wrap="nowrap" w="100%" gap="xs">
+		<Group
+			justify="space-between"
+			align="center"
+			wrap="nowrap"
+			w="100%"
+			gap="xs"
+		>
 			<ActionIcon
 				size="md"
 				variant="light"
@@ -48,7 +53,7 @@ const TimerHeader: FC<TimerHeaderProps> = ({
 			<ActionIcon
 				size="md"
 				variant="light"
-				color={base}
+				color={btnMain}
 				title={`Add ${stepLabel} (+)`}
 				onClick={onAddMinute}
 				aria-label={`Add ${stepLabel}`}

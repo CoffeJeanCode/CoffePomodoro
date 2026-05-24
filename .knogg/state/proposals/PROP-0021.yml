@@ -1,0 +1,20 @@
+id: PROP-0021
+status: applied
+target: state/active_context.yml
+reason: 'Focus shift to PWA conversion: 3 stages defined (visual isolation, offline refuge, state persistence). ADR-0009 accepted.'
+created: 2026-05-24
+patch:
+  focus:
+    stage: 'Stage PWA 1-3: Conversión a Progressive Web App'
+    status: in_progress
+    task: PWA roadmap approved — starting Stage PWA-1
+  next_actions:
+  - 'PWA-T1.1: Instalar vite-plugin-pwa y configurar VitePWA'
+  - 'PWA-T1.2: Crear manifest.webmanifest con display standalone'
+  - 'PWA-T1.3: Generar iconos PWA (192, 512, maskable, iOS)'
+  - 'PWA-T1.4: Agregar meta tags PWA en index.html'
+  - 'PWA-T1.5: Implementar prompt de instalacion contextual'
+  recent_decisions:
+  - id: ADR-0009
+    status: accepted
+    title: PWA Architecture — CoffePomodoro as Focus Sanctuary

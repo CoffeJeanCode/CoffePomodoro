@@ -1,7 +1,8 @@
 import type { BrainDumpNote, BrainDumpState } from "@/models/brainDump";
 import { createId } from "@/utils/extra.utils";
+import { indexedDBStorage } from "@/utils/storage";
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { createJSONStorage, persist } from "zustand/middleware";
 import { storeVersion } from "../config";
 
 const TWENTY_FOUR_HOURS_MS = 24 * 60 * 60 * 1000;
@@ -11,7 +12,10 @@ const initialState: { notes: BrainDumpNote[]; lastPurgeAt: number } = {
 	lastPurgeAt: Date.now(),
 };
 
-function purgeExpiredNotes(notes: BrainDumpNote[], now: number): BrainDumpNote[] {
+function purgeExpiredNotes(
+	notes: BrainDumpNote[],
+	now: number,
+): BrainDumpNote[] {
 	return notes.filter((n) => now - n.capturedAt < TWENTY_FOUR_HOURS_MS);
 }
 
@@ -47,6 +51,7 @@ export const useBrainDumpState = create<BrainDumpState>()(
 		{
 			name: "brainDump",
 			version: storeVersion,
+			storage: createJSONStorage(() => indexedDBStorage),
 			merge: (persisted, current) => {
 				const p = (persisted ?? {}) as Partial<{
 					notes: BrainDumpNote[];
