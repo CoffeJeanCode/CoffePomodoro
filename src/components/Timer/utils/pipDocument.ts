@@ -78,12 +78,14 @@ export function updatePiPTimeElements(
 	}
 
 	const showIntention =
-		mode === Mode.Pomodoro && Boolean(sessionIntention?.trim().length);
+		mode === Mode.Pomodoro ? Boolean(sessionIntention?.trim().length) : true;
+	const intentionText =
+		mode === Mode.Pomodoro
+			? (sessionIntention?.trim() ?? "")
+			: "Take a break";
 	const intentionEl = doc.getElementById("intention-text");
 	if (intentionEl) {
-		intentionEl.textContent = showIntention
-			? (sessionIntention?.trim() ?? "")
-			: "";
+		intentionEl.textContent = showIntention ? intentionText : "";
 		intentionEl.className = showIntention
 			? "intention-text visible"
 			: "intention-text";

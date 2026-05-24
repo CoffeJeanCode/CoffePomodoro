@@ -201,7 +201,6 @@ export const getPiPStyles = (colors: PiPColors) => `
         border-radius: 6px;
         background: rgba(255, 255, 255, 0.06);
         border: 1px solid rgba(255, 255, 255, 0.09);
-        border-left: 2px solid ${colors.btnMain}88;
     }
 
     .intention-text.visible {
@@ -317,7 +316,6 @@ export const getPiPStyles = (colors: PiPColors) => `
             order: 0;
             max-width: 100%;
             text-align: left;
-            padding: 0;
             font-size: 0.6rem;
         }
 
