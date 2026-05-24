@@ -101,9 +101,10 @@ const TimerProgressRing: FC<TimerProgressRingProps> = ({
 				width={size}
 				height={size}
 				viewBox={`0 0 ${size} ${size}`}
-				aria-hidden
+				aria-hidden="true"
 				style={{ pointerEvents: "none" }}
 			>
+				<title>Timer progress ring</title>
 				<circle
 					cx={size / 2}
 					cy={size / 2}
