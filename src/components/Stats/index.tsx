@@ -14,6 +14,7 @@ import * as Plot from "@observablehq/plot";
 import { keys } from "ramda";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { FaChartBar, FaCheck, FaClock, FaFire } from "react-icons/fa";
+import styles from "./Stats.module.css";
 
 type PlotData = {
 	day: string;
@@ -176,10 +177,7 @@ const Stats = () => {
 				title="Focus Stats"
 				onClose={() => setIsOpen(false)}
 				transitionProps={DRAWER_BOTTOM_TRANSITION}
-				styles={{
-					content: { overflowX: "hidden" },
-					body: { overflowX: "hidden", maxWidth: "100%" },
-				}}
+				className={styles.drawerContent}
 			>
 				<Box pt="xs" pb="md">
 					{!hasData ? (
@@ -234,7 +232,7 @@ const Stats = () => {
 							<Text size="sm" c="dimmed" mb="xs" fw={500}>
 								Daily sessions
 							</Text>
-							<article ref={chartRef} style={{ width: "100%" }} />
+							<article ref={chartRef} className={styles.chart} />
 
 							{timeDistributionData.some((d) => d.minutes > 0) && (
 								<Box mt="md">

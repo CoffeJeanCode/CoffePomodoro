@@ -3,9 +3,9 @@ import { Suspense, lazy, useLayoutEffect } from "react";
 import { useInfoState, useShutdownState, useTimerState } from "@/stores";
 import { useBrainDumpState } from "@/stores/states/brainDump";
 import { useStatsState } from "@/stores/states/stats";
-import ui from "@/styles/ui.module.css";
 import { getDate, getEndOfWeek, isToday } from "@/utils/time.util";
 import { Center, Container, Flex, Loader, Stack, Title } from "@mantine/core";
+import styles from "./Home.module.css";
 
 const Helps = lazy(() => import("@/components/Helps"));
 const QuickMenu = lazy(() => import("@/components/QuickMenu"));
@@ -65,10 +65,10 @@ const Home = () => {
 				</Center>
 			}
 		>
-			<Container h="100vh" size="sm" style={{ overflow: "hidden" }}>
+			<Container h="100vh" size="sm" className={styles.pageContainer}>
 				<Center h="100%">
 					<Stack align="center" gap="lg" w="100%">
-						<Title order={1} size={42} className={ui.pageTitle}>
+						<Title order={1} size={42} className={styles.pageTitle}>
 							Coffe Pomodoro
 						</Title>
 						<Flex gap="sm" wrap="wrap" justify="center">

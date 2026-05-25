@@ -6,6 +6,7 @@ import { secondsToMinutes } from "@/utils/time.util";
 import { Box, Button, Collapse, Stack, Text, Title } from "@mantine/core";
 import { type FC, memo, useState } from "react";
 import { FaLightbulb } from "react-icons/fa";
+import styles from "./BreakRestScreen.module.css";
 import BreathingCircle from "./BreathingCircle";
 
 const SHORT_BREAK_SUGGESTIONS = [
@@ -47,7 +48,10 @@ const BreakRestScreen: FC<BreakRestScreenProps> = ({
 	const bonusMinutes = secondsToMinutes(savedTimeBonus);
 
 	return (
-		<Box pos="relative" w="100%" style={{ maxWidth: large ? 400 : 280 }}>
+		<Box
+			className={styles.wrap}
+			style={{ ["--wrap-max-width" as string]: large ? "400px" : "280px" }}
+		>
 			{isLong && (
 				<Box
 					className={ui.deepRestOverlay}
@@ -66,7 +70,7 @@ const BreakRestScreen: FC<BreakRestScreenProps> = ({
 					c="white"
 					fw={500}
 					ta="center"
-					style={{ letterSpacing: "0.05em" }}
+					className={styles.title}
 				>
 					{title}
 				</Title>
@@ -74,24 +78,19 @@ const BreakRestScreen: FC<BreakRestScreenProps> = ({
 					size={large ? "md" : "sm"}
 					c="dimmed"
 					ta="center"
-					style={{ maxWidth: 320, opacity: 0.7 }}
+					className={styles.subtitle}
 				>
 					{isLong
 						? "Let the screen fade. Rest without watching the clock."
 						: "No clock — just rest."}
 				</Text>
 				{bonusMinutes > 0 && (
-					<Text size="xs" c="blue.4" ta="center" style={{ opacity: 0.8 }}>
+					<Text size="xs" c="blue.4" ta="center" className={styles.bonus}>
 						Extended break +{bonusMinutes} min for early completion
 					</Text>
 				)}
 				<BreathingCircle large={large} isAnimating={isRunning} />
-				<Text
-					size="xs"
-					c="dimmed"
-					ta="center"
-					style={{ opacity: 0.45, maxWidth: 240, lineHeight: 1.5 }}
-				>
+				<Text size="xs" c="dimmed" ta="center" className={styles.hint}>
 					{isLong
 						? "Look away · Stretch · Do nothing"
 						: "Breathe · Release · Recover"}

@@ -1,0 +1,12 @@
+.pageContainer {
+	overflow: hidden;
+}
+
+.pageTitle {
+	color: var(--ui-text);
+	font-weight: 600;
+	letter-spacing: -0.02em;
+	text-align: center;
+	font-family: "Playfair Display", "Georgia", "Times New Roman", serif;
+	font-style: italic;
+}

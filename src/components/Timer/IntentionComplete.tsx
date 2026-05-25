@@ -3,6 +3,7 @@ import type { BrainDumpNote } from "@/models/brainDump";
 import { copyBrainDumpToClipboard } from "@/utils/brainDump.util";
 import { Box, Button, Group, Stack, Text } from "@mantine/core";
 import { type FC, memo } from "react";
+import styles from "./IntentionComplete.module.css";
 
 interface IntentionCompleteProps {
 	intention: string;
@@ -29,12 +30,7 @@ const IntentionComplete: FC<IntentionCompleteProps> = ({
 
 	return (
 		<Stack gap="md" w="100%" maw={300} align="center">
-			<Text
-				size="sm"
-				c="dimmed"
-				ta="center"
-				style={{ letterSpacing: "0.08em", textTransform: "uppercase" }}
-			>
+			<Text size="sm" c="dimmed" ta="center" className={styles.caption}>
 				Intention fulfilled
 			</Text>
 			<Text
@@ -42,7 +38,7 @@ const IntentionComplete: FC<IntentionCompleteProps> = ({
 				fw={500}
 				c="white"
 				ta="center"
-				style={{ fontStyle: "italic" }}
+				className={styles.intention}
 			>
 				"{intention}"
 			</Text>

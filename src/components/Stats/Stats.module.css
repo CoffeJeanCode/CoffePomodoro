@@ -1,0 +1,12 @@
+.drawerContent {
+	overflow-x: hidden;
+}
+
+.drawerBody {
+	overflow-x: hidden;
+	max-width: 100%;
+}
+
+.chart {
+	width: 100%;
+}
