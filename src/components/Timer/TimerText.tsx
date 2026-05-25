@@ -1,5 +1,6 @@
 import { Text, Tooltip } from "@mantine/core";
 import { type FC, memo } from "react";
+import styles from "./TimerText.module.css";
 
 interface TimerTextProps {
 	remainingTimeText: string;
@@ -10,7 +11,6 @@ const TimerText: FC<TimerTextProps> = ({
 	remainingTimeText: _remainingTimeText,
 	sessionProgressPercent,
 }) => {
-	const minutesLeft = Math.ceil((sessionProgressPercent / 100) * 25);
 	const progressLabel =
 		sessionProgressPercent < 25
 			? "Starting"
@@ -29,18 +29,7 @@ const TimerText: FC<TimerTextProps> = ({
 			withArrow
 			openDelay={800}
 		>
-			<Text
-				style={{
-					display: "inline-block",
-					cursor: "default",
-					lineHeight: 1.2,
-					opacity: 0.7,
-					fontSize: "1.1rem",
-					letterSpacing: "0.1em",
-					textTransform: "lowercase",
-				}}
-				c="white"
-			>
+			<Text className={styles.progressLabel} c="white">
 				{progressLabel}
 			</Text>
 		</Tooltip>

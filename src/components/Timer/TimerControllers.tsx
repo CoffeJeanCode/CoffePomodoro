@@ -2,6 +2,7 @@ import { Mode } from "@/models";
 import { ActionIcon, Group, Tooltip } from "@mantine/core";
 import { type FC, memo } from "react";
 import { FaCheck, FaForward, FaPause, FaPlay } from "react-icons/fa";
+import styles from "./TimerControllers.module.css";
 import { getModeHexColors } from "./utils/timer";
 
 interface TimerControllersProps {
@@ -24,7 +25,7 @@ const TimerControllers: FC<TimerControllersProps> = ({
 
 	if (onBreak) {
 		return (
-			<Group gap="lg" justify="center">
+			<Group className={styles.controls}>
 				<Tooltip label={isPlaying ? "Pause" : "Start"} withArrow>
 					<ActionIcon
 						size={56}
@@ -39,13 +40,13 @@ const TimerControllers: FC<TimerControllersProps> = ({
 				</Tooltip>
 				<Tooltip label="Skip break (N)" withArrow>
 					<ActionIcon
+						className={styles.skipButton}
 						size={44}
 						radius="xl"
 						variant="light"
 						color={color}
 						onClick={onSkipBreak}
 						aria-label="Skip break"
-						style={{ opacity: 0.85 }}
 					>
 						<FaForward size={16} />
 					</ActionIcon>
@@ -55,7 +56,7 @@ const TimerControllers: FC<TimerControllersProps> = ({
 	}
 
 	return (
-		<Group gap="lg" justify="center">
+		<Group className={styles.controls}>
 			<Tooltip label={isPlaying ? "Pause" : "Start"} withArrow>
 				<ActionIcon
 					size={56}
@@ -70,13 +71,13 @@ const TimerControllers: FC<TimerControllersProps> = ({
 			</Tooltip>
 			<Tooltip label="Mark intention as fulfilled (S)" withArrow>
 				<ActionIcon
+					className={styles.skipButton}
 					size={44}
 					radius="xl"
 					variant="light"
 					color="gray"
 					onClick={onIntentionFulfilled}
 					aria-label="Intention Fulfilled"
-					style={{ opacity: 0.85 }}
 				>
 					<FaCheck size={16} />
 				</ActionIcon>

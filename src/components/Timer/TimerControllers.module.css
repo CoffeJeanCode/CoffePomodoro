@@ -1,0 +1,9 @@
+.controls {
+	display: flex;
+	justify-content: center;
+	gap: 1.25rem;
+}
+
+.skipButton {
+	opacity: 0.85;
+}

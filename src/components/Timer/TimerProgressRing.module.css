@@ -1,0 +1,175 @@
+.ringWrap {
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-shrink: 0;
+	overflow: visible;
+}
+
+.ringSvg {
+	position: absolute;
+	inset: 0;
+	opacity: 0.7;
+}
+
+.ringRipple {
+	position: absolute;
+	border-radius: 50%;
+	border: 1px solid var(--ring-accent-soft, rgba(255, 255, 255, 0.18));
+	animation: ringRipple 4s ease-out infinite;
+}
+
+.ringRippleDelay {
+	animation-delay: 2s;
+}
+
+@keyframes ringRipple {
+	0% {
+		transform: scale(0.55);
+		opacity: 0.45;
+	}
+	100% {
+		transform: scale(1.05);
+		opacity: 0;
+	}
+}
+
+.ringCore {
+	position: absolute;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 50%;
+	background: radial-gradient(
+		circle at 40% 35%,
+		var(--ring-accent-soft, rgba(255, 255, 255, 0.28)) 0%,
+		var(--ring-accent, rgba(255, 100, 100, 0.15)) 45%,
+		transparent 72%
+	);
+	box-shadow: 0 0 36px var(--ring-accent-glow, rgba(255, 100, 100, 0.2)), inset
+		0 0 20px var(--ui-glass-bg);
+	animation: ringPulse 4s ease-in-out infinite;
+}
+
+.ringCoreRunning {
+	animation: ringPulse 3s ease-in-out infinite;
+}
+
+.ringCorePaused {
+	opacity: 0.85;
+}
+
+.ringCoreInner {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 0.35rem;
+	width: 100%;
+	height: 100%;
+	padding: 0.25rem;
+	text-align: center;
+}
+
+.ringPausedMark {
+	position: relative;
+	width: 12px;
+	height: 12px;
+	flex-shrink: 0;
+}
+
+.ringPausedMark::before,
+.ringPausedMark::after {
+	content: "";
+	position: absolute;
+	top: 0;
+	width: 3px;
+	height: 12px;
+	border-radius: 1px;
+	background: var(--ui-text-muted);
+}
+
+.ringPausedMark::before {
+	left: 1px;
+}
+
+.ringPausedMark::after {
+	right: 1px;
+}
+
+.ringIntention {
+	font-size: 0.62rem;
+	line-height: 1.35;
+	font-weight: 400;
+	font-style: italic;
+	text-align: center;
+	color: var(--ui-text-muted);
+	letter-spacing: 0.02em;
+	text-transform: none;
+	padding: 0 0.35rem;
+	max-width: 100%;
+	flex: 0 1 auto;
+}
+
+.ringCenterLabel {
+	color: var(--ui-text);
+	letter-spacing: 0.08em;
+	text-transform: lowercase;
+	font-weight: 400;
+	text-align: center;
+	line-height: 1.35;
+}
+
+.ringCluster {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 0.4rem;
+	flex-shrink: 0;
+}
+
+.cycleHorizon {
+	display: flex;
+	flex-direction: row;
+	align-items: baseline;
+	justify-content: center;
+	gap: 0.35rem;
+	opacity: 0.48;
+	user-select: none;
+	pointer-events: none;
+	white-space: nowrap;
+	line-height: 1;
+}
+
+.cycleHorizonCaption {
+	font-size: 0.58rem;
+	font-weight: 500;
+	letter-spacing: 0.14em;
+	text-transform: lowercase;
+	color: var(--ui-text-muted);
+	line-height: 1;
+}
+
+.cycleHorizonTime {
+	font-size: 0.72rem;
+	font-weight: 500;
+	color: var(--ui-text);
+	line-height: 1.2;
+	font-variant-numeric: tabular-nums;
+	white-space: nowrap;
+	letter-spacing: 0.02em;
+}
+
+@keyframes ringPulse {
+	0%,
+	100% {
+		transform: scale(0.92);
+		opacity: 0.65;
+	}
+	50% {
+		transform: scale(1);
+		opacity: 1;
+	}
+}

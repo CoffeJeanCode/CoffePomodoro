@@ -1,6 +1,7 @@
 import ui from "@/styles/ui.module.css";
 import { Box, Text } from "@mantine/core";
 import { type FC, memo } from "react";
+import styles from "./BreathingCircle.module.css";
 
 interface BreathingCircleProps {
 	large?: boolean;
@@ -17,29 +18,17 @@ const BreathingCircle: FC<BreathingCircleProps> = ({
 	return (
 		<Box className={ui.breathingWrap}>
 			<Box
-				style={{
-					position: "relative",
-					width: outerSize,
-					height: outerSize,
-					display: "flex",
-					alignItems: "center",
-					justifyContent: "center",
-				}}
+				className={styles.outer}
+				style={{ ["--outer-size" as string]: `${outerSize}px` }}
 			>
 				<Box
 					className={`${ui.breathingRingOuter} ${!isAnimating ? ui.breathingPaused : ""}`}
-					style={{
-						width: outerSize,
-						height: outerSize,
-					}}
+					style={{ width: outerSize, height: outerSize }}
 					aria-hidden
 				/>
 				<Box
 					className={`${ui.breathingRing} ${!isAnimating ? ui.breathingPaused : ""}`}
-					style={{
-						width: ringSize,
-						height: ringSize,
-					}}
+					style={{ ["--ring-size" as string]: `${ringSize}px` }}
 					aria-hidden
 				/>
 				{!large && (
@@ -48,16 +37,7 @@ const BreathingCircle: FC<BreathingCircleProps> = ({
 						c="dimmed"
 						ta="center"
 						px="xs"
-						style={{
-							position: "absolute",
-							inset: 0,
-							display: "flex",
-							alignItems: "center",
-							justifyContent: "center",
-							zIndex: 1,
-							lineHeight: 1.3,
-							pointerEvents: "none",
-						}}
+						className={styles.label}
 					>
 						Breathe
 					</Text>

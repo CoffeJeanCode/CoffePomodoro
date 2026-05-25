@@ -6,7 +6,7 @@ import {
 import { Box, Text, Tooltip } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { type FC, memo, useMemo } from "react";
-import styles from "./styles/Timer.module.css";
+import styles from "./TimerProgressRing.module.css";
 import { getModeHexColors } from "./utils/timer";
 
 interface TimerProgressRingProps {
@@ -16,13 +16,10 @@ interface TimerProgressRingProps {
 	compact?: boolean;
 	large?: boolean;
 	centerLabel?: string;
-	/** Focus intention shown small inside the ring during abstract sessions */
 	sessionIntention?: string;
-	/** Hide phase words in the ring center during focus */
 	abstractSession?: boolean;
 	finishTimeText?: string;
 	finishTime?: number;
-	/** Double-click ring center to edit intention mid-session */
 	canEditIntention?: boolean;
 	onEditIntention?: () => void;
 }
@@ -82,6 +79,7 @@ const TimerProgressRing: FC<TimerProgressRingProps> = ({
 	const ring = (
 		<Box
 			className={`${styles.ringWrap} ${canEditIntention ? styles.ringWrapEditable : ""}`}
+			style={{ width: size, height: size }}
 			role="progressbar"
 			aria-valuenow={sessionProgressPercent}
 			aria-valuemin={0}
@@ -93,7 +91,6 @@ const TimerProgressRing: FC<TimerProgressRingProps> = ({
 						? `${horizonAria}. Session progress`
 						: "Session progress"
 			}
-			style={{ width: size, height: size }}
 			onDoubleClick={canEditIntention ? () => onEditIntention?.() : undefined}
 		>
 			<svg
@@ -137,20 +134,12 @@ const TimerProgressRing: FC<TimerProgressRingProps> = ({
 				<>
 					<Box
 						className={styles.ringRipple}
-						style={{
-							width: rippleSize,
-							height: rippleSize,
-							pointerEvents: "none",
-						}}
+						style={{ width: rippleSize, height: rippleSize }}
 						aria-hidden
 					/>
 					<Box
 						className={`${styles.ringRipple} ${styles.ringRippleDelay}`}
-						style={{
-							width: rippleSize,
-							height: rippleSize,
-							pointerEvents: "none",
-						}}
+						style={{ width: rippleSize, height: rippleSize }}
 						aria-hidden
 					/>
 				</>
