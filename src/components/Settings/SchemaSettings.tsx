@@ -9,6 +9,7 @@ import { getHotkeyHandler } from "@mantine/hooks";
 import type { FC } from "react";
 import { useState } from "react";
 import { FaCheck, FaEdit, FaPlus, FaTrash } from "react-icons/fa";
+import styles from "./SchemaSettings.module.css";
 
 interface Props {
 	configuration: Configuration | TimerSchema;
@@ -80,7 +81,7 @@ const SchemaSettings: FC<Props> = ({ configuration }) => {
 	});
 
 	return (
-		<Box w="100%" style={{ minWidth: 0 }}>
+		<Box className={styles.wrap}>
 			<Title order={5} size="sm" c="dimmed" mb="xs">
 				Presets
 			</Title>
@@ -98,23 +99,14 @@ const SchemaSettings: FC<Props> = ({ configuration }) => {
 
 			{current && (
 				<Flex
+					className={`${styles.schemaCard} ${isEditing ? styles.schemaCardEditing : ""}`}
 					mt="sm"
 					p="xs"
 					gap="xs"
 					align="center"
 					justify="space-between"
-					style={(theme) => ({
-						borderRadius: theme.radius.sm,
-						background: isEditing
-							? "var(--mantine-color-dark-6)"
-							: "var(--ui-glass-bg)",
-						border: isEditing
-							? "1px solid var(--mantine-color-red-8)"
-							: "1px solid transparent",
-						transition: "background 150ms, border-color 150ms",
-					})}
 				>
-					<Flex align="center" gap="xs" style={{ flex: 1, minWidth: 0 }}>
+					<Flex align="center" gap="xs" className={styles.schemaInfo}>
 						{isEditing ? (
 							<Input
 								size="xs"
@@ -126,7 +118,7 @@ const SchemaSettings: FC<Props> = ({ configuration }) => {
 								placeholder="Schema name"
 							/>
 						) : (
-							<Box style={{ minWidth: 0 }}>
+							<Box className={styles.schemaInfo}>
 								<Text size="sm" fw={500} truncate="end">
 									{current.title}
 								</Text>
@@ -144,7 +136,7 @@ const SchemaSettings: FC<Props> = ({ configuration }) => {
 						)}
 					</Flex>
 
-					<Flex gap={2} style={{ flexShrink: 0 }}>
+					<Flex gap={2} className={styles.schemaActions}>
 						{isEditing ? (
 							<Button
 								variant="subtle"

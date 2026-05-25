@@ -1,0 +1,46 @@
+.wrap {
+	min-width: 0;
+}
+
+.schemaCard {
+	display: flex;
+	flex-direction: column;
+	margin-top: 0.5rem;
+	padding: 0.5rem;
+	gap: 0.5rem;
+	align-items: center;
+	justify-content: space-between;
+	border-radius: var(--mantine-radius-sm);
+	background: var(--ui-glass-bg);
+	border: 1px solid transparent;
+	transition: background 150ms, border-color 150ms;
+}
+
+.schemaCardEditing {
+	background: var(--mantine-color-dark-6);
+	border-color: var(--mantine-color-red-8);
+}
+
+.schemaInfo {
+	flex: 1;
+	min-width: 0;
+}
+
+.schemaActions {
+	flex-shrink: 0;
+}
+
+.cardTitle {
+	font-size: 0.875rem;
+	font-weight: 500;
+}
+
+.cardSubtitle {
+	font-size: 0.75rem;
+	color: var(--ui-text-muted);
+}
+
+.cardTimers {
+	font-size: 0.75rem;
+	color: var(--ui-text-muted);
+}

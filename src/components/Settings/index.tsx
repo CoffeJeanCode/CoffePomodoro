@@ -13,6 +13,7 @@ import { useConfiguration } from "../../hooks/useConfiguracion";
 import DataSettings from "./DataSettings";
 import NotificationSettings from "./NotificationSettings";
 import SchemaSettings from "./SchemaSettings";
+import styles from "./SettingsLayout.module.css";
 import TimerSettings from "./TimerSettings";
 
 const Settings = () => {
@@ -96,15 +97,10 @@ const Settings = () => {
 						() => {
 							setCurrentSchema(schema.id === currentSchemaId ? "" : schema.id);
 						},
-						// biome-ignore lint: romelint/suspicious/noExplicitAny
 					]) as any),
 				])}
 			>
-				<Flex
-					direction="column"
-					gap="md"
-					style={{ minWidth: 0, maxWidth: "100%", flex: 1, overflowY: "auto" }}
-				>
+				<Flex className={styles.contentArea} direction="column" gap="md">
 					{isSchemaSelected && currentSchema && (
 						<Text size="sm" c="dimmed">
 							Editing preset: <strong>{currentSchema.title}</strong>
@@ -115,7 +111,7 @@ const Settings = () => {
 						value={activeTab}
 						onChange={setActiveTab}
 						keepMounted={false}
-						style={{ maxWidth: "100%" }}
+						className={styles.tabs}
 					>
 						<Tabs.List grow>
 							<Tabs.Tab value="timer">Timer</Tabs.Tab>
@@ -151,19 +147,7 @@ const Settings = () => {
 				</Flex>
 
 				{isSettingsChanged && (
-					<Box
-						p="md"
-						className={ui.glassInset}
-						style={{
-							borderRadius: 0,
-							borderLeft: "none",
-							borderRight: "none",
-							borderBottom: "none",
-							zIndex: 2,
-							width: "100%",
-							flexShrink: 0,
-						}}
-					>
+					<Box p="md" className={`${ui.glassInset} ${styles.saveBar}`}>
 						<Flex justify="flex-end" gap="sm">
 							<Button
 								variant="subtle"

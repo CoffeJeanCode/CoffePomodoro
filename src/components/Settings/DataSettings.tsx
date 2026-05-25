@@ -11,6 +11,7 @@ import {
 } from "@mantine/core";
 import { type FC, useState } from "react";
 import { FaDownload, FaUpload } from "react-icons/fa";
+import styles from "./Settings.module.css";
 
 const DataSettings: FC = () => {
 	const [importError, setImportError] = useState<string | null>(null);
@@ -68,7 +69,7 @@ const DataSettings: FC = () => {
 						value={importingFile}
 						onChange={setImportingFile}
 						clearable
-						style={{ flex: 1 }}
+						className={styles.fileInputFlex}
 					/>
 					<Button
 						variant="light"

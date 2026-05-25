@@ -5,6 +5,7 @@ import { getModeTitle } from "@/utils/modeLabels";
 import { secondsToMinutes } from "@/utils/time.util";
 import { Progress } from "@mantine/core";
 import type React from "react";
+import styles from "./SessionViewer.module.css";
 
 interface Props {
 	configuration: Configuration | TimerSchema;
@@ -14,7 +15,6 @@ const SessionViewer: React.FC<Props> = ({ configuration }) => {
 	const { timers } = configuration;
 	const pomodorosToLongBreak = POMODOROS_TO_LONG_BREAK;
 
-	// Sequence: P, S, P, S, ..., P, L (N pomodoros, N-1 short breaks, 1 long break after last P)
 	const sessionBlocks = [];
 	for (let i = 0; i < pomodorosToLongBreak; i++) {
 		sessionBlocks.push({
@@ -52,13 +52,7 @@ const SessionViewer: React.FC<Props> = ({ configuration }) => {
 						title={`${label} – ${displayTime}m`}
 					>
 						{value >= 8 && (
-							<Progress.Label
-								style={{
-									fontSize: "0.625rem",
-									lineHeight: "24px",
-									whiteSpace: "nowrap",
-								}}
-							>
+							<Progress.Label className={styles.progressLabel}>
 								{displayTime}m
 							</Progress.Label>
 						)}

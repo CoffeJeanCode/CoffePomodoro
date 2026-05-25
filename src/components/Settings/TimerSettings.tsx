@@ -10,27 +10,21 @@ import {
 import type { FC } from "react";
 import { type Configuration, Mode } from "../../models";
 import { minutesToSeconds, secondsToMinutes } from "../../utils/time.util";
+import styles from "./Settings.module.css";
 import SessionViewer from "./components/SessionViewer";
 
 interface Props {
 	configuration: Configuration | TimerSchema;
-	// biome-ignore lint: romelint/suspicious/noExplicitAny
-	setConfigValue: (path: string, value: any) => void;
+	setConfigValue: (path: string, value: number) => void;
 }
 
 const TimerSettings: FC<Props> = ({ configuration, setConfigValue }) => {
 	const handleUpdateTimer = (mode: Mode, value: number) => {
-		setConfigValue(
-			`timers.${mode}`,
-			// import.meta.env.MODE === "development"
-			// 	? Math.round(value / 2)
-			// 	:
-			minutesToSeconds(value),
-		);
+		setConfigValue(`timers.${mode}`, minutesToSeconds(value));
 	};
 
 	return (
-		<Box style={{ maxWidth: "100%" }}>
+		<Box className={styles.fullWidth}>
 			<SimpleGrid cols={1} spacing="sm">
 				<NumberInput
 					label="Work Timer"

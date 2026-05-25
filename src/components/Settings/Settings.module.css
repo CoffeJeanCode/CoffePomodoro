@@ -1,0 +1,16 @@
+.fullWidth {
+	max-width: 100%;
+}
+
+.flexAuto {
+	flex: "0 0 auto";
+}
+
+.flexFill {
+	flex: 1;
+	min-width: 0;
+}
+
+.fileInputFlex {
+	flex: 1;
+}

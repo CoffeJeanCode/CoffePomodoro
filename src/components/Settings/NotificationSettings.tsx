@@ -16,13 +16,13 @@ import { FaBell } from "react-icons/fa";
 import useSound from "use-sound";
 import type { Configuration } from "../../models";
 import { ALARMS } from "../../stores/constants";
+import styles from "./Settings.module.css";
 
 type AlarmTitle = keyof typeof ALARMS;
 
 interface Props {
 	configuration: Configuration | TimerSchema;
-	// biome-ignore lint: romelint/suspicious/noExplicitAny
-	setConfigValue: (path: string, value: any) => void;
+	setConfigValue: (path: string, value: number | boolean | object) => void;
 }
 
 const NotificationSettings: FC<Props> = ({ configuration, setConfigValue }) => {
@@ -31,16 +31,16 @@ const NotificationSettings: FC<Props> = ({ configuration, setConfigValue }) => {
 	});
 
 	return (
-		<Stack gap="md" style={{ maxWidth: "100%" }}>
+		<Stack gap="md" className={styles.fullWidth}>
 			<Group align="flex-end" wrap="nowrap" gap="sm">
 				<Button
 					onClick={() => playNotification()}
 					aria-label="Preview alarm"
-					style={{ flex: "0 0 auto" }}
+					className={styles.flexAuto}
 				>
 					<FaBell />
 				</Button>
-				<Box style={{ flex: 1, minWidth: 0 }}>
+				<Box className={styles.flexFill}>
 					<Select
 						label="Alarm"
 						w="100%"

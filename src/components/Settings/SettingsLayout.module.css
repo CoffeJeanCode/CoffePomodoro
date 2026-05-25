@@ -1,0 +1,20 @@
+.contentArea {
+	min-width: 0;
+	max-width: 100%;
+	flex: 1;
+	overflow-y: auto;
+}
+
+.tabs {
+	max-width: 100%;
+}
+
+.saveBar {
+	border-radius: 0;
+	border-left: none;
+	border-right: none;
+	border-bottom: none;
+	z-index: 2;
+	width: 100%;
+	flex-shrink: 0;
+}
