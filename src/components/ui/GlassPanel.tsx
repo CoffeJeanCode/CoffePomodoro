@@ -1,6 +1,6 @@
 import ui from "@/styles/ui.module.css";
 import { Box } from "@mantine/core";
-import type { CSSProperties, ReactNode } from "react";
+import { type CSSProperties, type ReactNode, memo } from "react";
 
 interface GlassPanelProps {
 	children: ReactNode;
@@ -9,11 +9,10 @@ interface GlassPanelProps {
 	style?: CSSProperties;
 	innerClassName?: string;
 	padding?: string | number;
-	/** Full-viewport colorful mode (no glass overlay) */
 	immersive?: boolean;
 }
 
-export function GlassPanel({
+const GlassPanelImpl = ({
 	children,
 	ambientBackground,
 	className,
@@ -21,7 +20,7 @@ export function GlassPanel({
 	innerClassName,
 	padding,
 	immersive = false,
-}: GlassPanelProps) {
+}: GlassPanelProps) => {
 	if (immersive) {
 		return (
 			<Box
@@ -55,4 +54,6 @@ export function GlassPanel({
 			</Box>
 		</Box>
 	);
-}
+};
+
+export const GlassPanel = memo(GlassPanelImpl);

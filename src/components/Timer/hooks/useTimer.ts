@@ -23,7 +23,6 @@ const useTimer = () => {
 	const config = useConfigState((state) => state.config);
 	const {
 		date,
-		favIcon,
 		mode,
 		pomodoros,
 		sessions,
@@ -66,26 +65,41 @@ const useTimer = () => {
 
 	const notification = config.notification;
 
-	function recordPomodoroSessionStats(isCompleted: boolean) {
-		const elapsedTime = sessionSegmentTotalSeconds - remainingTime;
-		setSessions(sessions + 1);
-		updateDailyStats(
-			getToday(date.raw),
-			{
-				sessions: 1,
-				time: elapsedTime,
-				completed: isCompleted ? 1 : 0,
-				skipped: isCompleted ? 0 : 1,
-				avgDuration: elapsedTime,
-			},
-			isCompleted,
-		);
-		updateStreak(date.formated);
-		if (isCompleted) {
-			incrementHighIntensity();
-			logCompletedIntention(sessionIntention);
-		}
-	}
+	const recordPomodoroSessionStats = useCallback(
+		(isCompleted: boolean) => {
+			const elapsedTime = sessionSegmentTotalSeconds - remainingTime;
+			setSessions(sessions + 1);
+			updateDailyStats(
+				getToday(date.raw),
+				{
+					sessions: 1,
+					time: elapsedTime,
+					completed: isCompleted ? 1 : 0,
+					skipped: isCompleted ? 0 : 1,
+					avgDuration: elapsedTime,
+				},
+				isCompleted,
+			);
+			updateStreak(date.formated);
+			if (isCompleted) {
+				incrementHighIntensity();
+				logCompletedIntention(sessionIntention);
+			}
+		},
+		[
+			sessionSegmentTotalSeconds,
+			remainingTime,
+			sessions,
+			setSessions,
+			updateDailyStats,
+			date.raw,
+			date.formated,
+			updateStreak,
+			incrementHighIntensity,
+			logCompletedIntention,
+			sessionIntention,
+		],
+	);
 
 	const [playNotification] = useSound(notification.alarm.url, {
 		volume: notification.volume,
@@ -175,42 +189,57 @@ const useTimer = () => {
 		setSessionSegmentTotalSeconds,
 	]);
 
-	const getNewMode = () => {
+	const getNewMode = useCallback((): Mode => {
 		if (mode === Mode.Pomodoro) {
-			return pomodoros >= cycleLimit
-				? Mode.LongBreak
-				: Mode.ShortBreak;
+			return pomodoros >= cycleLimit ? Mode.LongBreak : Mode.ShortBreak;
 		}
 		return Mode.Pomodoro;
-	};
+	}, [mode, pomodoros, cycleLimit]);
 
-	const handleNextTimer = ({ isSkip }: { isSkip: boolean }) => {
-		if (isSkip && mode === Mode.Pomodoro) {
-			recordPomodoroSessionStats(false);
-		}
+	const handleNextTimer = useCallback(
+		({ isSkip }: { isSkip: boolean }) => {
+			if (isSkip && mode === Mode.Pomodoro) {
+				recordPomodoroSessionStats(false);
+			}
 
-		if (mode === Mode.LongBreak) {
-			resetHighIntensity();
-		}
+			if (mode === Mode.LongBreak) {
+				resetHighIntensity();
+			}
 
-		const newMode = isSkip
-			? mode === Mode.Pomodoro
-				? Mode.ShortBreak
-				: Mode.Pomodoro
-			: getNewMode();
+			const newMode = isSkip
+				? mode === Mode.Pomodoro
+					? Mode.ShortBreak
+					: Mode.Pomodoro
+				: getNewMode();
 
-		setMode(newMode);
-		if (mode === Mode.Pomodoro) {
-			setPomodoros(newMode === Mode.LongBreak ? 1 : pomodoros + 1);
-		}
-		setIsRunning(false);
-		setResumedTime(0);
-		setSavedTimeBonus(0);
-	};
+			setMode(newMode);
+			if (mode === Mode.Pomodoro) {
+				setPomodoros(newMode === Mode.LongBreak ? 1 : pomodoros + 1);
+			}
+			setIsRunning(false);
+			setResumedTime(0);
+			setSavedTimeBonus(0);
+		},
+		[
+			mode,
+			pomodoros,
+			recordPomodoroSessionStats,
+			resetHighIntensity,
+			getNewMode,
+			setMode,
+			setPomodoros,
+			setIsRunning,
+			setResumedTime,
+			setSavedTimeBonus,
+		],
+	);
 
-	const handleToggleTimer = () => setIsRunning(!isRunning);
+	const handleToggleTimer = useCallback(
+		() => setIsRunning(!isRunning),
+		[isRunning, setIsRunning],
+	);
 
-	const handleStopTimer = () => {
+	const handleStopTimer = useCallback(() => {
 		if (mode !== Mode.Pomodoro) {
 			handleNextTimer({ isSkip: true });
 			return;
@@ -218,31 +247,43 @@ const useTimer = () => {
 		setRemainingTime(nextRemainingTime);
 		setSessionSegmentTotalSeconds(nextRemainingTime);
 		setIsRunning(false);
-	};
+	}, [
+		mode,
+		handleNextTimer,
+		nextRemainingTime,
+		setRemainingTime,
+		setSessionSegmentTotalSeconds,
+		setIsRunning,
+	]);
 
-	const handleSkipBreak = () => {
+	const handleSkipBreak = useCallback(() => {
 		if (mode === Mode.Pomodoro) return;
 		handleNextTimer({ isSkip: true });
-	};
+	}, [mode, handleNextTimer]);
 
-	const handleIntentionFulfilled = () => {
+	const handleIntentionFulfilled = useCallback(() => {
 		if (mode !== Mode.Pomodoro) return;
 		recordPomodoroSessionStats(true);
 		sendNotification(Mode.Pomodoro);
 		setIsRunning(false);
 		setSavedTimeBonus(remainingTime);
 		setAwaitingIntentionFulfillment(true);
-	};
+	}, [
+		mode,
+		recordPomodoroSessionStats,
+		sendNotification,
+		setIsRunning,
+		setSavedTimeBonus,
+		remainingTime,
+	]);
 
-	const confirmIntentionFulfillment = () => {
+	const confirmIntentionFulfillment = useCallback(() => {
 		setAwaitingIntentionFulfillment(false);
 		const bonus = savedTimeBonus;
 		setSavedTimeBonus(0);
 		if (bonus > 0) {
 			const breakMode =
-				pomodoros >= cycleLimit
-					? Mode.LongBreak
-					: Mode.ShortBreak;
+				pomodoros >= cycleLimit ? Mode.LongBreak : Mode.ShortBreak;
 			const baseDuration = timers[breakMode];
 			const extendedDuration = baseDuration + bonus;
 			setRemainingTime(extendedDuration);
@@ -256,18 +297,32 @@ const useTimer = () => {
 			return;
 		}
 		handleNextTimer({ isSkip: false });
-	};
+	}, [
+		savedTimeBonus,
+		setSavedTimeBonus,
+		pomodoros,
+		cycleLimit,
+		timers,
+		setRemainingTime,
+		setSessionSegmentTotalSeconds,
+		setMode,
+		mode,
+		setPomodoros,
+		setIsRunning,
+		setResumedTime,
+		handleNextTimer,
+	]);
 
-	const cancelIntentionFulfillment = () => {
+	const cancelIntentionFulfillment = useCallback(() => {
 		setAwaitingIntentionFulfillment(false);
 		setSavedTimeBonus(0);
 		setIsRunning(true);
 		setFinishTime(Date.now() + secondsToMilliseconds(remainingTime));
-	};
+	}, [setSavedTimeBonus, setIsRunning, setFinishTime, remainingTime]);
 
-	const handleEndTimer = () => {
+	const handleEndTimer = useCallback(() => {
 		if (mode === Mode.Pomodoro) {
-			handleComplete();
+			recordPomodoroSessionStats(true);
 			sendNotification(Mode.Pomodoro);
 			setIsRunning(false);
 			setSavedTimeBonus(0);
@@ -277,17 +332,22 @@ const useTimer = () => {
 		sendNotification(mode);
 		setSavedTimeBonus(0);
 		handleNextTimer({ isSkip: false });
-	};
+	}, [
+		mode,
+		recordPomodoroSessionStats,
+		sendNotification,
+		setIsRunning,
+		setSavedTimeBonus,
+		handleNextTimer,
+	]);
 
-	const acknowledgeCycleAndContinue = () => {
+	const acknowledgeCycleAndContinue = useCallback(() => {
 		setAwaitingCycleAck(false);
 		const bonus = savedTimeBonus;
 		setSavedTimeBonus(0);
 		if (bonus > 0) {
 			const breakMode =
-				pomodoros >= cycleLimit
-					? Mode.LongBreak
-					: Mode.ShortBreak;
+				pomodoros >= cycleLimit ? Mode.LongBreak : Mode.ShortBreak;
 			const baseDuration = timers[breakMode];
 			const extendedDuration = baseDuration + bonus;
 			setRemainingTime(extendedDuration);
@@ -301,21 +361,29 @@ const useTimer = () => {
 			return;
 		}
 		handleNextTimer({ isSkip: false });
-	};
+	}, [
+		savedTimeBonus,
+		setSavedTimeBonus,
+		pomodoros,
+		cycleLimit,
+		timers,
+		setRemainingTime,
+		setSessionSegmentTotalSeconds,
+		setMode,
+		mode,
+		setPomodoros,
+		setIsRunning,
+		setResumedTime,
+		handleNextTimer,
+	]);
 
-	const dismissCycleAck = () => {
+	const dismissCycleAck = useCallback(() => {
 		setAwaitingCycleAck(false);
 		setSavedTimeBonus(0);
-	};
-
-	const handleComplete = () => {
-		recordPomodoroSessionStats(true);
-	};
+	}, [setSavedTimeBonus]);
 
 	const onExpireRef = useRef<() => void>(() => {});
-	onExpireRef.current = () => {
-		handleEndTimer();
-	};
+	onExpireRef.current = handleEndTimer;
 
 	useTimerTick({
 		isRunning,

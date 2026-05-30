@@ -14,7 +14,6 @@
 	--ui-ease: cubic-bezier(0.4, 0, 0.2, 1);
 	--ui-duration: 0.45s;
 	--ui-duration-slow: 1.2s;
-	/* Palette: neutral glass + red primary actions */
 	--ui-accent-primary: #5131e0;
 	--ui-accent-info: #74c0fc;
 	--ui-accent-success: #51cf66;
