@@ -10,6 +10,7 @@ import {
 import { useSchemasState } from "@/stores";
 import { POMODOROS_TO_LONG_BREAK } from "@/stores/constants";
 import { getModeTitle } from "@/utils/modeLabels";
+import type { DepthPreset } from "@/models/depth";
 import { showNotification } from "@/utils/notification.utils";
 import { getToday, secondsToMilliseconds } from "@/utils/time.util";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -59,6 +60,9 @@ const useTimer = () => {
 	const depthPreset = DEPTH_PRESETS[activePreset];
 	const currentSchema = currentSchemaId !== "" ? findCurrentSchema() : null;
 	const { timers } = currentSchema ?? depthPreset;
+	const cycleLimit: number = currentSchema
+		? POMODOROS_TO_LONG_BREAK
+		: (depthPreset as DepthPreset).maxConsecutiveCycles;
 
 	const notification = config.notification;
 
@@ -173,7 +177,7 @@ const useTimer = () => {
 
 	const getNewMode = () => {
 		if (mode === Mode.Pomodoro) {
-			return pomodoros === POMODOROS_TO_LONG_BREAK
+			return pomodoros >= cycleLimit
 				? Mode.LongBreak
 				: Mode.ShortBreak;
 		}
@@ -236,7 +240,7 @@ const useTimer = () => {
 		setSavedTimeBonus(0);
 		if (bonus > 0) {
 			const breakMode =
-				pomodoros === POMODOROS_TO_LONG_BREAK
+				pomodoros >= cycleLimit
 					? Mode.LongBreak
 					: Mode.ShortBreak;
 			const baseDuration = timers[breakMode];
@@ -281,7 +285,7 @@ const useTimer = () => {
 		setSavedTimeBonus(0);
 		if (bonus > 0) {
 			const breakMode =
-				pomodoros === POMODOROS_TO_LONG_BREAK
+				pomodoros >= cycleLimit
 					? Mode.LongBreak
 					: Mode.ShortBreak;
 			const baseDuration = timers[breakMode];
@@ -342,6 +346,7 @@ const useTimer = () => {
 		savedTimeBonus,
 		awaitingCycleAck,
 		awaitingIntentionFulfillment,
+		cycleLimit,
 	};
 };
 

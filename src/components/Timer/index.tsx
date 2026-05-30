@@ -1,6 +1,5 @@
 import { GlassPanel } from "@/components/ui/GlassPanel";
 import { Mode } from "@/models";
-import { DEPTH_PRESETS } from "@/models/depth";
 import { useDepthState, useInfoState, useSchemasState } from "@/stores";
 import { useBrainDumpState } from "@/stores/states/brainDump";
 import { useTimerState } from "@/stores/states/timer";
@@ -37,6 +36,7 @@ const Timer = () => {
 		breakProgressPercent,
 		cancelIntentionFulfillment,
 		confirmIntentionFulfillment,
+		cycleLimit,
 		dismissCycleAck,
 		handleIntentionFulfilled,
 		handleNextTimer,
@@ -62,13 +62,11 @@ const Timer = () => {
 	} = useInfoState();
 	const brainDumpNotes = useBrainDumpState((s) => s.notes);
 	const discardAllBrainDump = useBrainDumpState((s) => s.discardAll);
-	const activePreset = useDepthState((s) => s.activePreset);
 	const setActivePreset = useDepthState((s) => s.setActivePreset);
 	const setCurrentSchema = useSchemasState((s) => s.setCurrentSchema);
 	const resetForNext = useTimerState((s) => s.resetForNext);
 	const timerRef = useRef<HTMLDivElement>(null);
 
-	const highIntensityThreshold = DEPTH_PRESETS[activePreset].maxConsecutiveCycles;
 	const [energyCheckOpen, setEnergyCheckOpen] = useState(false);
 	const pendingStartRef = useRef<(() => void) | null>(null);
 
@@ -77,7 +75,7 @@ const Timer = () => {
 			mode === Mode.Pomodoro && !isRunning && sessionProgressPercent === 0;
 		if (
 			startingFreshFocus &&
-			consecutiveHighIntensitySessions >= highIntensityThreshold
+			consecutiveHighIntensitySessions >= cycleLimit
 		) {
 			pendingStartRef.current = handleToggleTimer;
 			setEnergyCheckOpen(true);
@@ -89,7 +87,7 @@ const Timer = () => {
 		isRunning,
 		sessionProgressPercent,
 		consecutiveHighIntensitySessions,
-		highIntensityThreshold,
+		cycleLimit,
 		handleToggleTimer,
 	]);
 
