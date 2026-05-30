@@ -48,3 +48,17 @@ body {
 * {
 	transition-timing-function: var(--ui-ease);
 }
+
+body.long-break-active {
+	--ui-page-bg: #030305;
+	--ui-page-glow: rgba(116, 192, 252, 0.06);
+	--ui-text: #7a8a9e;
+	--ui-glass-bg: rgba(10, 10, 15, 0.2);
+	--ui-glass-bg-strong: rgba(10, 10, 15, 0.28);
+	--ui-glass-border: rgba(122, 138, 158, 0.12);
+	--ui-glass-border-top: rgba(122, 138, 158, 0.2);
+	filter: saturate(0.3) brightness(0.7);
+	transition: filter 5s cubic-bezier(0.25, 1, 0.5, 1),
+		background-image 5s cubic-bezier(0.25, 1, 0.5, 1),
+		background-color 5s cubic-bezier(0.25, 1, 0.5, 1);
+}

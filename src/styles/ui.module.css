@@ -134,21 +134,6 @@
 	transition: opacity var(--ui-duration-slow) var(--ui-ease);
 }
 
-.deepRestOverlay {
-	position: absolute;
-	inset: 0;
-	pointer-events: none;
-	border-radius: inherit;
-	background: rgb(0, 0, 0);
-	transition: opacity var(--ui-duration-slow) var(--ui-ease);
-	z-index: 1;
-}
-
-.breakContent {
-	position: relative;
-	z-index: 2;
-}
-
 .pageTitle {
 	color: var(--ui-text);
 	font-weight: 600;
@@ -180,59 +165,3 @@
 	font-size: 0.875rem;
 }
 
-.breathingWrap {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-}
-
-.breathingRingOuter {
-	position: absolute;
-	border-radius: 50%;
-	border: 1px solid var(--ui-glass-border);
-	opacity: 0.35;
-	animation: breatheOuter 5.5s var(--ui-ease) infinite;
-}
-
-.breathingRing {
-	position: relative;
-	border-radius: 50%;
-	border: 1px solid var(--ui-glass-border-top);
-	background: radial-gradient(
-		circle,
-		var(--ui-glass-bg-strong) 0%,
-		transparent 70%
-	);
-	box-shadow: 0 0 24px rgba(250, 82, 82, 0.12);
-	animation: breathe 5.5s var(--ui-ease) infinite;
-}
-
-.breathingPaused {
-	animation-play-state: paused !important;
-}
-
-@keyframes breathe {
-	0%,
-	100% {
-		transform: scale(0.88);
-		opacity: 0.5;
-		box-shadow: 0 0 12px rgba(250, 82, 82, 0.08);
-	}
-	50% {
-		transform: scale(1.06);
-		opacity: 1;
-		box-shadow: 0 0 28px rgba(250, 82, 82, 0.2);
-	}
-}
-
-@keyframes breatheOuter {
-	0%,
-	100% {
-		transform: scale(0.95);
-		opacity: 0.2;
-	}
-	50% {
-		transform: scale(1.12);
-		opacity: 0.45;
-	}
-}

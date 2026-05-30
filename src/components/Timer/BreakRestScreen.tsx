@@ -1,6 +1,5 @@
 import RotatingTip from "@/components/ui/RotatingTip";
 import { Mode } from "@/models";
-import ui from "@/styles/ui.module.css";
 import { getModeTitle } from "@/utils/modeLabels";
 import { secondsToMinutes } from "@/utils/time.util";
 import { Box, Button, Collapse, Stack, Text, Title } from "@mantine/core";
@@ -16,55 +15,67 @@ const SHORT_BREAK_SUGGESTIONS = [
 	"Take three deep breaths",
 ];
 
-const LONG_BREAK_SUGGESTIONS = [
-	"Step away from the screen",
-	"Close your eyes for a moment",
-	"Do nothing for a while",
-	"Gentle movement or fresh air",
-];
-
 interface BreakRestScreenProps {
 	mode: Mode.ShortBreak | Mode.LongBreak;
 	breakProgressPercent: number;
 	large?: boolean;
 	savedTimeBonus?: number;
 	isRunning?: boolean;
+	onSkip?: () => void;
 }
 
 const BreakRestScreen: FC<BreakRestScreenProps> = ({
 	mode,
-	breakProgressPercent,
 	large = false,
 	savedTimeBonus = 0,
 	isRunning = true,
+	onSkip,
 }) => {
 	const isLong = mode === Mode.LongBreak;
-	const suggestions = isLong ? LONG_BREAK_SUGGESTIONS : SHORT_BREAK_SUGGESTIONS;
 	const title = getModeTitle(mode);
-	const deepRestOpacity = isLong
-		? Math.min(0.75, (breakProgressPercent / 100) * 0.75)
-		: 0;
 	const [showTips, setShowTips] = useState(false);
 	const bonusMinutes = secondsToMinutes(savedTimeBonus);
 
+	const wrapClass = `${styles.wrap} ${large ? styles.wrapLarge : ""}`;
+
+	if (isLong) {
+		return (
+			<Box className={wrapClass}>
+				<Stack gap={large ? "xl" : "lg"} align="center" py={large ? "md" : "xs"}>
+					<Title
+						order={large ? 2 : 4}
+						c="dimmed"
+						fw={400}
+						ta="center"
+						className={styles.title}
+					>
+						{title}
+					</Title>
+					<BreathingCircle large={large} isAnimating={isRunning} slow />
+					{bonusMinutes > 0 && (
+						<Text size="xs" c="dimmed" ta="center" className={styles.bonus}>
+							+{bonusMinutes} min
+						</Text>
+					)}
+					{onSkip && (
+						<Button
+							variant="subtle"
+							color="gray"
+							size="compact-xs"
+							className={styles.skip}
+							onClick={onSkip}
+						>
+							End rest
+						</Button>
+					)}
+				</Stack>
+			</Box>
+		);
+	}
+
 	return (
-		<Box
-			className={styles.wrap}
-			style={{ ["--wrap-max-width" as string]: large ? "400px" : "280px" }}
-		>
-			{isLong && (
-				<Box
-					className={ui.deepRestOverlay}
-					style={{ opacity: deepRestOpacity }}
-					aria-hidden
-				/>
-			)}
-			<Stack
-				gap={large ? "lg" : "sm"}
-				align="center"
-				py={large ? "md" : "xs"}
-				className={ui.breakContent}
-			>
+		<Box className={wrapClass}>
+			<Stack gap={large ? "lg" : "sm"} align="center" py={large ? "md" : "xs"}>
 				<Title
 					order={large ? 2 : 4}
 					c="white"
@@ -80,9 +91,7 @@ const BreakRestScreen: FC<BreakRestScreenProps> = ({
 					ta="center"
 					className={styles.subtitle}
 				>
-					{isLong
-						? "Let the screen fade. Rest without watching the clock."
-						: "No clock — just rest."}
+					No clock — just rest.
 				</Text>
 				{bonusMinutes > 0 && (
 					<Text size="xs" c="blue.4" ta="center" className={styles.bonus}>
@@ -91,9 +100,7 @@ const BreakRestScreen: FC<BreakRestScreenProps> = ({
 				)}
 				<BreathingCircle large={large} isAnimating={isRunning} />
 				<Text size="xs" c="dimmed" ta="center" className={styles.hint}>
-					{isLong
-						? "Look away · Stretch · Do nothing"
-						: "Breathe · Release · Recover"}
+					Breathe · Release · Recover
 				</Text>
 				<Button
 					variant="subtle"
@@ -106,7 +113,7 @@ const BreakRestScreen: FC<BreakRestScreenProps> = ({
 					{showTips ? "Hide suggestions" : "Show suggestions"}
 				</Button>
 				<Collapse in={showTips} w="100%">
-					<RotatingTip tips={suggestions} />
+					<RotatingTip tips={SHORT_BREAK_SUGGESTIONS} />
 				</Collapse>
 			</Stack>
 		</Box>

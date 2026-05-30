@@ -1,7 +1,11 @@
 .wrap {
 	position: relative;
 	width: 100%;
-	max-width: var(--wrap-max-width, 280px);
+	max-width: 280px;
+}
+
+.wrapLarge {
+	max-width: 400px;
 }
 
 .title {
@@ -21,4 +25,15 @@
 	opacity: 0.45;
 	max-width: 240px;
 	line-height: 1.5;
+}
+
+.skip {
+	margin-top: 0.5rem;
+	opacity: 0.55;
+	transition: opacity var(--ui-duration) var(--ui-ease);
+}
+
+.skip:hover,
+.skip:focus-visible {
+	opacity: 0.9;
 }

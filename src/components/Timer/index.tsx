@@ -121,6 +121,18 @@ const Timer = () => {
 		return () => clearTimeout(fadeIn);
 	}, [mode]);
 
+	useEffect(() => {
+		const className = "long-break-active";
+		if (mode === Mode.LongBreak) {
+			document.body.classList.add(className);
+		} else {
+			document.body.classList.remove(className);
+		}
+		return () => {
+			document.body.classList.remove(className);
+		};
+	}, [mode]);
+
 	const needsIntention =
 		mode === Mode.Pomodoro &&
 		!isRunning &&
@@ -205,6 +217,7 @@ const Timer = () => {
 								large={isFullScreen}
 								savedTimeBonus={savedTimeBonus}
 								isRunning={isRunning}
+								onSkip={mode === Mode.LongBreak ? handleSkipBreak : undefined}
 							/>
 						) : awaitingCycleAck || awaitingIntentionFulfillment ? null : (
 							<TimerProgressRing
@@ -269,7 +282,7 @@ const Timer = () => {
 										cancelIntentionFulfillment();
 									}}
 								/>
-							) : (
+							) : mode === Mode.LongBreak ? null : (
 								<TimerControllers
 									mode={mode}
 									handleToggleTimer={guardedToggle}
