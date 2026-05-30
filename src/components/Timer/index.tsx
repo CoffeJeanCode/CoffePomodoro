@@ -1,5 +1,6 @@
 import { GlassPanel } from "@/components/ui/GlassPanel";
 import { Mode } from "@/models";
+import { DEPTH_PRESETS } from "@/models/depth";
 import { useDepthState, useInfoState, useSchemasState } from "@/stores";
 import { useBrainDumpState } from "@/stores/states/brainDump";
 import { useTimerState } from "@/stores/states/timer";
@@ -61,23 +62,22 @@ const Timer = () => {
 	} = useInfoState();
 	const brainDumpNotes = useBrainDumpState((s) => s.notes);
 	const discardAllBrainDump = useBrainDumpState((s) => s.discardAll);
+	const activePreset = useDepthState((s) => s.activePreset);
 	const setActivePreset = useDepthState((s) => s.setActivePreset);
 	const setCurrentSchema = useSchemasState((s) => s.setCurrentSchema);
 	const resetForNext = useTimerState((s) => s.resetForNext);
 	const timerRef = useRef<HTMLDivElement>(null);
 
-	const HIGH_INTENSITY_THRESHOLD = 2;
+	const highIntensityThreshold = DEPTH_PRESETS[activePreset].maxConsecutiveCycles;
 	const [energyCheckOpen, setEnergyCheckOpen] = useState(false);
 	const pendingStartRef = useRef<(() => void) | null>(null);
 
-	// Gate the main Play action: starting a fresh focus block after two
-	// back-to-back high-intensity cycles requires a conscious energy check.
 	const guardedToggle = useCallback(() => {
 		const startingFreshFocus =
 			mode === Mode.Pomodoro && !isRunning && sessionProgressPercent === 0;
 		if (
 			startingFreshFocus &&
-			consecutiveHighIntensitySessions >= HIGH_INTENSITY_THRESHOLD
+			consecutiveHighIntensitySessions >= highIntensityThreshold
 		) {
 			pendingStartRef.current = handleToggleTimer;
 			setEnergyCheckOpen(true);
@@ -89,6 +89,7 @@ const Timer = () => {
 		isRunning,
 		sessionProgressPercent,
 		consecutiveHighIntensitySessions,
+		highIntensityThreshold,
 		handleToggleTimer,
 	]);
 
@@ -102,8 +103,6 @@ const Timer = () => {
 	const handleEnergyDownshift = () => {
 		setEnergyCheckOpen(false);
 		pendingStartRef.current = null;
-		// Switch to the shortest preset (25-min) and clear the load count, then
-		// leave the block paused so the user starts the lighter cycle consciously.
 		setCurrentSchema("");
 		setActivePreset("quick");
 		resetHighIntensity();

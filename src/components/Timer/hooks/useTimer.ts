@@ -9,8 +9,10 @@ import {
 } from "@/stores";
 import { useSchemasState } from "@/stores";
 import { POMODOROS_TO_LONG_BREAK } from "@/stores/constants";
+import { getModeTitle } from "@/utils/modeLabels";
+import { showNotification } from "@/utils/notification.utils";
 import { getToday, secondsToMilliseconds } from "@/utils/time.util";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import useSound from "use-sound";
 import { useTimerTick } from "./useTimerTick";
 
@@ -81,37 +83,56 @@ const useTimer = () => {
 		}
 	}
 
-	const [playNotification, { stop: stopNotification }] = useSound(
-		notification.alarm.url,
-		{
-			volume: notification.volume,
-			soundEnabled: true,
-		},
-	);
+	const [playNotification] = useSound(notification.alarm.url, {
+		volume: notification.volume,
+		soundEnabled: true,
+	});
 
-	const sendNotification = () => {
-		if (notification.volume > 0) {
-			const isSoundscape =
-				(notification.alarm as { type?: string }).type === "soundscape";
-			if (isSoundscape) {
-				const audio = new Audio(notification.alarm.url);
-				audio.volume = 0;
-				audio.loop = true;
-				audio.play();
-				let vol = 0;
-				const fadeIn = setInterval(() => {
-					vol += notification.volume / 50;
-					if (vol >= notification.volume) {
-						vol = notification.volume;
-						clearInterval(fadeIn);
-					}
-					audio.volume = Math.min(vol, notification.volume);
-				}, 100);
-			} else {
-				playNotification();
-			}
+	const playSound = useCallback(() => {
+		if (notification.volume <= 0) return;
+		const isSoundscape =
+			(notification.alarm as { type?: string }).type === "soundscape";
+		if (isSoundscape) {
+			const audio = new Audio(notification.alarm.url);
+			audio.volume = 0;
+			audio.loop = true;
+			void audio.play();
+			let vol = 0;
+			const fadeIn = setInterval(() => {
+				vol += notification.volume / 50;
+				if (vol >= notification.volume) {
+					vol = notification.volume;
+					clearInterval(fadeIn);
+				}
+				audio.volume = Math.min(vol, notification.volume);
+			}, 100);
+			return;
 		}
-	};
+		playNotification();
+	}, [notification.alarm, notification.volume, playNotification]);
+
+	const sendNotification = useCallback(
+		(finishedMode: Mode) => {
+			playSound();
+			if (!notification.desktopNotification) return;
+			const granted =
+				typeof Notification !== "undefined" &&
+				Notification.permission === "granted";
+			if (!granted) return;
+			const isFocusEnd = finishedMode === Mode.Pomodoro;
+			showNotification(
+				isFocusEnd ? "Focus complete" : `${getModeTitle(finishedMode)} ended`,
+				true,
+				{
+					body: isFocusEnd
+						? "Time to step away and recover."
+						: "Back to focus when you are ready.",
+					icon: "/favicon.svg",
+				},
+			);
+		},
+		[notification.desktopNotification, playSound],
+	);
 
 	const nextRemainingTime = useMemo(() => timers[mode], [mode, timers]);
 
@@ -164,7 +185,6 @@ const useTimer = () => {
 			recordPomodoroSessionStats(false);
 		}
 
-		// Finishing a long break clears accumulated cognitive load.
 		if (mode === Mode.LongBreak) {
 			resetHighIntensity();
 		}
@@ -204,7 +224,7 @@ const useTimer = () => {
 	const handleIntentionFulfilled = () => {
 		if (mode !== Mode.Pomodoro) return;
 		recordPomodoroSessionStats(true);
-		sendNotification();
+		sendNotification(Mode.Pomodoro);
 		setIsRunning(false);
 		setSavedTimeBonus(remainingTime);
 		setAwaitingIntentionFulfillment(true);
@@ -244,13 +264,13 @@ const useTimer = () => {
 	const handleEndTimer = () => {
 		if (mode === Mode.Pomodoro) {
 			handleComplete();
-			sendNotification();
+			sendNotification(Mode.Pomodoro);
 			setIsRunning(false);
 			setSavedTimeBonus(0);
 			setAwaitingCycleAck(true);
 			return;
 		}
-		sendNotification();
+		sendNotification(mode);
 		setSavedTimeBonus(0);
 		handleNextTimer({ isSkip: false });
 	};

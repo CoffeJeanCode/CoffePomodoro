@@ -87,6 +87,14 @@ const initialState: Stats = {
 	},
 };
 
+const emptyDailyStats: DailyStats = {
+	sessions: 0,
+	time: 0,
+	completed: 0,
+	skipped: 0,
+	avgDuration: 0,
+};
+
 interface StatsState extends Stats {
 	updateDailyStats: (
 		weekday: Weekday,
@@ -95,6 +103,7 @@ interface StatsState extends Stats {
 	) => void;
 	savePreviousWeek: () => void;
 	resetStats: () => void;
+	resetDailyStats: (weekday: Weekday) => void;
 	updateStreak: (date: string) => void;
 }
 
@@ -145,6 +154,14 @@ export const useStatsState = create<StatsState>()(
 						timeDistribution: newDistribution,
 					},
 				});
+			},
+			resetDailyStats: (weekday) => {
+				set((state) => ({
+					stats: {
+						...state.stats,
+						[weekday]: { ...emptyDailyStats },
+					},
+				}));
 			},
 			savePreviousWeek: () => {
 				const currentStats = get().stats;

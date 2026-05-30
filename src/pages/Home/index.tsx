@@ -3,7 +3,7 @@ import { Suspense, lazy, useLayoutEffect } from "react";
 import { useInfoState, useShutdownState, useTimerState } from "@/stores";
 import { useBrainDumpState } from "@/stores/states/brainDump";
 import { useStatsState } from "@/stores/states/stats";
-import { getDate, getEndOfWeek, isToday } from "@/utils/time.util";
+import { getDate, getEndOfWeek, getToday, isToday } from "@/utils/time.util";
 import { Center, Container, Flex, Loader, Stack, Title } from "@mantine/core";
 import styles from "./Home.module.css";
 
@@ -19,6 +19,7 @@ const Timer = lazy(() => import("@/components/Timer"));
 const Home = () => {
 	const { date, endWeek, setEndWeek, resetInfo } = useInfoState();
 	const resetStats = useStatsState((stats) => stats.resetStats);
+	const resetDailyStats = useStatsState((stats) => stats.resetDailyStats);
 	const resetTimer = useTimerState((state) => state.resetTimer);
 	const autoPurgeBrainDump = useBrainDumpState((s) => s.autoPurge);
 	const isShutDown = useShutdownState((s) => s.isShutDown);
@@ -30,11 +31,11 @@ const Home = () => {
 		const endWeekDate = new Date(endWeek);
 
 		if (!isToday(todayDate)) {
+			resetDailyStats(getToday(new Date()));
 			resetTimer();
 			resetInfo();
 			autoPurgeBrainDump();
 		}
-		// Lift the shutdown lock once a new day begins.
 		if (isShutDown && shutDownDate !== getDate(new Date())) {
 			clearShutdown();
 		}
@@ -50,6 +51,7 @@ const Home = () => {
 		resetTimer,
 		resetInfo,
 		resetStats,
+		resetDailyStats,
 		setEndWeek,
 		autoPurgeBrainDump,
 		isShutDown,

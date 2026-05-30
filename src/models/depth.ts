@@ -8,6 +8,7 @@ export interface DepthPreset {
 	subtitle: string;
 	description: string;
 	timers: Timers;
+	maxConsecutiveCycles: number;
 }
 
 export const DEPTH_PRESETS: Record<DepthPresetKey, DepthPreset> = {
@@ -21,6 +22,7 @@ export const DEPTH_PRESETS: Record<DepthPresetKey, DepthPreset> = {
 			"short break": 20 * 60,
 			"long break": 30 * 60,
 		},
+		maxConsecutiveCycles: 2,
 	},
 	sustained: {
 		key: "sustained",
@@ -32,6 +34,7 @@ export const DEPTH_PRESETS: Record<DepthPresetKey, DepthPreset> = {
 			"short break": 17 * 60,
 			"long break": 25 * 60,
 		},
+		maxConsecutiveCycles: 3,
 	},
 	quick: {
 		key: "quick",
@@ -43,6 +46,7 @@ export const DEPTH_PRESETS: Record<DepthPresetKey, DepthPreset> = {
 			"short break": 5 * 60,
 			"long break": 15 * 60,
 		},
+		maxConsecutiveCycles: 4,
 	},
 };
 

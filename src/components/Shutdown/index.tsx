@@ -1,6 +1,8 @@
 import { useInfoState, useShutdownState, useTimerState } from "@/stores";
 import { useBrainDumpState } from "@/stores/states/brainDump";
+import { useStatsState } from "@/stores/states/stats";
 import { copyBrainDumpToClipboard } from "@/utils/brainDump.util";
+import { getToday } from "@/utils/time.util";
 import { Box, Button, Group, Modal, Stack, Text, Tooltip } from "@mantine/core";
 import { memo, useState } from "react";
 import { FaCopy, FaMoon, FaRegTrashAlt } from "react-icons/fa";
@@ -16,20 +18,23 @@ const Shutdown = () => {
 	const discardAllBrainDump = useBrainDumpState((s) => s.discardAll);
 
 	const completedIntentions = useInfoState((s) => s.completedIntentions);
-	const resetHighIntensity = useInfoState((s) => s.resetHighIntensity);
+	const resetDailyProgress = useInfoState((s) => s.resetDailyProgress);
+	const today = useInfoState((s) => s.date.raw);
+	const resetDailyStats = useStatsState((s) => s.resetDailyStats);
 	const setIsRunning = useTimerState((s) => s.setIsRunning);
 
 	const [opened, setOpened] = useState(false);
 	const [step, setStep] = useState<Step>("triage");
 
 	const startSequence = () => {
-		setIsRunning(false); // pause any active timer
+		setIsRunning(false);
 		setStep("triage");
 		setOpened(true);
 	};
 
 	const handleConfirmShutdown = () => {
-		resetHighIntensity();
+		resetDailyStats(getToday(today));
+		resetDailyProgress();
 		shutDown();
 		setOpened(false);
 	};

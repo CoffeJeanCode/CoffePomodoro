@@ -16,6 +16,7 @@ interface InfoState extends Info {
 	incrementHighIntensity: () => void;
 	resetHighIntensity: () => void;
 	logCompletedIntention: (intention: string) => void;
+	resetDailyProgress: () => void;
 	resetInfo: () => void;
 }
 
@@ -68,6 +69,15 @@ export const useInfoState = create<InfoState>()(
 						completedIntentions: [...state.completedIntentions, trimmed],
 					};
 				}),
+			resetDailyProgress: () =>
+				set(() => ({
+					pomodoros: 1,
+					sessions: 1,
+					sessionIntention: "",
+					intentionConfirmed: false,
+					consecutiveHighIntensitySessions: 0,
+					completedIntentions: [],
+				})),
 			resetInfo: () => set(initialState),
 		}),
 		{
