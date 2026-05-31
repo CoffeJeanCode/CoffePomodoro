@@ -1,6 +1,9 @@
-version: "3.9"
 services:
   app:
+    command: bun run dev
     build: .
     ports:
-      - "3000:3000"
+      - "5321:5173"
+    volumes:
+      - .:/app
+      - /app/node_modules
