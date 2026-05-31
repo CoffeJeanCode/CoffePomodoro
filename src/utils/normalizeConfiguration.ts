@@ -49,6 +49,7 @@ export function normalizeTimerSchema(
 	return {
 		id: schema.id,
 		title: schema.title,
+		...(schema.presetKey ? { presetKey: schema.presetKey } : {}),
 		timers: { ...defaultTimers, ...schema.timers },
 		notification: {
 			...defaultNotification,

@@ -8,9 +8,8 @@ import {
 	useTimerState,
 } from "@/stores";
 import { useSchemasState } from "@/stores";
-import { POMODOROS_TO_LONG_BREAK } from "@/stores/constants";
+import { cyclesForTimers } from "@/utils/cycles";
 import { getModeTitle } from "@/utils/modeLabels";
-import type { DepthPreset } from "@/models/depth";
 import { showNotification } from "@/utils/notification.utils";
 import { getToday, secondsToMilliseconds } from "@/utils/time.util";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -59,9 +58,7 @@ const useTimer = () => {
 	const depthPreset = DEPTH_PRESETS[activePreset];
 	const currentSchema = currentSchemaId !== "" ? findCurrentSchema() : null;
 	const { timers } = currentSchema ?? depthPreset;
-	const cycleLimit: number = currentSchema
-		? POMODOROS_TO_LONG_BREAK
-		: (depthPreset as DepthPreset).maxConsecutiveCycles;
+	const cycleLimit: number = cyclesForTimers(timers);
 
 	const notification = config.notification;
 

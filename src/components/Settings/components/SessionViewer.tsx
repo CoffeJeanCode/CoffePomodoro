@@ -1,6 +1,6 @@
 import { type Configuration, Mode } from "@/models";
 import type { TimerSchema } from "@/models/schemas";
-import { POMODOROS_TO_LONG_BREAK } from "@/stores/constants";
+import { cyclesForTimers } from "@/utils/cycles";
 import { getModeTitle } from "@/utils/modeLabels";
 import { secondsToMinutes } from "@/utils/time.util";
 import { Progress } from "@mantine/core";
@@ -13,16 +13,16 @@ interface Props {
 
 const SessionViewer: React.FC<Props> = ({ configuration }) => {
 	const { timers } = configuration;
-	const pomodorosToLongBreak = POMODOROS_TO_LONG_BREAK;
+	const maxCycles = cyclesForTimers(timers);
 
 	const sessionBlocks = [];
-	for (let i = 0; i < pomodorosToLongBreak; i++) {
+	for (let i = 0; i < maxCycles; i++) {
 		sessionBlocks.push({
 			value: timers[Mode.Pomodoro],
 			color: "blue.8",
 			label: getModeTitle(Mode.Pomodoro),
 		});
-		const isLastPomodoro = i === pomodorosToLongBreak - 1;
+		const isLastPomodoro = i === maxCycles - 1;
 		const breakMode = isLastPomodoro ? Mode.LongBreak : Mode.ShortBreak;
 		sessionBlocks.push({
 			value: timers[breakMode],
