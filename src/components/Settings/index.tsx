@@ -76,7 +76,9 @@ const Settings = () => {
 				transitionProps={DRAWER_LEFT_TRANSITION}
 				styles={{
 					content: {
-						overflowX: "hidden",
+						display: "flex",
+						flexDirection: "column",
+						overflow: "hidden",
 						borderLeft: "none",
 						borderRight: "1px solid var(--ui-glass-border)",
 					},
