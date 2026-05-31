@@ -3,7 +3,13 @@ import { Suspense, lazy, useLayoutEffect } from "react";
 import { useInfoState, useShutdownState, useTimerState } from "@/stores";
 import { useBrainDumpState } from "@/stores/states/brainDump";
 import { useStatsState } from "@/stores/states/stats";
-import { getDate, getEndOfWeek, getToday, isToday } from "@/utils/time.util";
+import {
+	getDate,
+	getEndOfWeek,
+	getToday,
+	hasWeekRolledOver,
+	isToday,
+} from "@/utils/time.util";
 import { Center, Container, Flex, Loader, Stack, Title } from "@mantine/core";
 import styles from "./Home.module.css";
 
@@ -28,7 +34,6 @@ const Home = () => {
 
 	useLayoutEffect(() => {
 		const todayDate = new Date(date.raw);
-		const endWeekDate = new Date(endWeek);
 
 		if (!isToday(todayDate)) {
 			resetDailyStats(getToday(new Date()));
@@ -39,7 +44,7 @@ const Home = () => {
 		if (isShutDown && shutDownDate !== getDate(new Date())) {
 			clearShutdown();
 		}
-		if (todayDate.getTime() > endWeekDate.getTime()) {
+		if (hasWeekRolledOver(todayDate, new Date(endWeek))) {
 			resetStats();
 
 			const expireDate = new Date().setDate(new Date().getDate() + 8);

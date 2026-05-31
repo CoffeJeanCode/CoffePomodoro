@@ -83,6 +83,13 @@ export const getEndOfWeek = (date: Date, weekStartsOn: number): Date => {
 	return new Date(date.getFullYear(), date.getMonth(), date.getDate() + diff);
 };
 
+/**
+ * Whether `today` has crossed past the tracked end-of-week boundary, meaning
+ * the weekly stats should roll over into the previous week.
+ */
+export const hasWeekRolledOver = (today: Date, endWeek: Date): boolean =>
+	new Date(today).getTime() > new Date(endWeek).getTime();
+
 export const getNextFirstDate = (date = new Date()) => {
 	const dateCopy = new Date(date.getTime());
 
