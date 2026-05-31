@@ -51,7 +51,6 @@ export function updatePiPProgressRing(
 export function updatePiPTimeElements(
 	doc: Document,
 	timerState: Pick<Timer, "isRunning">,
-	remainingTimeText: string,
 	mode: Mode,
 	sessionIntention?: string,
 ) {
@@ -61,12 +60,6 @@ export function updatePiPTimeElements(
 
 	const modeLabelEl = doc.getElementById("pip-mode-label");
 	if (modeLabelEl) modeLabelEl.textContent = MODE_LABEL[mode] ?? "Focus";
-
-	const timeEl = doc.getElementById("time-text");
-	if (timeEl) {
-		timeEl.textContent = remainingTimeText;
-		timeEl.className = "time-text";
-	}
 
 	const pausedEl = doc.getElementById("pip-paused-mark");
 	if (pausedEl) {

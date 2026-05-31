@@ -147,20 +147,6 @@ export const getPiPStyles = (colors: PiPColors) => `
         pointer-events: none;
     }
 
-    .time-text {
-        font-variant-numeric: tabular-nums;
-        font-weight: 700;
-        line-height: 1;
-        letter-spacing: -0.02em;
-        text-align: center;
-        font-size: clamp(1.05rem, 6.5vmin, 1.4rem);
-        text-shadow: 0 1px 8px rgba(0, 0, 0, 0.4);
-    }
-
-    #pip-root[data-running="false"] .time-text {
-        opacity: 0.7;
-    }
-
     /* ── paused bars ── */
     .pip-paused-mark {
         position: relative;

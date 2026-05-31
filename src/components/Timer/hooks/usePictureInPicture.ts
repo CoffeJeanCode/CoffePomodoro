@@ -40,7 +40,6 @@ function buildPiPMarkup(timerState: Pick<Timer, "isRunning">): string {
         <circle id="pip-ring-progress" class="pip-ring-progress" cx="${cx}" cy="${cy}" r="${PIP_RING_RADIUS}" stroke-width="4"/>
       </svg>
       <div class="pip-time-overlay">
-        <div id="time-text" class="time-text"></div>
         <div id="pip-paused-mark" class="pip-paused-mark hidden" aria-hidden></div>
       </div>
     </div>
@@ -70,7 +69,6 @@ const usePictureInPicture = ({
 
 	const timerState = useTimerState((state: Timer) => ({
 		isRunning: state.isRunning,
-		remainingTimeText: state.remainingTimeText,
 	}));
 
 	const sessionIntention = useInfoState((state) => state.sessionIntention);
@@ -85,13 +83,7 @@ const usePictureInPicture = ({
 		const colors = getModeHexColors(mode);
 		const ambient = buildAmbientBackground(mode, sessionProgressPercent);
 
-		updatePiPTimeElements(
-			doc,
-			timerState,
-			timerState.remainingTimeText,
-			mode,
-			sessionIntention,
-		);
+		updatePiPTimeElements(doc, timerState, mode, sessionIntention);
 		updatePiPAmbient(doc, ambient);
 		updatePiPProgressRing(doc, sessionProgressPercent, colors.btnMain);
 
