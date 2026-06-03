@@ -1,4 +1,4 @@
-import type { Configuration } from "@/models";
+import type { Configuration, TimerVisualMode } from "@/models";
 import {
 	defaultNotification,
 	normalizeConfiguration,
@@ -11,6 +11,7 @@ import { ALARMS } from "../constants";
 export interface ConfigurationState {
 	config: Configuration;
 	setConfiguration: (newConfig: Configuration) => void;
+	setVisualMode: (mode: TimerVisualMode) => void;
 	resetConfiguration: () => void;
 }
 
@@ -21,6 +22,7 @@ const seedConfiguration = normalizeConfiguration({
 		desktopNotification: Notification.permission === "granted",
 		volume: 0.5,
 	},
+	visualMode: "ripples",
 });
 
 export const useConfigState = create<ConfigurationState>()(
@@ -29,6 +31,10 @@ export const useConfigState = create<ConfigurationState>()(
 			config: seedConfiguration,
 			setConfiguration: (newConfig) =>
 				set(() => ({ config: normalizeConfiguration(newConfig) })),
+			setVisualMode: (mode) =>
+				set((state) => ({
+					config: { ...state.config, visualMode: mode },
+				})),
 			resetConfiguration: () => set(() => ({ config: seedConfiguration })),
 		}),
 		{

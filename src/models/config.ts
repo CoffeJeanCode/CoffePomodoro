@@ -1,5 +1,7 @@
 import { Mode } from "./info";
 
+export type TimerVisualMode = "ripples" | "stardust" | "enso";
+
 type Alarm = {
 	title: string;
 	url: string;
@@ -21,4 +23,5 @@ export interface Notification {
 export interface Configuration {
 	timers: Timers;
 	notification: Notification;
+	visualMode: TimerVisualMode;
 }

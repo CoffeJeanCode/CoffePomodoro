@@ -40,6 +40,7 @@ export function normalizeConfiguration(
 			...p.notification,
 			alarm: normalizeAlarm(p.notification?.alarm),
 		},
+		visualMode: p.visualMode ?? "ripples",
 	};
 }
 
@@ -56,5 +57,6 @@ export function normalizeTimerSchema(
 			...schema.notification,
 			alarm: normalizeAlarm(schema.notification?.alarm),
 		},
+		visualMode: schema.visualMode ?? "ripples",
 	};
 }
