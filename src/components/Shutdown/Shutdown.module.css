@@ -3,12 +3,29 @@
 	left: 1rem;
 	bottom: 1rem;
 	z-index: 200;
-	opacity: 0.4;
-	transition: opacity var(--ui-duration, 0.2s) var(--ui-ease, ease);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: #ffd8a8;
+	background: color-mix(in srgb, var(--ui-accent-warning) 22%, transparent);
+	border: 1px solid color-mix(in srgb, var(--ui-accent-warning) 48%, transparent);
+	box-shadow:
+		0 0 0 1px color-mix(in srgb, var(--ui-accent-warning) 14%, transparent),
+		0 6px 20px color-mix(in srgb, var(--ui-accent-warning) 24%, transparent);
+	transition:
+		background var(--ui-duration, 0.2s) var(--ui-ease, ease),
+		border-color var(--ui-duration, 0.2s) var(--ui-ease, ease),
+		box-shadow var(--ui-duration, 0.2s) var(--ui-ease, ease),
+		color var(--ui-duration, 0.2s) var(--ui-ease, ease);
 }
 
 .trigger:hover {
-	opacity: 0.9;
+	color: #ffe8cc;
+	background: color-mix(in srgb, var(--ui-accent-warning) 34%, transparent);
+	border-color: color-mix(in srgb, var(--ui-accent-warning) 68%, transparent);
+	box-shadow:
+		0 0 0 1px color-mix(in srgb, var(--ui-accent-warning) 22%, transparent),
+		0 8px 24px color-mix(in srgb, var(--ui-accent-warning) 36%, transparent);
 }
 
 .lockOverlay {

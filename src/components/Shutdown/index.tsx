@@ -1,9 +1,11 @@
+import { onboardingAnchorProps } from "@/components/Onboarding/anchors";
 import { useInfoState, useShutdownState, useTimerState } from "@/stores";
 import { useBrainDumpState } from "@/stores/states/brainDump";
 import { useStatsState } from "@/stores/states/stats";
+import { useLanguage } from "@/context/LanguageContext";
 import { copyBrainDumpToClipboard } from "@/utils/brainDump.util";
 import { getToday } from "@/utils/time.util";
-import { Box, Button, Group, Modal, Stack, Text, Tooltip } from "@mantine/core";
+import { Box, ActionIcon, Button, Group, Modal, Stack, Text, Tooltip } from "@mantine/core";
 import { memo, useState } from "react";
 import { FaCopy, FaMoon, FaRegTrashAlt } from "react-icons/fa";
 import styles from "./Shutdown.module.css";
@@ -11,6 +13,7 @@ import styles from "./Shutdown.module.css";
 type Step = "triage" | "consolidate";
 
 const Shutdown = () => {
+	const { t } = useLanguage();
 	const isShutDown = useShutdownState((s) => s.isShutDown);
 	const shutDown = useShutdownState((s) => s.shutDown);
 
@@ -49,12 +52,8 @@ const Shutdown = () => {
 		return (
 			<Box className={styles.lockOverlay}>
 				<Box>
-					<Text className={styles.lockMessage}>
-						Day complete. Your attention is free. See you tomorrow.
-					</Text>
-					<Text className={styles.lockSub}>
-						Reload the app tomorrow to start fresh.
-					</Text>
+					<Text className={styles.lockMessage}>{t.shutdown.lockMessage}</Text>
+					<Text className={styles.lockSub}>{t.shutdown.lockSub}</Text>
 				</Box>
 			</Box>
 		);
@@ -62,17 +61,18 @@ const Shutdown = () => {
 
 	return (
 		<>
-			<Tooltip label="End your workday" position="right" withArrow>
-				<Button
+			<Tooltip label={t.shutdown.endDayTooltip} position="right" withArrow openDelay={400}>
+				<ActionIcon
 					className={styles.trigger}
-					variant="subtle"
-					color="gray"
-					size="compact-xs"
-					leftSection={<FaMoon size={11} />}
+					variant="transparent"
+					size="xl"
+					radius="xl"
+					aria-label={t.shutdown.endDayTooltip}
 					onClick={startSequence}
+					{...onboardingAnchorProps("endDay")}
 				>
-					End day
-				</Button>
+					<FaMoon size={18} />
+				</ActionIcon>
 			</Tooltip>
 
 			<Modal
@@ -83,20 +83,21 @@ const Shutdown = () => {
 				radius="md"
 				overlayProps={{ blur: 4, backgroundOpacity: 0.6 }}
 				title={
-					step === "triage" ? "Empty your mental inbox" : "Today's intentions"
+					step === "triage"
+						? t.shutdown.triageTitle
+						: t.shutdown.consolidateTitle
 				}
 				styles={{ title: { fontWeight: 600 } }}
 			>
 				{step === "triage" ? (
 					<Stack gap="md">
 						<Text size="sm" c="dimmed">
-							Process what you captured today. Export it wherever you keep it
-							and clear the inbox to free your short-term memory.
+							{t.shutdown.triageBody}
 						</Text>
 
 						{inboxClean ? (
 							<Text size="sm" c="dimmed" ta="center" py="md">
-								The inbox is clear. Your mind is unloaded.
+								{t.shutdown.inboxClear}
 							</Text>
 						) : (
 							<Box className={styles.list}>
@@ -116,7 +117,7 @@ const Shutdown = () => {
 								disabled={inboxClean}
 								onClick={handleCopy}
 							>
-								Copy all
+								{t.shutdown.copyAll}
 							</Button>
 							<Button
 								variant="light"
@@ -125,7 +126,7 @@ const Shutdown = () => {
 								disabled={inboxClean}
 								onClick={discardAllBrainDump}
 							>
-								Clear inbox
+								{t.shutdown.clearInbox}
 							</Button>
 						</Group>
 
@@ -135,19 +136,18 @@ const Shutdown = () => {
 							disabled={!inboxClean}
 							onClick={() => setStep("consolidate")}
 						>
-							Continue
+							{t.shutdown.continue}
 						</Button>
 					</Stack>
 				) : (
 					<Stack gap="md">
 						<Text size="sm" c="dimmed">
-							These are the intentions you gave your full attention today.
+							{t.shutdown.consolidateBody}
 						</Text>
 
 						{completedIntentions.length === 0 ? (
 							<Text size="sm" c="dimmed" ta="center" py="md">
-								You didn't mark any intentions complete today. You still deserve
-								rest.
+								{t.shutdown.noIntentions}
 							</Text>
 						) : (
 							<Box className={styles.list}>
@@ -160,12 +160,11 @@ const Shutdown = () => {
 						)}
 
 						<Text size="sm" c="dimmed" ta="center">
-							What deserved your attention, received it. That's enough for
-							today.
+							{t.shutdown.consolidateClosing}
 						</Text>
 
 						<Button fullWidth color="gray" onClick={handleConfirmShutdown}>
-							Power down and close the day
+							{t.shutdown.powerDown}
 						</Button>
 					</Stack>
 				)}

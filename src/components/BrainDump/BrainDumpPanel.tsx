@@ -1,4 +1,5 @@
 import { useBrainDumpState } from "@/stores/states/brainDump";
+import { useLanguage } from "@/context/LanguageContext";
 import { ActionIcon, Box, Button, Text, Textarea } from "@mantine/core";
 import { type FC, type KeyboardEvent, memo, useEffect, useState } from "react";
 import { FaTimes } from "react-icons/fa";
@@ -10,6 +11,7 @@ interface BrainDumpPanelProps {
 }
 
 const BrainDumpPanel: FC<BrainDumpPanelProps> = ({ opened, onClose }) => {
+	const { t } = useLanguage();
 	const [draft, setDraft] = useState("");
 	const notes = useBrainDumpState((s) => s.notes);
 	const addNote = useBrainDumpState((s) => s.addNote);
@@ -42,12 +44,12 @@ const BrainDumpPanel: FC<BrainDumpPanelProps> = ({ opened, onClose }) => {
 	return (
 		<Box className={styles.notepad}>
 			<Box className={styles.notepadHeader}>
-				<Text className={styles.notepadTitle}>Scratch pad</Text>
+				<Text className={styles.notepadTitle}>{t.brainDump.title}</Text>
 				<ActionIcon
 					variant="subtle"
 					color="gray"
 					size="sm"
-					aria-label="Close scratch pad"
+					aria-label={t.brainDump.closeLabel}
 					onClick={() => {
 						setDraft("");
 						onClose();
@@ -61,7 +63,7 @@ const BrainDumpPanel: FC<BrainDumpPanelProps> = ({ opened, onClose }) => {
 					className={styles.writeArea}
 					value={draft}
 					onChange={(e) => setDraft(e.currentTarget.value)}
-					placeholder="Jot it down…"
+					placeholder={t.brainDump.placeholder}
 					minRows={3}
 					maxRows={6}
 					autosize
@@ -88,9 +90,7 @@ const BrainDumpPanel: FC<BrainDumpPanelProps> = ({ opened, onClose }) => {
 						))}
 					</Box>
 				)}
-				<Text className={styles.notepadHint}>
-					Enter to save · Shift+Enter for new line · Esc to close
-				</Text>
+				<Text className={styles.notepadHint}>{t.brainDump.hint}</Text>
 			</Box>
 		</Box>
 	);

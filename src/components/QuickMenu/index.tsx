@@ -1,10 +1,12 @@
 import { useSchemasState, useTimerState } from "@/stores";
+import { useLanguage } from "@/context/LanguageContext";
 import { Menu } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useEffect, useState } from "react";
 import { RiTimerLine } from "react-icons/ri";
 
 const QuickMenu = () => {
+	const { t } = useLanguage();
 	const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
 	const [opened, { open, close }] = useDisclosure(false);
 	const { schemas, setCurrentSchema, currentSchemaId } = useSchemasState();
@@ -45,7 +47,7 @@ const QuickMenu = () => {
 			}}
 		>
 			<Menu.Dropdown onClick={(e) => e.stopPropagation()}>
-				<Menu.Label>Preset</Menu.Label>
+				<Menu.Label>{t.quickMenu.preset}</Menu.Label>
 				{schemas.map((schema) => {
 					const isActive = schema.id === currentSchemaId;
 					return (

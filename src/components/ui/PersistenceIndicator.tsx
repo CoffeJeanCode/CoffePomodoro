@@ -1,17 +1,17 @@
 import { useStorageHealth } from "@/hooks/useStorageHealth";
+import { useLanguage } from "@/context/LanguageContext";
 import { ActionIcon, Tooltip } from "@mantine/core";
 import { FaCheckCircle, FaExclamationTriangle } from "react-icons/fa";
 import styles from "./PersistenceIndicator.module.css";
 
 const PersistenceIndicator = () => {
+	const { t } = useLanguage();
 	const { healthy } = useStorageHealth();
 
 	return (
 		<div className={styles.anchor}>
 			<Tooltip
-				label={
-					healthy ? "Data saved locally" : "Storage issue — export your data"
-				}
+				label={healthy ? t.persistence.healthy : t.persistence.unhealthy}
 				position="right"
 			>
 				<ActionIcon
@@ -20,7 +20,7 @@ const PersistenceIndicator = () => {
 					color={healthy ? "green" : "yellow"}
 					radius="xl"
 					className={styles.fab}
-					aria-label={healthy ? "Data saved locally" : "Storage issue"}
+					aria-label={healthy ? t.persistence.healthy : t.persistence.unhealthy}
 				>
 					{healthy ? (
 						<FaCheckCircle size={16} />

@@ -1,4 +1,9 @@
+import {
+	onboardingAnchorProps,
+	useOnboardingAnchorDismiss,
+} from "@/components/Onboarding/anchors";
 import { useBrainDumpState } from "@/stores/states/brainDump";
+import { useLanguage } from "@/context/LanguageContext";
 import { ActionIcon, Box, Tooltip } from "@mantine/core";
 import { useClickOutside, useHotkeys } from "@mantine/hooks";
 import { type Ref, memo, useCallback, useEffect, useState } from "react";
@@ -7,11 +12,13 @@ import styles from "./BrainDump.module.css";
 import BrainDumpPanel from "./BrainDumpPanel";
 
 const BrainDump = () => {
+	const { t } = useLanguage();
 	const [opened, setOpened] = useState(false);
 	const autoPurge = useBrainDumpState((s) => s.autoPurge);
 
 	const close = useCallback(() => setOpened(false), []);
 	const toggle = useCallback(() => setOpened((o) => !o), []);
+	useOnboardingAnchorDismiss(close);
 
 	const anchorRef = useClickOutside<HTMLDivElement>(close);
 
@@ -36,20 +43,20 @@ const BrainDump = () => {
 					<BrainDumpPanel opened={opened} onClose={close} />
 				</Box>
 			)}
-			<Tooltip label="Scratch pad (Ctrl+Shift+D)" position="left" withArrow>
+			<Tooltip label={t.brainDump.tooltip} position="left" withArrow openDelay={400}>
 				<ActionIcon
 					type="button"
-					className={styles.fab}
+					className={styles.utilityTrigger}
 					data-expanded={opened || undefined}
-					variant="subtle"
-					color="gray"
-					size="lg"
+					variant="transparent"
+					size="xl"
 					radius="xl"
-					aria-label="Open scratch pad"
+					aria-label={t.brainDump.ariaLabel}
 					aria-expanded={opened}
 					onClick={toggle}
+					{...onboardingAnchorProps("brainDump")}
 				>
-					<FaBrain size={16} />
+					<FaBrain size={18} />
 				</ActionIcon>
 			</Tooltip>
 		</Box>
