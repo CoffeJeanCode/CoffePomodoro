@@ -1,7 +1,9 @@
 .controls {
 	display: flex;
 	justify-content: center;
-	gap: 1.25rem;
+	align-items: center;
+	gap: 1.5rem;
+	flex-wrap: nowrap;
 }
 
 .skipButton {

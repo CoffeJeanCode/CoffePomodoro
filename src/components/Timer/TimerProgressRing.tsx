@@ -1,4 +1,5 @@
 import type { Mode } from "@/models";
+import { useLanguage } from "@/context/LanguageContext";
 import {
 	formatCycleHorizonMessage,
 	getCycleEndTimeDisplay,
@@ -41,6 +42,7 @@ const TimerProgressRing: FC<TimerProgressRingProps> = ({
 	canEditIntention = false,
 	onEditIntention,
 }) => {
+	const { t } = useLanguage();
 	const isMobile = useMediaQuery("(max-width: 30rem)");
 	const intentionMode = Boolean(centerLabel);
 
@@ -74,27 +76,28 @@ const TimerProgressRing: FC<TimerProgressRingProps> = ({
 	);
 
 	const intentionText = sessionIntention?.trim() ?? "";
+	// Kept mounted across play/pause so the meta panel can animate both ways;
+	// `metaActive` drives the expand/collapse, not the mount.
 	const showIntentionInRing =
-		isRunning && abstractSession && !intentionMode && intentionText.length > 0;
+		abstractSession && !intentionMode && intentionText.length > 0;
 	const showBottomHorizon =
 		isRunning && !intentionMode && Boolean(endTimeDisplay);
+	const showMeta = !intentionMode && abstractSession;
+	const metaActive = isRunning && (showIntentionInRing || showBottomHorizon);
 
 	const ring = (
 		<Box
-			className={`${styles.ringWrap} ${canEditIntention ? styles.ringWrapEditable : ""}`}
+			className={styles.ringWrap}
 			style={{ width: size, height: size }}
 			role="progressbar"
 			aria-valuenow={sessionProgressPercent}
 			aria-valuemin={0}
 			aria-valuemax={100}
 			aria-label={
-				canEditIntention
-					? "Session progress. Double-click to edit intention"
-					: showBottomHorizon
-						? `${horizonAria}. Session progress`
-						: "Session progress"
+				showBottomHorizon
+					? `${horizonAria}. ${t.timer.progress.sessionProgress}`
+					: t.timer.progress.sessionProgress
 			}
-			onDoubleClick={canEditIntention ? () => onEditIntention?.() : undefined}
 		>
 			<svg
 				className={styles.ringSvg}
@@ -124,12 +127,6 @@ const TimerProgressRing: FC<TimerProgressRingProps> = ({
 					strokeDasharray={circumference}
 					strokeDashoffset={offset}
 					transform={`rotate(-90 ${size / 2} ${size / 2})`}
-					style={{
-						transition: isRunning
-							? "stroke-dashoffset 2s ease-in-out"
-							: "stroke-dashoffset 1s ease",
-						filter: "blur(0.5px)",
-					}}
 				/>
 			</svg>
 
@@ -149,17 +146,15 @@ const TimerProgressRing: FC<TimerProgressRingProps> = ({
 			)}
 
 			<Box
-				className={`${styles.ringCore} ${isRunning ? styles.ringCoreRunning : ""} ${!isRunning && !intentionMode ? styles.ringCorePaused : ""}`}
+				className={styles.ringCore}
 				style={{ width: coreSize, height: coreSize }}
 			>
+				<Box className={styles.ringCoreShifter}>
+					<TimerCoreShifter isPlaying={isRunning} isBreak={isBreak} />
+				</Box>
 				<Box className={styles.ringCoreInner}>
 					{!isRunning && !intentionMode && (
 						<Box className={styles.ringPausedMark} aria-hidden />
-					)}
-					{showIntentionInRing && (
-						<Text className={styles.ringIntention} lineClamp={3}>
-							{intentionText}
-						</Text>
 					)}
 					{intentionMode && centerLabel && (
 						<Text className={styles.ringCenterLabel} px={8} size="xs">

@@ -4,6 +4,7 @@ import { ActionIcon, Group, Tooltip } from "@mantine/core";
 import { type FC, memo } from "react";
 import { FaCheck, FaForward, FaPause, FaPlay } from "react-icons/fa";
 import { getColorMode } from "./utils/timer";
+import styles from "./TimerControllers.module.css";
 
 interface TimerControllersProps {
 	mode: Mode;
@@ -26,7 +27,12 @@ const TimerControllers: FC<TimerControllersProps> = ({
 
 	if (onBreak) {
 		return (
-			<Group gap="lg" justify="center">
+			<Group
+				gap="xl"
+				justify="center"
+				className={styles.controls}
+				wrap="nowrap"
+			>
 				<Tooltip
 					label={isPlaying ? t.timer.control.pause : t.timer.control.play}
 					withArrow
@@ -62,7 +68,12 @@ const TimerControllers: FC<TimerControllersProps> = ({
 	}
 
 	return (
-		<Group gap="lg" justify="center">
+		<Group
+			gap="xl"
+			justify="center"
+			className={styles.controls}
+			wrap="nowrap"
+		>
 			<Tooltip
 				label={isPlaying ? t.timer.control.pause : t.timer.control.play}
 				withArrow

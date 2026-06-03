@@ -1,3 +1,4 @@
+import { useLanguage } from "@/context/LanguageContext";
 import { GlassPanel } from "@/components/ui/GlassPanel";
 import { Mode } from "@/models";
 import { useDepthState, useInfoState, useSchemasState } from "@/stores";
@@ -29,6 +30,7 @@ const isBreakMode = (mode: Mode) =>
 	mode === Mode.ShortBreak || mode === Mode.LongBreak;
 
 const Timer = () => {
+	const { t } = useLanguage();
 	const {
 		acknowledgeCycleAndContinue,
 		awaitingCycleAck,
@@ -145,6 +147,18 @@ const Timer = () => {
 		!awaitingIntentionFulfillment &&
 		(isRunning || intentionConfirmed);
 	const onBreak = isBreakMode(mode);
+	const isExpandedLayout =
+		onBreak ||
+		awaitingIntentionFulfillment ||
+		awaitingCycleAck ||
+		needsIntention ||
+		isEditingIntention;
+	const showSessionControls =
+		!onBreak &&
+		!needsIntention &&
+		!isEditingIntention &&
+		!awaitingCycleAck &&
+		!awaitingIntentionFulfillment;
 
 	const { isFullScreen, handleFullScreen } = useTimerFullscreen(timerRef);
 
@@ -196,7 +210,7 @@ const Timer = () => {
 				<GlassPanel
 					immersive={isFullScreen}
 					ambientBackground={isFullScreen ? fullscreenBg : ambient}
-					className={`${styles.timerSquare} ${onBreak ? styles.timerSquareBreak : ""} ${isFullScreen ? styles.timerFullscreen : ""}`}
+					className={`${styles.timerSquare} ${onBreak ? styles.timerSquareBreak : ""} ${isExpandedLayout ? styles.timerSquareExpanded : ""} ${showSessionControls ? styles.timerSquareSession : ""} ${isFullScreen ? styles.timerFullscreen : ""}`}
 					padding={isFullScreen ? "2rem 1.5rem" : "1rem 1.25rem"}
 					innerClassName={styles.timerBody}
 					style={{ opacity: phaseOpacity }}
@@ -224,12 +238,13 @@ const Timer = () => {
 								mode={mode}
 								sessionProgressPercent={sessionProgressPercent}
 								isRunning={isRunning}
+								isBreak={onBreak}
 								large={isFullScreen && !needsIntention}
 								abstractSession={abstractSession}
 								finishTimeText={finishTimeText}
 								finishTime={finishTime}
 								centerLabel={
-									needsIntention ? "What will you focus on?" : undefined
+									needsIntention ? t.timer.intention.prompt : undefined
 								}
 								sessionIntention={
 									abstractSession && !isEditingIntention
@@ -244,14 +259,18 @@ const Timer = () => {
 						)}
 
 						<Box
-							className={`${styles.timerActions} ${isEditingIntention ? styles.timerActionsCentered : ""}`}
+							className={`${styles.timerActions} ${isEditingIntention ? styles.timerActionsCentered : ""} ${showSessionControls ? styles.timerActionsSession : ""}`}
 						>
 							{needsIntention || isEditingIntention ? (
 								<SessionIntention
 									centered={isEditingIntention}
 									key={isEditingIntention ? "edit" : "new"}
 									initialValue={isEditingIntention ? sessionIntention : ""}
-									submitLabel={isEditingIntention ? "Save" : "Begin focus"}
+									submitLabel={
+										isEditingIntention
+											? t.timer.intention.save
+											: t.timer.intention.begin
+									}
 									onConfirm={handleConfirmIntention}
 									onCancel={
 										isEditingIntention
@@ -295,7 +314,7 @@ const Timer = () => {
 					</Box>
 
 					<Box
-						className={`${styles.timerFooter} ${isFullScreen ? styles.timerFullscreenFooter : ""}`}
+						className={`${styles.timerFooter} ${showSessionControls ? styles.timerFooterSession : ""} ${isFullScreen ? styles.timerFullscreenFooter : ""}`}
 					>
 						<TimerViewControls
 							mode={mode}
