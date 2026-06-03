@@ -1,3 +1,6 @@
+import { formatMessage } from "@/locales/formatMessage";
+import { getAppLanguage } from "@/locales/getAppLanguage";
+import { translations } from "@/locales/translations";
 import { Mode } from "@/models";
 import { DEPTH_PRESETS } from "@/models/depth";
 import {
@@ -135,13 +138,16 @@ const useTimer = () => {
 				Notification.permission === "granted";
 			if (!granted) return;
 			const isFocusEnd = finishedMode === Mode.Pomodoro;
+			const t = translations[getAppLanguage()].timer.notification;
 			showNotification(
-				isFocusEnd ? "Focus complete" : `${getModeTitle(finishedMode)} ended`,
+				isFocusEnd
+					? t.focusComplete
+					: formatMessage(t.modeEnded, {
+							mode: getModeTitle(finishedMode),
+						}),
 				true,
 				{
-					body: isFocusEnd
-						? "Time to step away and recover."
-						: "Back to focus when you are ready.",
+					body: isFocusEnd ? t.focusBody : t.breakBody,
 					icon: "/favicon.svg",
 				},
 			);

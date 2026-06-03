@@ -1,3 +1,4 @@
+import { useLanguage } from "@/context/LanguageContext";
 import type { Mode } from "@/models/info";
 import ui from "@/styles/ui.module.css";
 import { getModeTitle } from "@/utils/modeLabels";
@@ -11,6 +12,7 @@ interface TimerHeaderProps {
 }
 
 const TimerHeader: FC<TimerHeaderProps> = ({ mode }) => {
+	const { lang } = useLanguage();
 	const { btnMain } = getModeHexColors(mode);
 
 	return (
@@ -23,7 +25,7 @@ const TimerHeader: FC<TimerHeaderProps> = ({ mode }) => {
 		>
 			<Box className={ui.glassInset} px="md" py={6}>
 				<Text size="sm" className={styles.modeLabel} style={{ color: btnMain }}>
-					{getModeTitle(mode)}
+					{getModeTitle(mode, lang)}
 				</Text>
 			</Box>
 		</Group>

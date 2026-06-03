@@ -1,4 +1,6 @@
 import RotatingTip from "@/components/ui/RotatingTip";
+import { useLanguage } from "@/context/LanguageContext";
+import { formatMessage } from "@/locales/formatMessage";
 import { Mode } from "@/models";
 import { getModeTitle } from "@/utils/modeLabels";
 import { secondsToMinutes } from "@/utils/time.util";
@@ -7,13 +9,6 @@ import { type FC, memo, useState } from "react";
 import { FaLightbulb } from "react-icons/fa";
 import styles from "./BreakRestScreen.module.css";
 import BreathingCircle from "./BreathingCircle";
-
-const SHORT_BREAK_SUGGESTIONS = [
-	"Look away from the screen",
-	"Stretch your body",
-	"Drink some water",
-	"Take three deep breaths",
-];
 
 interface BreakRestScreenProps {
 	mode: Mode.ShortBreak | Mode.LongBreak;
@@ -31,10 +26,12 @@ const BreakRestScreen: FC<BreakRestScreenProps> = ({
 	isRunning = true,
 	onSkip,
 }) => {
+	const { t, lang } = useLanguage();
 	const isLong = mode === Mode.LongBreak;
-	const title = getModeTitle(mode);
+	const title = getModeTitle(mode, lang);
 	const [showTips, setShowTips] = useState(false);
 	const bonusMinutes = secondsToMinutes(savedTimeBonus);
+	const shortTips = t.breakSuggestions.short;
 
 	const wrapClass = `${styles.wrap} ${large ? styles.wrapLarge : ""}`;
 
@@ -65,7 +62,7 @@ const BreakRestScreen: FC<BreakRestScreenProps> = ({
 							className={styles.skip}
 							onClick={onSkip}
 						>
-							End rest
+							{t.break.endRest}
 						</Button>
 					)}
 				</Stack>
@@ -91,16 +88,18 @@ const BreakRestScreen: FC<BreakRestScreenProps> = ({
 					ta="center"
 					className={styles.subtitle}
 				>
-					No clock — just rest.
+					{t.break.shortRest}
 				</Text>
 				{bonusMinutes > 0 && (
 					<Text size="xs" c="blue.4" ta="center" className={styles.bonus}>
-						Extended break +{bonusMinutes} min for early completion
+						{formatMessage(t.break.extendedBreak, {
+							minutes: bonusMinutes,
+						})}
 					</Text>
 				)}
 				<BreathingCircle large={large} isAnimating={isRunning} />
 				<Text size="xs" c="dimmed" ta="center" className={styles.hint}>
-					Breathe · Release · Recover
+					{t.break.quickRest}
 				</Text>
 				<Button
 					variant="subtle"
@@ -110,10 +109,10 @@ const BreakRestScreen: FC<BreakRestScreenProps> = ({
 					onClick={() => setShowTips((open) => !open)}
 					aria-expanded={showTips}
 				>
-					{showTips ? "Hide suggestions" : "Show suggestions"}
+					{showTips ? t.break.hideSuggestions : t.break.showSuggestions}
 				</Button>
 				<Collapse in={showTips} w="100%">
-					<RotatingTip tips={SHORT_BREAK_SUGGESTIONS} />
+					<RotatingTip tips={[...shortTips]} />
 				</Collapse>
 			</Stack>
 		</Box>

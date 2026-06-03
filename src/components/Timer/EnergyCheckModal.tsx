@@ -1,3 +1,4 @@
+import { useLanguage } from "@/context/LanguageContext";
 import { Button, Group, Modal, Stack, Text } from "@mantine/core";
 import { type FC, memo } from "react";
 
@@ -14,11 +15,13 @@ const EnergyCheckModal: FC<EnergyCheckModalProps> = ({
 	onContinue,
 	onDownshift,
 }) => {
+	const { t } = useLanguage();
+
 	return (
 		<Modal
 			opened={opened}
 			onClose={onClose}
-			title="Evaluación de Energía"
+			title={t.energy.title}
 			centered
 			radius="md"
 			overlayProps={{ blur: 3, backgroundOpacity: 0.55 }}
@@ -29,16 +32,14 @@ const EnergyCheckModal: FC<EnergyCheckModalProps> = ({
 		>
 			<Stack gap="lg">
 				<Text size="sm" c="dimmed" ta="center">
-					Has completado varios ciclos de alta intensidad de forma continua.
-					Tómate un segundo para escanear tu mente y tus ojos antes de
-					continuar.
+					{t.energy.body}
 				</Text>
 				<Group grow gap="sm">
 					<Button variant="light" color="gray" onClick={onContinue}>
-						Aún tengo claridad
+						{t.energy.continue}
 					</Button>
 					<Button variant="filled" color="gray" onClick={onDownshift}>
-						Necesito una pausa
+						{t.energy.downshift}
 					</Button>
 				</Group>
 			</Stack>

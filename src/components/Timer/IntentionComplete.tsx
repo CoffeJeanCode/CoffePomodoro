@@ -1,9 +1,11 @@
 import brainDumpStyles from "@/components/BrainDump/BrainDump.module.css";
 import { useLanguage } from "@/context/LanguageContext";
+import { formatMessage } from "@/locales/formatMessage";
 import type { BrainDumpNote } from "@/models/brainDump";
 import { copyBrainDumpToClipboard } from "@/utils/brainDump.util";
 import { Box, Button, Group, Stack, Text } from "@mantine/core";
 import { type FC, memo } from "react";
+import styles from "./IntentionComplete.module.css";
 
 interface IntentionCompleteProps {
 	intention: string;
@@ -30,7 +32,7 @@ const IntentionComplete: FC<IntentionCompleteProps> = ({
 	};
 
 	return (
-		<Stack gap="md" w="100%" maw={300} align="center">
+		<Stack gap="md" w="100%" maw={320} align="center" className={styles.wrap}>
 			<Text
 				size="sm"
 				c="dimmed"
@@ -50,14 +52,13 @@ const IntentionComplete: FC<IntentionCompleteProps> = ({
 			</Text>
 			{savedMinutes > 0 && (
 				<Text size="sm" c="blue.4" ta="center">
-					{t.timer.intentionComplete.efficiencyBonus.replace(
-						"{{minutes}}",
-						String(savedMinutes),
-					)}
+					{formatMessage(t.timer.intentionComplete.efficiencyBonus, {
+						minutes: savedMinutes,
+					})}
 				</Text>
 			)}
 			{hasNotes && (
-				<Box w="100%">
+				<Box w="100%" className={styles.notesSection}>
 					<Text size="xs" c="dimmed" ta="center" mb={6}>
 						{t.timer.intentionComplete.capturedThoughts}
 					</Text>
@@ -92,17 +93,19 @@ const IntentionComplete: FC<IntentionCompleteProps> = ({
 					</Group>
 				</Box>
 			)}
-			<Text size="xs" c="dimmed" ta="center">
-				{t.timer.intentionComplete.confirmToClose}
-			</Text>
-			<Stack gap="xs" w="100%" mt="xs">
-				<Button fullWidth color="red" variant="light" onClick={onConfirm}>
-					{t.timer.intentionComplete.closeCycle}
-				</Button>
-				<Button fullWidth variant="subtle" color="gray" onClick={onCancel}>
-					{t.timer.intentionComplete.stayFocused}
-				</Button>
-			</Stack>
+			<Box className={styles.actions}>
+				<Text size="xs" c="dimmed" ta="center">
+					{t.timer.intentionComplete.confirmToClose}
+				</Text>
+				<Stack gap="xs" w="100%" mt="xs">
+					<Button fullWidth color="red" variant="light" onClick={onConfirm}>
+						{t.timer.intentionComplete.closeCycle}
+					</Button>
+					<Button fullWidth variant="subtle" color="gray" onClick={onCancel}>
+						{t.timer.intentionComplete.stayFocused}
+					</Button>
+				</Stack>
+			</Box>
 		</Stack>
 	);
 };

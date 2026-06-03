@@ -1,3 +1,4 @@
+import { useLanguage } from "@/context/LanguageContext";
 import { Box, Text } from "@mantine/core";
 import { type FC, memo } from "react";
 import styles from "./BreathingCircle.module.css";
@@ -13,6 +14,7 @@ const BreathingCircle: FC<BreathingCircleProps> = ({
 	isAnimating = true,
 	slow = false,
 }) => {
+	const { t } = useLanguage();
 	const wrapClass = [styles.wrap, large ? styles.large : "", slow ? styles.slow : ""]
 		.filter(Boolean)
 		.join(" ");
@@ -25,7 +27,7 @@ const BreathingCircle: FC<BreathingCircleProps> = ({
 				<Box className={`${styles.ring} ${pausedClass}`} aria-hidden />
 				{!large && !slow && (
 					<Text size="xs" c="dimmed" ta="center" px="xs" className={styles.label}>
-						Breathe
+						{t.timer.text.breathe}
 					</Text>
 				)}
 			</Box>

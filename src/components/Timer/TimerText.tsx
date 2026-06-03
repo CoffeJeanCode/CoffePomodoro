@@ -1,4 +1,5 @@
 import { useLanguage } from "@/context/LanguageContext";
+import { formatMessage } from "@/locales/formatMessage";
 import { Text, Tooltip } from "@mantine/core";
 import { type FC, memo } from "react";
 
@@ -26,10 +27,9 @@ const TimerText: FC<TimerTextProps> = ({
 
 	return (
 		<Tooltip
-			label={t.timer.progress.complete.replace(
-				"{{percent}}",
-				String(Math.round(sessionProgressPercent)),
-			)}
+			label={formatMessage(t.timer.progress.complete, {
+				percent: Math.round(sessionProgressPercent),
+			})}
 			position="bottom"
 			withArrow
 			openDelay={800}

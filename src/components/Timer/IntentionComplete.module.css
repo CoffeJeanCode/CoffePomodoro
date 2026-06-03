@@ -1,8 +1,16 @@
-.caption {
-	letter-spacing: 0.08em;
-	text-transform: uppercase;
+.wrap {
+	width: 100%;
+	min-height: 0;
 }
 
-.intention {
-	font-style: italic;
+.notesSection {
+	flex: 1 1 auto;
+	min-height: 0;
+	width: 100%;
+}
+
+.actions {
+	flex-shrink: 0;
+	width: 100%;
+	padding-top: 0.15rem;
 }

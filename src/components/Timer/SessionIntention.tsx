@@ -13,11 +13,12 @@ interface SessionIntentionProps {
 const SessionIntention: FC<SessionIntentionProps> = ({
 	onConfirm,
 	initialValue = "",
-	submitLabel = "Begin focus",
+	submitLabel,
 	onCancel,
 	centered = false,
 }) => {
 	const { t } = useLanguage();
+	const resolvedSubmitLabel = submitLabel ?? t.timer.intention.begin;
 	const [value, setValue] = useState(initialValue);
 
 	useEffect(() => {
@@ -79,7 +80,7 @@ const SessionIntention: FC<SessionIntentionProps> = ({
 					disabled={!value.trim()}
 					onClick={submit}
 				>
-					{submitLabel}
+					{resolvedSubmitLabel}
 				</Button>
 			</Group>
 		</Stack>

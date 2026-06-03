@@ -1,3 +1,4 @@
+import { useLanguage } from "@/context/LanguageContext";
 import { FavIcon, Mode } from "@/models/info";
 import { useInfoState } from "@/stores";
 import { getModeTitle } from "@/utils/modeLabels";
@@ -23,6 +24,7 @@ export function useTimerDocumentAndHotkeys({
 	handleFullScreen,
 	handlePictureInPicture,
 }: UseTimerDocumentAndHotkeysParams) {
+	const { t, lang } = useLanguage();
 	const { favIcon, setFavIcon } = useInfoState();
 
 	useEffect(() => {
@@ -30,7 +32,7 @@ export function useTimerDocumentAndHotkeys({
 	}, [mode, setFavIcon]);
 
 	useFavicon(favIcon);
-	useDocumentTitle(`Coffe Pomodoro · ${getModeTitle(mode)}`);
+	useDocumentTitle(`${t.app.title} · ${getModeTitle(mode, lang)}`);
 	const isTypingTarget = () => {
 		const el = document.activeElement;
 		if (!el) return false;
