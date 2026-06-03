@@ -1,6 +1,13 @@
 import { Suspense, lazy, useLayoutEffect } from "react";
 
-import { useInfoState, useShutdownState, useTimerState } from "@/stores";
+import LanguageToggle from "@/components/ui/LanguageToggle";
+import { useLanguage } from "@/context/LanguageContext";
+import {
+	useInfoState,
+	useOnboardingState,
+	useShutdownState,
+	useTimerState,
+} from "@/stores";
 import { useBrainDumpState } from "@/stores/states/brainDump";
 import { useStatsState } from "@/stores/states/stats";
 import {
@@ -21,13 +28,18 @@ const Settings = lazy(() => import("@/components/Settings"));
 const Stats = lazy(() => import("@/components/Stats"));
 const Shutdown = lazy(() => import("@/components/Shutdown"));
 const Timer = lazy(() => import("@/components/Timer"));
+const Onboarding = lazy(() => import("@/components/Onboarding"));
 
 const Home = () => {
+	const { t } = useLanguage();
 	const { date, endWeek, setEndWeek, resetInfo } = useInfoState();
 	const resetStats = useStatsState((stats) => stats.resetStats);
 	const resetDailyStats = useStatsState((stats) => stats.resetDailyStats);
 	const resetTimer = useTimerState((state) => state.resetTimer);
 	const autoPurgeBrainDump = useBrainDumpState((s) => s.autoPurge);
+	const hasCompletedOnboarding = useOnboardingState(
+		(s) => s.hasCompletedOnboarding,
+	);
 	const isShutDown = useShutdownState((s) => s.isShutDown);
 	const shutDownDate = useShutdownState((s) => s.shutDownDate);
 	const clearShutdown = useShutdownState((s) => s.clearShutdown);
@@ -72,11 +84,12 @@ const Home = () => {
 				</Center>
 			}
 		>
+			<LanguageToggle />
 			<Container h="100vh" size="sm" className={styles.pageContainer}>
 				<Center h="100%">
 					<Stack align="center" gap="lg" w="100%">
 						<Title order={1} size={42} className={styles.pageTitle}>
-							Coffe Pomodoro
+							{t.app.title}
 						</Title>
 						<Flex gap="sm" wrap="wrap" justify="center">
 							<Settings />
@@ -91,6 +104,7 @@ const Home = () => {
 			<BrainDump />
 			<Shutdown />
 			<DataDropZone />
+			{!hasCompletedOnboarding && <Onboarding />}
 		</Suspense>
 	);
 };
