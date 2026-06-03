@@ -1,3 +1,6 @@
+import { formatMessage } from "@/locales/formatMessage";
+import { getAppLanguage } from "@/locales/getAppLanguage";
+import { translations } from "@/locales/translations";
 import { getEndTime } from "./time.util";
 
 function resolveEndTimeText(
@@ -26,7 +29,8 @@ export function formatCycleHorizonMessage(
 	finishTime: number,
 	isRunning: boolean,
 ): string {
+	const t = translations[getAppLanguage()].timer.progress;
 	const time = resolveEndTimeText(finishTimeText, finishTime, isRunning);
-	if (!time) return "The cycle has not started yet";
-	return `The cycle ends at ${time}`;
+	if (!time) return t.horizonNotStarted;
+	return formatMessage(t.horizonEndsAt, { time });
 }
