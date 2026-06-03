@@ -1,5 +1,6 @@
 import { AppToolbarButton } from "@/components/ui/AppToolbarButton";
 import { GlassStatCard } from "@/components/ui/GlassStatCard";
+import { useLanguage } from "@/context/LanguageContext";
 import { useStatsState } from "@/stores/states/stats";
 import ui from "@/styles/ui.module.css";
 import {
@@ -14,7 +15,6 @@ import * as Plot from "@observablehq/plot";
 import { keys } from "ramda";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { FaChartBar, FaCheck, FaClock, FaFire } from "react-icons/fa";
-import styles from "./Stats.module.css";
 
 type PlotData = {
 	day: string;
@@ -23,6 +23,7 @@ type PlotData = {
 };
 
 const Stats = () => {
+	const { t } = useLanguage();
 	const [isOpen, setIsOpen] = useState(false);
 	const { stats, previousWeek, focusMetrics } = useStatsState();
 
@@ -99,14 +100,14 @@ const Stats = () => {
 				color: "var(--ui-text-muted)",
 			},
 			x: {
-				label: "Days",
+				label: t.stats.chart.days,
 				domain: plotData.map((d) => d.day),
 				tickFormat: (d: string) => d.charAt(0).toUpperCase() + d.slice(1, 3),
 			},
 			y: {
 				grid: true,
 				nice: true,
-				label: "Sessions",
+				label: t.stats.chart.sessions,
 			},
 			marks: [
 				Plot.barY(plotData, {
@@ -127,7 +128,7 @@ const Stats = () => {
 
 		chartRef.current.appendChild(plot);
 		plotRef.current = plot;
-	}, [cleanupPlot, plotData]);
+	}, [cleanupPlot, plotData, t.stats.chart.days, t.stats.chart.sessions]);
 
 	useEffect(() => {
 		if (!isOpen || !hasData) {
@@ -168,22 +169,25 @@ const Stats = () => {
 				leftSection={<FaChartBar />}
 				onClick={() => setIsOpen(true)}
 			>
-				Week Stats
+				{t.stats.button}
 			</AppToolbarButton>
 			<Drawer
 				opened={isOpen}
 				position="bottom"
 				size="85vh"
-				title="Focus Stats"
+				title={t.stats.title}
 				onClose={() => setIsOpen(false)}
 				transitionProps={DRAWER_BOTTOM_TRANSITION}
-				className={styles.drawerContent}
+				styles={{
+					content: { overflowX: "hidden" },
+					body: { overflowX: "hidden", maxWidth: "100%" },
+				}}
 			>
 				<Box pt="xs" pb="md">
 					{!hasData ? (
 						<Flex justify="center" align="center" mih={200}>
 							<Text c="dimmed" size="md" ta="center">
-								No sessions this week yet. Start a Pomodoro to see your stats!
+								{t.stats.noData}
 							</Text>
 						</Flex>
 					) : (
@@ -192,15 +196,18 @@ const Stats = () => {
 								<Grid.Col span={6}>
 									<GlassStatCard
 										icon={<FaFire color={UI_ACCENT.warning} size={18} />}
-										label="Streak"
+										label={t.stats.streak}
 										value={`${focusMetrics.currentStreak} days`}
-										hint={`Best: ${focusMetrics.longestStreak}`}
+										hint={t.stats.best.replace(
+											"{{value}}",
+											String(focusMetrics.longestStreak),
+										)}
 									/>
 								</Grid.Col>
 								<Grid.Col span={6}>
 									<GlassStatCard
 										icon={<FaCheck color={UI_ACCENT.success} size={18} />}
-										label="Completion"
+										label={t.stats.completion}
 										value={`${completionPercent}%`}
 										hint={`${focusMetrics.totalCompleted}/${focusMetrics.totalCompleted + focusMetrics.totalSkipped}`}
 									/>
@@ -208,16 +215,19 @@ const Stats = () => {
 								<Grid.Col span={6}>
 									<GlassStatCard
 										icon={<FaClock color={UI_ACCENT.info} size={18} />}
-										label="This week"
+										label={t.stats.thisWeek}
 										value={`${Math.round(currentWeekTotal.time)}m`}
-										hint={`${currentWeekTotal.sessions} sessions`}
+										hint={t.stats.sessions.replace(
+											"{{count}}",
+											String(currentWeekTotal.sessions),
+										)}
 									/>
 								</Grid.Col>
 								<Grid.Col span={6}>
 									<GlassStatCard
-										label="vs last week"
+										label={t.stats.vsLastWeek}
 										value={improvementLabel}
-										hint={previousWeek ? "comparable" : "first week"}
+										hint={previousWeek ? t.stats.comparable : t.stats.firstWeek}
 										valueColor={
 											improvement !== null && improvement > 0
 												? UI_ACCENT.success
@@ -230,14 +240,14 @@ const Stats = () => {
 							</Grid>
 
 							<Text size="sm" c="dimmed" mb="xs" fw={500}>
-								Daily sessions
+								{t.stats.dailySessions}
 							</Text>
-							<article ref={chartRef} className={styles.chart} />
+							<article ref={chartRef} style={{ width: "100%" }} />
 
 							{timeDistributionData.some((d) => d.minutes > 0) && (
 								<Box mt="md">
 									<Text size="sm" c="dimmed" mb="xs" fw={500}>
-										Best time of day
+										{t.stats.bestTimeOfDay}
 									</Text>
 									<Flex gap="xs" wrap="wrap">
 										{timeDistributionData

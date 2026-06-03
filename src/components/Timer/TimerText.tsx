@@ -1,6 +1,6 @@
+import { useLanguage } from "@/context/LanguageContext";
 import { Text, Tooltip } from "@mantine/core";
 import { type FC, memo } from "react";
-import styles from "./TimerText.module.css";
 
 interface TimerTextProps {
 	remainingTimeText: string;
@@ -11,25 +11,41 @@ const TimerText: FC<TimerTextProps> = ({
 	remainingTimeText: _remainingTimeText,
 	sessionProgressPercent,
 }) => {
+	const { t } = useLanguage();
+	const minutesLeft = Math.ceil((sessionProgressPercent / 100) * 25);
 	const progressLabel =
 		sessionProgressPercent < 25
-			? "Starting"
+			? t.timer.progress.starting
 			: sessionProgressPercent < 50
-				? "Flowing"
+				? t.timer.progress.flowing
 				: sessionProgressPercent < 75
-					? "Deepening"
+					? t.timer.progress.deepening
 					: sessionProgressPercent < 95
-						? "Winding down"
-						: "Almost done";
+						? t.timer.progress.windingDown
+						: t.timer.progress.almostDone;
 
 	return (
 		<Tooltip
-			label={`${Math.round(sessionProgressPercent)}% complete`}
+			label={t.timer.progress.complete.replace(
+				"{{percent}}",
+				String(Math.round(sessionProgressPercent)),
+			)}
 			position="bottom"
 			withArrow
 			openDelay={800}
 		>
-			<Text className={styles.progressLabel} c="white">
+			<Text
+				style={{
+					display: "inline-block",
+					cursor: "default",
+					lineHeight: 1.2,
+					opacity: 0.7,
+					fontSize: "1.1rem",
+					letterSpacing: "0.1em",
+					textTransform: "lowercase",
+				}}
+				c="white"
+			>
 				{progressLabel}
 			</Text>
 		</Tooltip>

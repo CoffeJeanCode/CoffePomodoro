@@ -1,9 +1,9 @@
 import brainDumpStyles from "@/components/BrainDump/BrainDump.module.css";
+import { useLanguage } from "@/context/LanguageContext";
 import type { BrainDumpNote } from "@/models/brainDump";
 import { copyBrainDumpToClipboard } from "@/utils/brainDump.util";
 import { Box, Button, Group, Stack, Text } from "@mantine/core";
 import { type FC, memo } from "react";
-import styles from "./IntentionComplete.module.css";
 
 interface IntentionCompleteProps {
 	intention: string;
@@ -22,6 +22,7 @@ const IntentionComplete: FC<IntentionCompleteProps> = ({
 	onConfirm,
 	onCancel,
 }) => {
+	const { t } = useLanguage();
 	const hasNotes = brainDumpNotes.length > 0;
 
 	const handleCopy = async () => {
@@ -30,27 +31,35 @@ const IntentionComplete: FC<IntentionCompleteProps> = ({
 
 	return (
 		<Stack gap="md" w="100%" maw={300} align="center">
-			<Text size="sm" c="dimmed" ta="center" className={styles.caption}>
-				Intention fulfilled
+			<Text
+				size="sm"
+				c="dimmed"
+				ta="center"
+				style={{ letterSpacing: "0.08em", textTransform: "uppercase" }}
+			>
+				{t.timer.intentionComplete.fulfilled}
 			</Text>
 			<Text
 				size="md"
 				fw={500}
 				c="white"
 				ta="center"
-				className={styles.intention}
+				style={{ fontStyle: "italic" }}
 			>
 				"{intention}"
 			</Text>
 			{savedMinutes > 0 && (
 				<Text size="sm" c="blue.4" ta="center">
-					You earned {savedMinutes} min of extra break
+					{t.timer.intentionComplete.efficiencyBonus.replace(
+						"{{minutes}}",
+						String(savedMinutes),
+					)}
 				</Text>
 			)}
 			{hasNotes && (
 				<Box w="100%">
 					<Text size="xs" c="dimmed" ta="center" mb={6}>
-						Captured thoughts
+						{t.timer.intentionComplete.capturedThoughts}
 					</Text>
 					<Box className={brainDumpStyles.triageList}>
 						{brainDumpNotes.map((note) => (
@@ -70,7 +79,7 @@ const IntentionComplete: FC<IntentionCompleteProps> = ({
 							size="xs"
 							onClick={onDiscardBrainDump}
 						>
-							Discard
+							{t.timer.intentionComplete.discard}
 						</Button>
 						<Button
 							variant="light"
@@ -78,20 +87,20 @@ const IntentionComplete: FC<IntentionCompleteProps> = ({
 							size="xs"
 							onClick={() => void handleCopy()}
 						>
-							Copy
+							{t.timer.intentionComplete.copy}
 						</Button>
 					</Group>
 				</Box>
 			)}
 			<Text size="xs" c="dimmed" ta="center">
-				Confirm to close the cycle and move to break
+				{t.timer.intentionComplete.confirmToClose}
 			</Text>
 			<Stack gap="xs" w="100%" mt="xs">
 				<Button fullWidth color="red" variant="light" onClick={onConfirm}>
-					Close cycle
+					{t.timer.intentionComplete.closeCycle}
 				</Button>
 				<Button fullWidth variant="subtle" color="gray" onClick={onCancel}>
-					Stay focused
+					{t.timer.intentionComplete.stayFocused}
 				</Button>
 			</Stack>
 		</Stack>

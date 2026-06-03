@@ -1,3 +1,4 @@
+import { LanguageProvider } from "@/context/LanguageContext";
 import { appTheme } from "@/theme/mantineTheme";
 import { Center, Loader, MantineProvider } from "@mantine/core";
 import "@mantine/core/styles.css";
@@ -12,15 +13,17 @@ const App = () => {
 			defaultColorScheme="dark"
 			withCssVariables
 		>
-			<Suspense
-				fallback={
-					<Center h="100vh">
-						<Loader color="red" size="xl" />
-					</Center>
-				}
-			>
-				<Home />
-			</Suspense>
+			<LanguageProvider>
+				<Suspense
+					fallback={
+						<Center h="100vh">
+							<Loader color="red" size="xl" />
+						</Center>
+					}
+				>
+					<Home />
+				</Suspense>
+			</LanguageProvider>
 		</MantineProvider>
 	);
 };

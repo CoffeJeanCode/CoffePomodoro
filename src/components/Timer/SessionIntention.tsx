@@ -1,3 +1,4 @@
+import { useLanguage } from "@/context/LanguageContext";
 import { Button, Group, Stack, Textarea } from "@mantine/core";
 import { type FC, memo, useEffect, useState } from "react";
 
@@ -16,6 +17,7 @@ const SessionIntention: FC<SessionIntentionProps> = ({
 	onCancel,
 	centered = false,
 }) => {
+	const { t } = useLanguage();
 	const [value, setValue] = useState(initialValue);
 
 	useEffect(() => {
@@ -39,7 +41,7 @@ const SessionIntention: FC<SessionIntentionProps> = ({
 			<Textarea
 				value={value}
 				onChange={(e) => setValue(e.currentTarget.value)}
-				placeholder="One clear intention…"
+				placeholder={t.timer.intention.placeholder}
 				minRows={1}
 				maxRows={2}
 				autosize
@@ -66,7 +68,7 @@ const SessionIntention: FC<SessionIntentionProps> = ({
 			>
 				{onCancel && (
 					<Button variant="subtle" color="gray" size="sm" onClick={onCancel}>
-						Cancel
+						{t.timer.intention.cancel}
 					</Button>
 				)}
 				<Button

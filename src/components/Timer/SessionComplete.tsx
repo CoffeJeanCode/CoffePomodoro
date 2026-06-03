@@ -1,3 +1,4 @@
+import { useLanguage } from "@/context/LanguageContext";
 import { Button, Stack, Text } from "@mantine/core";
 import { type FC, memo } from "react";
 
@@ -6,23 +7,24 @@ interface SessionCompleteProps {
 	onEnd: () => void;
 }
 
-const SessionComplete: FC<SessionCompleteProps> = ({ onContinue, onEnd }) => (
-	<Stack gap="md" w="100%" maw={300} align="center">
-		<Text size="lg" fw={500} c="white" ta="center">
-			Focus block complete
-		</Text>
-		<Text size="sm" c="dimmed" ta="center">
-			Take a breath. Continue when you are ready for a break, or end here.
-		</Text>
-		<Stack gap="xs" w="100%">
-			<Button fullWidth color="red" variant="light" onClick={onContinue}>
-				Continue to break
-			</Button>
-			<Button fullWidth variant="subtle" color="gray" onClick={onEnd}>
-				End for now
-			</Button>
+const SessionComplete: FC<SessionCompleteProps> = ({ onContinue, onEnd }) => {
+	const { t } = useLanguage();
+
+	return (
+		<Stack gap="md" w="100%" maw={300} align="center">
+			<Text size="sm" c="orange.5" ta="center" fw={500}>
+				{t.timer.fatigue.cycleReached}
+			</Text>
+			<Stack gap="xs" w="100%">
+				<Button fullWidth color="red" variant="light" onClick={onContinue}>
+					{t.timer.complete.continueToBreak}
+				</Button>
+				<Button fullWidth variant="subtle" color="gray" onClick={onEnd}>
+					{t.timer.complete.endForNow}
+				</Button>
+			</Stack>
 		</Stack>
-	</Stack>
-);
+	);
+};
 
 export default memo(SessionComplete);

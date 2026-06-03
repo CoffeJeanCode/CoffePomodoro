@@ -1,3 +1,4 @@
+import { useLanguage } from "@/context/LanguageContext";
 import type { Mode } from "@/models/info";
 import { ActionIcon, Group, Tooltip } from "@mantine/core";
 import { type FC, memo } from "react";
@@ -7,7 +8,7 @@ import {
 	RiPictureInPicture2Fill,
 	RiPictureInPictureFill,
 } from "react-icons/ri";
-import { getModeHexColors } from "./utils/timer";
+import { getColorMode } from "./utils/timer";
 
 interface TimerViewControlsProps {
 	mode: Mode;
@@ -24,16 +25,13 @@ const TimerViewControls: FC<TimerViewControlsProps> = ({
 	isPiPOpen,
 	isFullScreen,
 }) => {
-	const base = getModeHexColors(mode).btnMain;
+	const base = getColorMode(mode);
+	const { t } = useLanguage();
 
 	return (
 		<Group gap="sm" justify="center" w="100%">
 			<Tooltip
-				label={
-					isPiPOpen
-						? "Close Picture-in-Picture (Shift+I)"
-						: "Picture-in-Picture (Shift+I)"
-				}
+				label={isPiPOpen ? t.controls.pipOpen : t.controls.pipClosed}
 				withArrow
 			>
 				<ActionIcon
@@ -41,7 +39,7 @@ const TimerViewControls: FC<TimerViewControlsProps> = ({
 					variant="light"
 					color={isPiPOpen ? base : "gray"}
 					onClick={handlePictureInPicture}
-					aria-label="Picture in picture"
+					aria-label={t.controls.pipAria}
 				>
 					{isPiPOpen ? (
 						<RiPictureInPicture2Fill size={18} />
@@ -51,7 +49,9 @@ const TimerViewControls: FC<TimerViewControlsProps> = ({
 				</ActionIcon>
 			</Tooltip>
 			<Tooltip
-				label={isFullScreen ? "Exit full screen (F)" : "Full screen (F)"}
+				label={
+					isFullScreen ? t.controls.fullscreenExit : t.controls.fullscreenEnter
+				}
 				withArrow
 			>
 				<ActionIcon
@@ -59,7 +59,7 @@ const TimerViewControls: FC<TimerViewControlsProps> = ({
 					variant="light"
 					color={isFullScreen ? base : "gray"}
 					onClick={handleFullScreen}
-					aria-label="Full screen"
+					aria-label={t.controls.fullscreenAria}
 				>
 					{isFullScreen ? (
 						<RiFullscreenExitFill size={18} />
