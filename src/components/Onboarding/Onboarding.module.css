@@ -1,0 +1,350 @@
+.overlay {
+	position: fixed;
+	inset: 0;
+	z-index: 1000;
+	display: flex;
+	padding: 1.25rem;
+}
+
+/* Blocking steps (welcome, rhythm): dim the page and center the dialog. */
+.overlayBlocking {
+	align-items: center;
+	justify-content: center;
+	background: rgba(8, 8, 12, 0.62);
+	backdrop-filter: blur(6px);
+	-webkit-backdrop-filter: blur(6px);
+	animation: scrimIn var(--ui-duration-slow) var(--ui-ease);
+}
+
+/* Pass-through steps (intention, ring): keep the timer fully visible and
+   interactive, only float a coachmark near the bottom. */
+.overlayCoach {
+	align-items: flex-end;
+	justify-content: center;
+	padding-bottom: clamp(1.5rem, 6vh, 4rem);
+	pointer-events: none;
+}
+
+/* Spotlight steps: page stays interactive, the step positions itself relative
+   to a real UI element. */
+.overlaySpotlight {
+	pointer-events: none;
+}
+
+.spotlightRing {
+	position: fixed;
+	border-radius: var(--ui-radius-sm);
+	pointer-events: none;
+	transition:
+		top var(--ui-duration) var(--ui-ease),
+		left var(--ui-duration) var(--ui-ease),
+		width var(--ui-duration) var(--ui-ease),
+		height var(--ui-duration) var(--ui-ease);
+}
+
+.spark {
+	position: absolute;
+	width: 11px;
+	height: 11px;
+	background: #ffd9d9;
+	clip-path: polygon(
+		50% 0%,
+		61% 39%,
+		100% 50%,
+		61% 61%,
+		50% 100%,
+		39% 61%,
+		0% 50%,
+		39% 39%
+	);
+	box-shadow: 0 0 7px 2px rgba(250, 82, 82, 0.85);
+	opacity: 0;
+	pointer-events: none;
+	animation: sparkTwinkle 1.8s var(--ui-ease) infinite;
+}
+
+@keyframes sparkTwinkle {
+	0%,
+	100% {
+		opacity: 0;
+		transform: translate(-50%, -50%) scale(0) rotate(0deg);
+	}
+	50% {
+		opacity: 1;
+		transform: translate(-50%, -50%) scale(1) rotate(45deg);
+	}
+}
+
+.spotlightCard {
+	position: fixed;
+	max-width: 340px;
+	pointer-events: auto;
+	transition:
+		top var(--ui-duration) var(--ui-ease),
+		left var(--ui-duration) var(--ui-ease);
+}
+
+.spotlightHint {
+	margin: 0.25rem 0 0;
+	font-size: 0.78rem;
+	font-weight: 600;
+	letter-spacing: 0.02em;
+	color: #fa5252;
+}
+
+/* Intention step: float the coachmark at the TOP so it never hides the
+   intention input sitting in the centered timer. */
+.overlayCoachTop {
+	align-items: flex-start;
+	padding-top: clamp(1.5rem, 6vh, 4rem);
+	padding-bottom: 1.25rem;
+}
+
+/* Soft radial glow anchored to screen center, pointing the eye at the
+   intention input inside the timer. */
+.intentionGlow {
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	width: clamp(280px, 60vmin, 460px);
+	height: clamp(280px, 60vmin, 460px);
+	transform: translate(-50%, -50%);
+	pointer-events: none;
+	border-radius: 50%;
+	background: radial-gradient(
+		circle,
+		rgba(250, 82, 82, 0.3) 0%,
+		rgba(250, 82, 82, 0.12) 35%,
+		transparent 70%
+	);
+	opacity: 0.85;
+	animation: glowFadeUp var(--ui-duration-slow) var(--ui-ease) both;
+}
+
+@keyframes glowFadeUp {
+	from {
+		opacity: 0;
+		transform: translate(-50%, calc(-50% + 18px));
+	}
+	to {
+		opacity: 0.85;
+		transform: translate(-50%, -50%);
+	}
+}
+
+.card {
+	pointer-events: auto;
+	width: 100%;
+	max-width: 380px;
+	padding: 1.75rem 1.5rem;
+	border-radius: var(--ui-radius);
+	background: var(--ui-glass-bg);
+	border: 1px solid var(--ui-glass-border);
+	border-top-color: var(--ui-glass-border-top);
+	backdrop-filter: blur(18px);
+	-webkit-backdrop-filter: blur(18px);
+	box-shadow: var(--ui-shadow);
+	text-align: center;
+	animation: cardIn var(--ui-duration) var(--ui-ease);
+}
+
+.cardCoach {
+	max-width: 340px;
+	padding: 1.25rem 1.25rem;
+	animation: coachIn var(--ui-duration) var(--ui-ease);
+}
+
+.eyebrow {
+	display: block;
+	font-size: 0.7rem;
+	font-weight: 600;
+	letter-spacing: 0.14em;
+	text-transform: uppercase;
+	color: #fa5252;
+	margin-bottom: 0.4rem;
+}
+
+.title {
+	color: var(--ui-text);
+	font-weight: 600;
+	font-size: 1.35rem;
+	line-height: 1.25;
+	margin: 0 0 0.6rem;
+}
+
+.titleCoach {
+	font-size: 1.1rem;
+}
+
+.body {
+	color: var(--ui-text-dim, rgba(255, 255, 255, 0.6));
+	font-size: 0.85rem;
+	line-height: 1.45;
+	margin: 0 auto 0.35rem;
+	max-width: 32ch;
+}
+
+.highlight {
+	color: var(--ui-text);
+	font-size: 0.88rem;
+	/* font-weight: 600; */
+	line-height: 1.4;
+	margin: 0 auto 1.1rem;
+	max-width: 28ch;
+}
+
+.actions {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 0.5rem;
+}
+
+.skip {
+	display: block;
+	margin: 0.55rem auto 0;
+	background: none;
+	border: none;
+	color: var(--ui-text-dim, rgba(255, 255, 255, 0.55));
+	font-size: 0.78rem;
+	cursor: pointer;
+	padding: 0.3rem 0.5rem;
+	border-radius: var(--ui-radius-sm);
+	transition: color var(--ui-duration) var(--ui-ease);
+}
+
+.skip:hover {
+	color: var(--ui-text);
+}
+
+.presetList {
+	display: flex;
+	flex-direction: column;
+	gap: 0.6rem;
+	margin-bottom: 1.1rem;
+}
+
+.presetBtn {
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: 0.75rem;
+	width: 100%;
+	padding: 0.75rem 0.9rem;
+	border-radius: var(--ui-radius-sm);
+	background: var(--ui-glass-bg);
+	border: 1px solid var(--ui-glass-border);
+	color: var(--ui-text);
+	text-align: left;
+	cursor: pointer;
+	transition:
+		border-color var(--ui-duration) var(--ui-ease),
+		background var(--ui-duration) var(--ui-ease),
+		transform var(--ui-duration) var(--ui-ease);
+}
+
+.presetBtn:hover {
+	border-color: #fa5252;
+	background: rgba(250, 82, 82, 0.08);
+	transform: translateY(-1px);
+}
+
+.presetText {
+	display: flex;
+	flex-direction: column;
+	gap: 0.15rem;
+}
+
+.presetLabel {
+	font-weight: 600;
+	font-size: 0.92rem;
+}
+
+.presetDesc {
+	font-size: 0.76rem;
+	color: var(--ui-text-dim, rgba(255, 255, 255, 0.6));
+}
+
+.presetMeta {
+	flex: none;
+	font-variant-numeric: tabular-nums;
+	font-size: 0.8rem;
+	font-weight: 600;
+	color: #fa5252;
+	white-space: nowrap;
+}
+
+.dots {
+	display: flex;
+	justify-content: center;
+	gap: 0.4rem;
+	margin-top: 1.1rem;
+}
+
+.dot {
+	width: 6px;
+	height: 6px;
+	border-radius: 999px;
+	background: var(--ui-glass-border);
+	transition: background var(--ui-duration) var(--ui-ease);
+}
+
+.dotActive {
+	background: #fa5252;
+}
+
+@keyframes scrimIn {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
+}
+
+@keyframes cardIn {
+	from {
+		opacity: 0;
+		transform: translateY(10px) scale(0.97);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0) scale(1);
+	}
+}
+
+@keyframes coachIn {
+	from {
+		opacity: 0;
+		transform: translateY(16px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.overlayBlocking,
+	.card,
+	.cardCoach,
+	.intentionGlow,
+	.spotlightRing {
+		animation: none;
+	}
+
+	.spark {
+		animation: none;
+		opacity: 0.6;
+		transform: translate(-50%, -50%) scale(1);
+	}
+
+	.intentionGlow {
+		transform: translate(-50%, -50%);
+		opacity: 0.7;
+	}
+
+	.presetBtn:hover {
+		transform: none;
+	}
+}
