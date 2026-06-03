@@ -116,9 +116,12 @@ const Settings = () => {
 						className={styles.tabs}
 					>
 						<Tabs.List grow>
-							<Tabs.Tab value="timer">Timer</Tabs.Tab>
-							<Tabs.Tab value="notifications">Notifications</Tabs.Tab>
-							<Tabs.Tab value="data">Data</Tabs.Tab>
+							<Tabs.Tab value="timer">{t.settings.tabs.timer}</Tabs.Tab>
+							<Tabs.Tab value="notifications">
+								{t.settings.tabs.notifications}
+							</Tabs.Tab>
+							<Tabs.Tab value="data">{t.settings.tabs.data}</Tabs.Tab>
+							<Tabs.Tab value="language">{t.settings.tabs.language}</Tabs.Tab>
 						</Tabs.List>
 
 						<Tabs.Panel value="timer" pt="md">

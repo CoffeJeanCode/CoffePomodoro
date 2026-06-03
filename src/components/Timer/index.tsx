@@ -208,7 +208,7 @@ const Timer = () => {
 					)}
 
 					<Box
-						className={`${styles.timerStage} ${needsIntention || awaitingCycleAck ? styles.timerStageIntention : ""} ${isFullScreen && onBreak ? styles.timerStageElevated : ""}`}
+						className={`${styles.timerStage} ${needsIntention || awaitingCycleAck ? styles.timerStageIntention : ""} ${showSessionControls ? styles.timerStageSession : ""} ${isFullScreen && onBreak ? styles.timerStageElevated : ""}`}
 					>
 						{onBreak ? (
 							<BreakRestScreen

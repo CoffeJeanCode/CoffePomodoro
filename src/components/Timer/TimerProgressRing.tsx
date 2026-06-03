@@ -7,12 +7,14 @@ import { Box, Text, Tooltip } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { type FC, memo, useMemo } from "react";
 import styles from "./TimerProgressRing.module.css";
+import TimerCoreShifter from "./TimerCoreShifter";
 import { getModeHexColors } from "./utils/timer";
 
 interface TimerProgressRingProps {
 	mode: Mode;
 	sessionProgressPercent: number;
 	isRunning: boolean;
+	isBreak: boolean;
 	compact?: boolean;
 	large?: boolean;
 	centerLabel?: string;
@@ -28,6 +30,7 @@ const TimerProgressRing: FC<TimerProgressRingProps> = ({
 	mode,
 	sessionProgressPercent,
 	isRunning,
+	isBreak,
 	compact = false,
 	large = false,
 	centerLabel,
@@ -177,24 +180,47 @@ const TimerProgressRing: FC<TimerProgressRingProps> = ({
 				["--ring-accent-glow" as string]: `${btnMain}33`,
 			}}
 		>
-			{canEditIntention ? (
-				<Tooltip
-					label="Double-click the ring to edit your intention"
-					position="top"
-					withArrow
-					openDelay={400}
-					events={{ hover: true, focus: true, touch: false }}
-				>
-					{ring}
-				</Tooltip>
-			) : (
-				ring
-			)}
+			{ring}
 
-			{showBottomHorizon && (
-				<Box className={styles.cycleHorizon} aria-hidden>
-					<Text className={styles.cycleHorizonCaption}>ends</Text>
-					<Text className={styles.cycleHorizonTime}>{endTimeDisplay}</Text>
+			{showMeta && (
+				<Box
+					className={`${styles.ringMeta} ${
+						metaActive ? styles.ringMetaActive : ""
+					}`}
+				>
+					{showIntentionInRing &&
+						(canEditIntention ? (
+							<Tooltip
+								label={t.timer.progress.editIntention}
+								position="bottom"
+								withArrow
+								openDelay={300}
+							>
+								<Text
+									component="button"
+									type="button"
+									className={`${styles.ringIntention} ${styles.ringIntentionEditable}`}
+									lineClamp={2}
+									onClick={() => onEditIntention?.()}
+									aria-label={t.timer.progress.editIntention}
+								>
+									{intentionText}
+								</Text>
+							</Tooltip>
+						) : (
+							<Text className={styles.ringIntention} lineClamp={2}>
+								{intentionText}
+							</Text>
+						))}
+
+					{showBottomHorizon && (
+						<Box className={styles.cycleHorizon} aria-hidden>
+							<Text className={styles.cycleHorizonCaption}>
+								{t.timer.progress.ends}
+							</Text>
+							<Text className={styles.cycleHorizonTime}>{endTimeDisplay}</Text>
+						</Box>
+					)}
 				</Box>
 			)}
 		</Box>
