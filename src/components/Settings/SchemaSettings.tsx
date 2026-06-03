@@ -1,6 +1,7 @@
 import type { Configuration } from "@/models";
 import { DEPTH_PRESETS } from "@/models/depth";
 import type { TimerSchema } from "@/models/schemas";
+import { useLanguage } from "@/context/LanguageContext";
 import { useDepthState, useSchemasState, useTimerState } from "@/stores";
 import { SCHEMA_KEYS } from "@/stores/constants";
 import { secondsToMinutes } from "@/utils/time.util";
@@ -20,6 +21,7 @@ interface Props {
 }
 
 const SchemaSettings: FC<Props> = ({ configuration }) => {
+	const { t } = useLanguage();
 	const {
 		schemas,
 		currentSchemaId,
@@ -38,7 +40,7 @@ const SchemaSettings: FC<Props> = ({ configuration }) => {
 	const handleAddSchema = () => {
 		addSchema({
 			...configuration,
-			title: "New Schema",
+			title: t.settings.schemas.newSchema,
 		});
 	};
 
@@ -83,17 +85,17 @@ const SchemaSettings: FC<Props> = ({ configuration }) => {
 	return (
 		<Box className={styles.wrap}>
 			<Title order={5} size="sm" c="dimmed" mb="xs">
-				Presets
+				{t.settings.schemas.presets}
 			</Title>
 
 			<Select
 				data={options}
 				value={currentSchemaId || null}
 				onChange={handleSetCurrentSchema}
-				placeholder="Select a preset…"
+				placeholder={t.settings.schemas.selectPreset}
 				clearable
 				searchable
-				nothingFoundMessage="No presets found"
+				nothingFoundMessage={t.settings.schemas.noPresets}
 				comboboxProps={{ withinPortal: false }}
 			/>
 
@@ -115,7 +117,7 @@ const SchemaSettings: FC<Props> = ({ configuration }) => {
 								onChange={(evt) => setEditTitle(evt.target.value)}
 								onKeyDown={getHotkeyHandler([["enter", handleSaveTitle]])}
 								autoFocus
-								placeholder="Schema name"
+								placeholder={t.settings.schemas.schemaName}
 							/>
 						) : (
 							<Box className={styles.schemaInfo}>
@@ -160,7 +162,7 @@ const SchemaSettings: FC<Props> = ({ configuration }) => {
 							variant="subtle"
 							color="gray"
 							size="compact-sm"
-							aria-label="Delete preset"
+							aria-label={t.settings.schemas.deletePreset}
 							onClick={handleDeleteSchema}
 						>
 							<FaTrash />
@@ -176,7 +178,7 @@ const SchemaSettings: FC<Props> = ({ configuration }) => {
 					mt="sm"
 					onClick={handleAddSchema}
 				>
-					Add Schema
+					{t.settings.schemas.addSchema}
 				</Button>
 			)}
 		</Box>

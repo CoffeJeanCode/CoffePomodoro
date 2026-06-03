@@ -1,4 +1,5 @@
 import type { TimerSchema } from "@/models/schemas";
+import { useLanguage } from "@/context/LanguageContext";
 import {
 	Box,
 	Button,
@@ -26,6 +27,7 @@ interface Props {
 }
 
 const NotificationSettings: FC<Props> = ({ configuration, setConfigValue }) => {
+	const { t } = useLanguage();
 	const [playNotification] = useSound(configuration.notification.alarm.url, {
 		volume: configuration.notification.volume,
 	});
@@ -35,14 +37,14 @@ const NotificationSettings: FC<Props> = ({ configuration, setConfigValue }) => {
 			<Group align="flex-end" wrap="nowrap" gap="sm">
 				<Button
 					onClick={() => playNotification()}
-					aria-label="Preview alarm"
+					aria-label={t.settings.notifications.preview}
 					className={styles.flexAuto}
 				>
 					<FaBell />
 				</Button>
 				<Box className={styles.flexFill}>
 					<Select
-						label="Alarm"
+						label={t.settings.notifications.alarm}
 						w="100%"
 						value={configuration.notification.alarm.title}
 						data={keys(ALARMS)}
@@ -55,7 +57,7 @@ const NotificationSettings: FC<Props> = ({ configuration, setConfigValue }) => {
 
 			<Box w="100%">
 				<Text size="sm" fw={500} mb={4}>
-					Volume
+					{t.settings.notifications.volume}
 				</Text>
 				<Slider
 					min={0.1}
@@ -68,9 +70,9 @@ const NotificationSettings: FC<Props> = ({ configuration, setConfigValue }) => {
 			</Box>
 
 			<Switch
-				label="Desktop notifications"
-				onLabel="ON"
-				offLabel="OFF"
+				label={t.settings.notifications.desktop}
+				onLabel={t.settings.notifications.on}
+				offLabel={t.settings.notifications.off}
 				size="md"
 				checked={configuration.notification.desktopNotification}
 				onChange={(evt) => {

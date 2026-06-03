@@ -1,4 +1,5 @@
 import type { TimerSchema } from "@/models/schemas";
+import { useLanguage } from "@/context/LanguageContext";
 import {
 	Box,
 	Divider,
@@ -19,6 +20,8 @@ interface Props {
 }
 
 const TimerSettings: FC<Props> = ({ configuration, setConfigValue }) => {
+	const { t } = useLanguage();
+
 	const handleUpdateTimer = (mode: Mode, value: number) => {
 		setConfigValue(`timers.${mode}`, minutesToSeconds(value));
 	};
@@ -27,7 +30,7 @@ const TimerSettings: FC<Props> = ({ configuration, setConfigValue }) => {
 		<Box className={styles.fullWidth}>
 			<SimpleGrid cols={1} spacing="sm">
 				<NumberInput
-					label="Work Timer"
+					label={t.settings.timer.work}
 					size="xs"
 					min={10}
 					max={60}
@@ -35,7 +38,7 @@ const TimerSettings: FC<Props> = ({ configuration, setConfigValue }) => {
 					onChange={(value) => handleUpdateTimer(Mode.Pomodoro, Number(value))}
 				/>
 				<NumberInput
-					label="Short Break Timer"
+					label={t.settings.timer.shortBreak}
 					size="xs"
 					min={2}
 					max={10}
@@ -45,7 +48,7 @@ const TimerSettings: FC<Props> = ({ configuration, setConfigValue }) => {
 					}
 				/>
 				<NumberInput
-					label="Long Break Timer"
+					label={t.settings.timer.longBreak}
 					size="xs"
 					min={5}
 					max={20}
@@ -56,7 +59,7 @@ const TimerSettings: FC<Props> = ({ configuration, setConfigValue }) => {
 
 			<Divider my="md" />
 
-			<Title order={4}>Session Preview</Title>
+			<Title order={4}>{t.settings.timer.sessionPreview}</Title>
 			<SessionViewer configuration={configuration} />
 		</Box>
 	);

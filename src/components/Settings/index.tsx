@@ -1,13 +1,27 @@
+import {
+	onboardingAnchorProps,
+	useOnboardingAnchorDismiss,
+} from "@/components/Onboarding/anchors";
 import { AppDrawer } from "@/components/ui/AppDrawer";
 import { AppToolbarButton } from "@/components/ui/AppToolbarButton";
+import { useLanguage } from "@/context/LanguageContext";
 import { type ConfigurationState, useConfigState } from "@/stores";
 import { SCHEMA_KEYS } from "@/stores/constants";
 import { useSchemasState } from "@/stores/states/schema";
 import ui from "@/styles/ui.module.css";
 import { DRAWER_LEFT_TRANSITION } from "@/theme/uiTokens";
-import { Box, Button, Divider, Flex, Stack, Tabs, Text } from "@mantine/core";
+import {
+	Box,
+	Button,
+	Divider,
+	Flex,
+	SegmentedControl,
+	Stack,
+	Tabs,
+	Text,
+} from "@mantine/core";
 import { getHotkeyHandler, useHotkeys } from "@mantine/hooks";
-import { memo, useState } from "react";
+import { memo, useCallback, useState } from "react";
 import { FaWrench } from "react-icons/fa";
 import { useConfiguration } from "../../hooks/useConfiguracion";
 import DataSettings from "./DataSettings";
@@ -17,8 +31,10 @@ import styles from "./SettingsLayout.module.css";
 import TimerSettings from "./TimerSettings";
 
 const Settings = () => {
+	const { t, lang, setLanguage } = useLanguage();
 	const [isOpen, setIsOpen] = useState(false);
 	const [activeTab, setActiveTab] = useState<string | null>("timer");
+	useOnboardingAnchorDismiss(useCallback(() => setIsOpen(false), []));
 	const {
 		schemas,
 		currentSchemaId,
@@ -63,15 +79,16 @@ const Settings = () => {
 			<AppToolbarButton
 				leftSection={<FaWrench />}
 				onClick={() => setIsOpen(true)}
+				{...onboardingAnchorProps("settings")}
 			>
-				Settings
+				{t.settings.button}
 			</AppToolbarButton>
 
 			<AppDrawer
 				opened={isOpen}
 				position="left"
 				size="md"
-				title="Settings"
+				title={t.settings.title}
 				onClose={() => setIsOpen(false)}
 				transitionProps={DRAWER_LEFT_TRANSITION}
 				styles={{
@@ -105,7 +122,8 @@ const Settings = () => {
 				<Flex className={styles.contentArea} direction="column" gap="md">
 					{isSchemaSelected && currentSchema && (
 						<Text size="sm" c="dimmed">
-							Editing preset: <strong>{currentSchema.title}</strong>
+							{t.settings.editingPreset}{" "}
+							<strong>{currentSchema.title}</strong>
 						</Text>
 					)}
 
@@ -131,6 +149,31 @@ const Settings = () => {
 									setConfigValue={setConfigValue}
 								/>
 								<Divider opacity={0.2} />
+								<Box>
+									<Text size="xs" fw={500} mb={4}>
+										{t.settings.visualMode.label}
+									</Text>
+									<SegmentedControl
+										fullWidth
+										size="xs"
+										value={config.visualMode}
+										onChange={(value) =>
+											setConfigValue("visualMode", value)
+										}
+										data={[
+											{
+												label: t.settings.visualMode.ripples,
+												value: "ripples",
+											},
+											{
+												label: t.settings.visualMode.stardust,
+												value: "stardust",
+											},
+											{ label: t.settings.visualMode.enso, value: "enso" },
+										]}
+									/>
+								</Box>
+								<Divider opacity={0.2} />
 								<TimerSettings
 									configuration={config}
 									setConfigValue={setConfigValue}
@@ -148,6 +191,24 @@ const Settings = () => {
 						<Tabs.Panel value="data" pt="md">
 							<DataSettings />
 						</Tabs.Panel>
+
+						<Tabs.Panel value="language" pt="md">
+							<Stack gap="sm">
+								<Text size="xs" fw={500}>
+									{t.settings.language.label}
+								</Text>
+								<SegmentedControl
+									fullWidth
+									size="xs"
+									value={lang}
+									onChange={(value) => setLanguage(value as "en" | "es")}
+									data={[
+										{ label: t.settings.language.en, value: "en" },
+										{ label: t.settings.language.es, value: "es" },
+									]}
+								/>
+							</Stack>
+						</Tabs.Panel>
 					</Tabs>
 				</Flex>
 
@@ -159,14 +220,14 @@ const Settings = () => {
 								color="gray"
 								onClick={handleCancelChangesSettings}
 							>
-								Discard
+								{t.settings.discard}
 							</Button>
 							<Button
 								color="red"
 								variant="light"
 								onClick={handleSaveChangesSettings}
 							>
-								Save changes
+								{t.settings.save}
 							</Button>
 						</Flex>
 					</Box>

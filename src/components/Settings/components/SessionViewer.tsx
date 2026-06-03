@@ -1,3 +1,4 @@
+import { useLanguage } from "@/context/LanguageContext";
 import { type Configuration, Mode } from "@/models";
 import type { TimerSchema } from "@/models/schemas";
 import { cyclesForTimers } from "@/utils/cycles";
@@ -12,6 +13,7 @@ interface Props {
 }
 
 const SessionViewer: React.FC<Props> = ({ configuration }) => {
+	const { lang } = useLanguage();
 	const { timers } = configuration;
 	const maxCycles = cyclesForTimers(timers);
 
@@ -20,14 +22,14 @@ const SessionViewer: React.FC<Props> = ({ configuration }) => {
 		sessionBlocks.push({
 			value: timers[Mode.Pomodoro],
 			color: "blue.8",
-			label: getModeTitle(Mode.Pomodoro),
+			label: getModeTitle(Mode.Pomodoro, lang),
 		});
 		const isLastPomodoro = i === maxCycles - 1;
 		const breakMode = isLastPomodoro ? Mode.LongBreak : Mode.ShortBreak;
 		sessionBlocks.push({
 			value: timers[breakMode],
 			color: isLastPomodoro ? "blue.4" : "blue.6",
-			label: getModeTitle(breakMode),
+			label: getModeTitle(breakMode, lang),
 		});
 	}
 
