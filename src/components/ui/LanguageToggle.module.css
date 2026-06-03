@@ -1,0 +1,23 @@
+.toggle {
+	position: fixed;
+	top: 1rem;
+	right: 1rem;
+	z-index: 200;
+	opacity: 0.55;
+	transition: opacity var(--ui-duration) var(--ui-ease);
+}
+
+.toggle:hover {
+	opacity: 0.95;
+}
+
+.label {
+	font-size: 1rem;
+	font-weight: 600;
+	letter-spacing: 0.08em;
+	color: var(--ui-text-muted);
+}
+
+.toggle:hover .label {
+	color: var(--ui-text);
+}

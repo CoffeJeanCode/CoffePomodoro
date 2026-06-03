@@ -21,9 +21,11 @@ export const translations = {
 			},
 			progress: {
 				ends: "ends",
-				editIntention: "Double-click the ring to edit your intention",
+				editIntention: "Click your intention to edit",
 				sessionProgress: "Session progress",
-				sessionProgressEdit: "Session progress. Double-click to edit intention",
+				sessionProgressEdit: "Session progress",
+				horizonNotStarted: "The cycle has not started yet",
+				horizonEndsAt: "The cycle ends at {{time}}",
 				starting: "Starting",
 				flowing: "Flowing",
 				deepening: "Deepening",
@@ -65,6 +67,12 @@ export const translations = {
 			text: {
 				breathe: "Breathe",
 			},
+			notification: {
+				focusComplete: "Focus complete",
+				modeEnded: "{{mode}} ended",
+				focusBody: "Time to step away and recover.",
+				breakBody: "Back to focus when you are ready.",
+			},
 		},
 		mode: {
 			focus: "Focus",
@@ -90,6 +98,7 @@ export const translations = {
 		break: {
 			longRest: "Let the screen fade. Rest without watching the clock.",
 			shortRest: "No clock — just rest.",
+			endRest: "End rest",
 			extendedBreak: "Extended break +{{minutes}} min for early completion",
 			efficiencyBonus:
 				"Efficiency bonus: +{{minutes}} min extra for mental recovery",
@@ -107,6 +116,7 @@ export const translations = {
 				behavior: "Behavior",
 				notifications: "Notifications",
 				schemas: "Schemas",
+				data: "Data",
 				language: "Language",
 			},
 			discard: "Discard",
@@ -147,6 +157,26 @@ export const translations = {
 				en: "English",
 				es: "Español",
 			},
+			visualMode: {
+				label: "Timer Core Style",
+				ripples: "Wireframe Ripples",
+				stardust: "Stardust",
+				enso: "Zen Enso",
+			},
+			data: {
+				exportTitle: "Export your data",
+				exportDesc:
+					"Download all your settings, stats, schemas, and Brain Dump notes as a JSON file.",
+				exportButton: "Export JSON",
+				importTitle: "Import data",
+				importDesc:
+					"Restore from a previously exported backup file. This will overwrite all current data.",
+				importPlaceholder: "Select backup file",
+				importButton: "Import",
+				importFailed: "Import failed",
+				importSuccess: "Import successful",
+				importReloading: "Data restored. Reloading...",
+			},
 		},
 		stats: {
 			button: "Week Stats",
@@ -173,6 +203,7 @@ export const translations = {
 		helps: {
 			button: "Helps",
 			title: "Helps",
+			replay: "Replay tutorial",
 			hotkeys: "Hotkeys",
 			main: "Main",
 			sections: {
@@ -211,6 +242,72 @@ export const translations = {
 				preset: "Quick-select a preset schema",
 			},
 		},
+		onboarding: {
+			skip: "Skip for now",
+			next: "Next",
+			tryIt: "Click it to continue",
+			stepLabel: "Step {{current}} of {{total}}",
+			welcome: {
+				eyebrow: "Welcome",
+				title: "Focus without the clock",
+				body: "No countdown here.",
+				highlight: "Set an intention, let a calm ring carry you.",
+				cta: "Begin my first focus",
+			},
+			rhythm: {
+				eyebrow: "Your rhythm",
+				title: "How are you working today?",
+				body: "Change it anytime with right-click.",
+				highlight: "Pick the depth for this moment.",
+				presets: {
+					deep: {
+						label: "Deep Immersion",
+						meta: "90 / 20",
+						desc: "Flow state, complex work",
+					},
+					sustained: {
+						label: "Sustained Rhythm",
+						meta: "52 / 17",
+						desc: "Steady execution, no burnout",
+					},
+					quick: {
+						label: "Quick Start",
+						meta: "25 / 5",
+						desc: "Beat friction, small tasks",
+					},
+				},
+			},
+			intention: {
+				eyebrow: "Your anchor",
+				title: "Name one intention",
+				body: "This replaces the countdown.",
+				highlight: "Type your focus below, then Begin focus.",
+			},
+			ring: {
+				eyebrow: "You're in focus",
+				title: "Watch the ring, not the seconds",
+				body: "The ring fills on its own and shows when the cycle ends.",
+				highlight: "No numbers. No urgency.",
+			},
+			settings: {
+				eyebrow: "Make it yours",
+				title: "Settings",
+				body: "Durations, alarms, themes and behavior.",
+				highlight: "Open it anytime to tune your sessions.",
+			},
+			brainDump: {
+				eyebrow: "Stay in flow",
+				title: "Brain Dump",
+				body: "A stray thought during focus?",
+				highlight: "Drop it here without leaving the session.",
+			},
+			endDay: {
+				eyebrow: "Close the loop",
+				title: "End Day",
+				body: "Done for the day?",
+				highlight: "Run the shutdown ritual to clear your mind.",
+			},
+		},
 		tutorial: {
 			step1:
 				"Choose your rhythm. Right-click anywhere for quick presets, or open Settings to customize. Deep Immersion (90m) for complex work, Quick Start (25m) for fast tasks.",
@@ -235,6 +332,48 @@ export const translations = {
 		language: {
 			switchTo: "Switch to Spanish",
 			current: "EN",
+		},
+		shutdown: {
+			endDay: "End day",
+			endDayTooltip: "End your workday",
+			lockMessage: "Day complete. Your attention is free. See you tomorrow.",
+			lockSub: "Reload the app tomorrow to start fresh.",
+			triageTitle: "Empty your mental inbox",
+			consolidateTitle: "Today's intentions",
+			triageBody:
+				"Process what you captured today. Export it wherever you keep it and clear the inbox to free your short-term memory.",
+			inboxClear: "The inbox is clear. Your mind is unloaded.",
+			copyAll: "Copy all",
+			clearInbox: "Clear inbox",
+			continue: "Continue",
+			consolidateBody:
+				"These are the intentions you gave your full attention today.",
+			noIntentions:
+				"You didn't mark any intentions complete today. You still deserve rest.",
+			consolidateClosing:
+				"What deserved your attention, received it. That's enough for today.",
+			powerDown: "Power down and close the day",
+		},
+		energy: {
+			title: "Energy Check",
+			body: "You've completed several high-intensity cycles in a row. Take a moment to scan your mind and eyes before continuing.",
+			continue: "I still have clarity",
+			downshift: "I need a break",
+		},
+		dataDropZone: {
+			importing: "Importing backup…",
+			success: "Data restored. Reloading…",
+			failed: "Import failed",
+			dropTitle: "Drop your backup to import",
+			dropSub: "Release a .json file to restore your data",
+		},
+		install: {
+			tooltip: "Install app for distraction-free focus",
+			label: "Install",
+		},
+		persistence: {
+			healthy: "Data saved locally",
+			unhealthy: "Storage issue — export your data",
 		},
 		breakSuggestions: {
 			short: [
@@ -273,10 +412,11 @@ export const translations = {
 			},
 			progress: {
 				ends: "termina",
-				editIntention: "Haz doble clic en el anillo para editar tu intención",
+				editIntention: "Haz clic en tu intención para editar",
 				sessionProgress: "Progreso de la sesión",
-				sessionProgressEdit:
-					"Progreso de la sesión. Haz doble clic para editar la intención",
+				sessionProgressEdit: "Progreso de la sesión",
+				horizonNotStarted: "El ciclo aún no ha comenzado",
+				horizonEndsAt: "El ciclo termina a las {{time}}",
 				starting: "Comenzando",
 				flowing: "Fluyendo",
 				deepening: "Profundizando",
@@ -318,6 +458,12 @@ export const translations = {
 			text: {
 				breathe: "Respira",
 			},
+			notification: {
+				focusComplete: "Enfoque completado",
+				modeEnded: "{{mode}} terminado",
+				focusBody: "Es hora de alejarte y recuperarte.",
+				breakBody: "Vuelve al enfoque cuando estés listo.",
+			},
 		},
 		mode: {
 			focus: "Enfoque",
@@ -344,6 +490,7 @@ export const translations = {
 			longRest:
 				"Deja que la pantalla se desvanezca. Descansa sin mirar el reloj.",
 			shortRest: "Sin reloj — solo descansa.",
+			endRest: "Terminar descanso",
 			extendedBreak:
 				"Descanso extendido +{{minutes}} min por finalización temprana",
 			efficiencyBonus:
@@ -362,6 +509,7 @@ export const translations = {
 				behavior: "Comportamiento",
 				notifications: "Notificaciones",
 				schemas: "Esquemas",
+				data: "Datos",
 				language: "Idioma",
 			},
 			discard: "Descartar",
@@ -402,6 +550,26 @@ export const translations = {
 				en: "English",
 				es: "Español",
 			},
+			visualMode: {
+				label: "Estilo del núcleo",
+				ripples: "Ondas wireframe",
+				stardust: "Polvo estelar",
+				enso: "Enso zen",
+			},
+			data: {
+				exportTitle: "Exportar datos",
+				exportDesc:
+					"Descarga ajustes, estadísticas, esquemas y notas del Brain Dump como JSON.",
+				exportButton: "Exportar JSON",
+				importTitle: "Importar datos",
+				importDesc:
+					"Restaura desde un respaldo exportado. Sobrescribirá todos los datos actuales.",
+				importPlaceholder: "Seleccionar archivo de respaldo",
+				importButton: "Importar",
+				importFailed: "Error al importar",
+				importSuccess: "Importación exitosa",
+				importReloading: "Datos restaurados. Recargando...",
+			},
 		},
 		stats: {
 			button: "Estadísticas",
@@ -429,6 +597,7 @@ export const translations = {
 		helps: {
 			button: "Ayuda",
 			title: "Ayuda",
+			replay: "Repetir tutorial",
 			hotkeys: "Atajos",
 			main: "Principales",
 			sections: {
@@ -466,6 +635,72 @@ export const translations = {
 				preset: "Seleccionar preset rápido",
 			},
 		},
+		onboarding: {
+			skip: "Saltar por ahora",
+			next: "Siguiente",
+			tryIt: "Púlsalo para continuar",
+			stepLabel: "Paso {{current}} de {{total}}",
+			welcome: {
+				eyebrow: "Bienvenido",
+				title: "Bienvenido a Coffe Pomodoro",
+				body: "Aquí no hay cuenta regresiva.",
+				highlight: "Define una intención y deja que el anillo te lleve.",
+				cta: "Comenzar mi primer enfoque",
+			},
+			rhythm: {
+				eyebrow: "Tu ritmo",
+				title: "¿Cómo trabajas hoy?",
+				body: "Puedes cambiarlo cuando quieras con clic derecho.",
+				highlight: "Elige la profundidad para este momento.",
+				presets: {
+					deep: {
+						label: "Inmersión Profunda",
+						meta: "90 / 20",
+						desc: "Estado de flujo, trabajo complejo",
+					},
+					sustained: {
+						label: "Ritmo Sostenido",
+						meta: "52 / 17",
+						desc: "Ejecución constante, sin agotarte",
+					},
+					quick: {
+						label: "Inicio Rápido",
+						meta: "25 / 5",
+						desc: "Vence la fricción, tareas cortas",
+					},
+				},
+			},
+			intention: {
+				eyebrow: "Tu ancla",
+				title: "Nombra una intención",
+				body: "Esto reemplaza la cuenta regresiva.",
+				highlight: "Escribe tu enfoque abajo y pulsa Comenzar enfoque.",
+			},
+			ring: {
+				eyebrow: "Estás enfocado",
+				title: "Mira el anillo, no los segundos",
+				body: "El anillo se llena solo y muestra cuándo termina el ciclo.",
+				highlight: "Sin números. Sin urgencia.",
+			},
+			settings: {
+				eyebrow: "Hazlo tuyo",
+				title: "Ajustes",
+				body: "Duraciones, alarmas, temas y comportamiento.",
+				highlight: "Ábrelo cuando quieras para afinar tus sesiones.",
+			},
+			brainDump: {
+				eyebrow: "Sigue en flujo",
+				title: "Brain Dump",
+				body: "¿Un pensamiento suelto durante el enfoque?",
+				highlight: "Suéltalo aquí sin salir de la sesión.",
+			},
+			endDay: {
+				eyebrow: "Cierra el ciclo",
+				title: "Terminar día",
+				body: "¿Terminaste por hoy?",
+				highlight: "Ejecuta el ritual de cierre para despejar tu mente.",
+			},
+		},
 		tutorial: {
 			step1:
 				"Elige tu ritmo. Haz clic derecho para presets rápidos, o abre Settings para personalizar. Deep Immersion (90m) para trabajo complejo, Quick Start (25m) para tareas rápidas.",
@@ -492,9 +727,51 @@ export const translations = {
 			switchTo: "Cambiar a inglés",
 			current: "ES",
 		},
+		shutdown: {
+			endDay: "Terminar día",
+			endDayTooltip: "Termina tu jornada",
+			lockMessage: "Día completo. Tu atención es libre. Nos vemos mañana.",
+			lockSub: "Recarga la app mañana para empezar de nuevo.",
+			triageTitle: "Vacía tu bandeja mental",
+			consolidateTitle: "Intenciones de hoy",
+			triageBody:
+				"Procesa lo que capturaste hoy. Expórtalo donde lo guardes y limpia la bandeja para liberar tu memoria a corto plazo.",
+			inboxClear: "La bandeja está limpia. Tu mente está descargada.",
+			copyAll: "Copiar todo",
+			clearInbox: "Limpiar bandeja",
+			continue: "Continuar",
+			consolidateBody:
+				"Estas son las intenciones a las que diste tu plena atención hoy.",
+			noIntentions:
+				"No marcaste intenciones completadas hoy. Aun así mereces descanso.",
+			consolidateClosing:
+				"Lo que merecía tu atención, la recibió. Eso es suficiente por hoy.",
+			powerDown: "Apagar y cerrar el día",
+		},
+		energy: {
+			title: "Evaluación de energía",
+			body: "Has completado varios ciclos de alta intensidad seguidos. Tómate un momento para escanear tu mente y tus ojos antes de continuar.",
+			continue: "Aún tengo claridad",
+			downshift: "Necesito una pausa",
+		},
+		dataDropZone: {
+			importing: "Importando respaldo…",
+			success: "Datos restaurados. Recargando…",
+			failed: "Error al importar",
+			dropTitle: "Suelta tu respaldo para importar",
+			dropSub: "Suelta un archivo .json para restaurar tus datos",
+		},
+		install: {
+			tooltip: "Instala la app para un enfoque sin distracciones",
+			label: "Instalar",
+		},
+		persistence: {
+			healthy: "Datos guardados localmente",
+			unhealthy: "Problema de almacenamiento — exporta tus datos",
+		},
 		breakSuggestions: {
 			short: [
-				" Mira lejos de la pantalla",
+				"Mira lejos de la pantalla",
 				"Estira tu cuerpo",
 				"Bebe agua",
 				"Tres respiraciones profundas",
