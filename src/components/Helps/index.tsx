@@ -1,10 +1,17 @@
 import { AppDrawer } from "@/components/ui/AppDrawer";
 import { AppToolbarButton } from "@/components/ui/AppToolbarButton";
 import { useLanguage } from "@/context/LanguageContext";
+import { useOnboardingState } from "@/stores";
 import ui from "@/styles/ui.module.css";
-import { Kbd, List, ScrollArea, Stack, Text, Title } from "@mantine/core";
+import { Button, Kbd, List, ScrollArea, Stack, Text, Title } from "@mantine/core";
 import { useState } from "react";
-import { FaBrain, FaHeadphones, FaLightbulb, FaMugHot } from "react-icons/fa";
+import {
+	FaBrain,
+	FaHeadphones,
+	FaLightbulb,
+	FaMugHot,
+	FaRedo,
+} from "react-icons/fa";
 import { helps } from "./helps.data";
 
 const iconMap: Record<string, JSX.Element> = {
@@ -66,6 +73,13 @@ const hotkeyAction = (
 const Helps = () => {
 	const { t } = useLanguage();
 	const [isOpen, setIsOpen] = useState(false);
+	const restartOnboarding = useOnboardingState((s) => s.restartOnboarding);
+
+	const handleReplayTutorial = () => {
+		setIsOpen(false);
+		restartOnboarding();
+	};
+
 	return (
 		<>
 			<AppToolbarButton
@@ -82,6 +96,17 @@ const Helps = () => {
 				scrollAreaComponent={ScrollArea.Autosize}
 			>
 				<Stack gap="lg" py="xs">
+					<Button
+						variant="light"
+						color="red"
+						size="sm"
+						radius="md"
+						leftSection={<FaRedo size={12} />}
+						onClick={handleReplayTutorial}
+					>
+						{t.helps.replay}
+					</Button>
+
 					{helps.sections.map((section) => (
 						<div key={section.title}>
 							<Title order={3} size="h4" className={ui.sectionTitle} mb="sm">
